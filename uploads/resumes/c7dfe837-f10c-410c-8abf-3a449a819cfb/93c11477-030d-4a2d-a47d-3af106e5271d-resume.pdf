@@ -1,0 +1,32 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 720 >>
+stream
+BT /F1 12 Tf 50 720 Td 14 TL (Alex Johnson) Tj T* (alex.johnson@email.com) Tj T* (+1-555-0101) Tj T* (San Francisco, CA) Tj T* (SENIOR BACKEND ENGINEER) Tj T* (8 years of experience building scalable distributed systems.) Tj T* (SKILLS: Node.js, TypeScript, PostgreSQL, Redis, Docker, AWS, GraphQL, Kubernetes, Kafka) Tj T* (EXPERIENCE:) Tj T* (TechFlow Inc. - Backend Developer \(6 years\)) Tj T* (- Designed and built RESTful APIs and microservices handling 2M+ daily requests) Tj T* (- Optimized PostgreSQL schemas and queries, reducing p95 latency by 40%) Tj T* (DataWorks - Junior Developer \(2 years\)) Tj T* (EDUCATION: BS in Computer Science, UC Berkeley) Tj T* (CERTIFICATIONS: AWS Solutions Architect) Tj T* ET
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000000 00000 n 
+0000000000 00000 n 
+0000000000 00000 n 
+0000000000 00000 n 
+0000000000 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+1082
+%%EOF

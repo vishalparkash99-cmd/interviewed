@@ -1,0 +1,188 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: interviewed-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: interviewed
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: interviewed-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: interviewed-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: interviewed-mailhog
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+
+  migrate:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: interviewed-migrate
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/interviewed?schema=public
+      NODE_ENV: production
+    entrypoint: ["sh", "-c", "npx prisma migrate deploy --schema=packages/database/prisma/schema.prisma && npx tsx scripts/seed.ts"]
+    profiles:
+      - setup
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: interviewed-api
+    env_file:
+      - .env
+    ports:
+      - "3001:3001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/interviewed?schema=public
+      REDIS_URL: redis://redis:6379
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+      JWT_SECRET: ${JWT_SECRET:-dev-secret-at-least-64-chars-long-enough-for-validation}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-dev-refresh-secret-at-least-64-chars-long-enough}
+      JWT_EXPIRES_IN: 15m
+      JWT_REFRESH_EXPIRES_IN: 7d
+      AI_PROVIDER: openrouter
+      OPENAI_API_KEY: ""
+      ANTHROPIC_API_KEY: ""
+      DEFAULT_AI_MODEL: gpt-4o
+      EMBEDDING_MODEL: text-embedding-3-small
+      EMBEDDING_DIMENSION: "1536"
+      STORAGE_PROVIDER: local
+      STORAGE_BUCKET: /app/uploads
+      EMAIL_PROVIDER: smtp
+      SMTP_HOST: mailhog
+      SMTP_PORT: "1025"
+      SMTP_USER: ""
+      SMTP_PASSWORD: ""
+      FROM_EMAIL: noreply@interviewed.ai
+      FROM_NAME: Interviewed
+      NODE_ENV: production
+      API_PORT: "3001"
+      RATE_LIMIT_WINDOW_MS: "60000"
+      RATE_LIMIT_MAX: "100"
+      LOG_LEVEL: info
+      LOG_FORMAT: pretty
+      INTERVIEW_DEFAULT_DURATION: "1800"
+      INTERVIEW_DEFAULT_DIFFICULTY: medium
+      INTERVIEW_LINK_EXPIRY_HOURS: "72"
+      INTERVIEW_RECORDING_ENABLED: "true"
+      ALLOWED_FILE_TYPES: "application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain"
+      MAX_FILE_SIZE_MB: "10"
+    volumes:
+      - storage_data:/app/uploads
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    container_name: interviewed-web
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+    environment:
+      NODE_ENV: production
+      API_INTERNAL_URL: http://api:3001
+
+  worker:
+    build:
+      context: .
+      dockerfile: apps/worker/Dockerfile
+    container_name: interviewed-worker
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/interviewed?schema=public
+      REDIS_URL: redis://redis:6379
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+      JWT_SECRET: ${JWT_SECRET:-dev-secret-at-least-64-chars-long-enough-for-validation}
+      AI_PROVIDER: openrouter
+      OPENAI_API_KEY: ""
+      ANTHROPIC_API_KEY: ""
+      DEFAULT_AI_MODEL: gpt-4o
+      STORAGE_PROVIDER: local
+      STORAGE_BUCKET: /app/uploads
+      EMAIL_PROVIDER: smtp
+      SMTP_HOST: mailhog
+      SMTP_PORT: "1025"
+      SMTP_USER: ""
+      SMTP_PASSWORD: ""
+      FROM_EMAIL: noreply@interviewed.ai
+      FROM_NAME: Interviewed
+      NODE_ENV: production
+      LOG_LEVEL: info
+      LOG_FORMAT: pretty
+      INTERVIEW_DEFAULT_DURATION: "1800"
+      INTERVIEW_DEFAULT_DIFFICULTY: medium
+      INTERVIEW_LINK_EXPIRY_HOURS: "72"
+      MAX_FILE_SIZE_MB: "10"
+      ALLOWED_FILE_TYPES: "application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain"
+    volumes:
+      - storage_data:/app/uploads
+
+volumes:
+  postgres_data:
+  redis_data:
+  rabbitmq_data:
+  storage_data:

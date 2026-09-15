@@ -1,0 +1,16 @@
+node_modules
+**/node_modules
+**/.next
+**/dist
+.git
+.gitignore
+.env
+.env.*
+!.env.example
+tests
+**/*.test.ts
+**/*.spec.ts
+jest.config.js
+docker-compose.yml
+*.md
+uploads/

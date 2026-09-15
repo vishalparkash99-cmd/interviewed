@@ -1,0 +1,29 @@
+{
+  "name": "@interviewed/database",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": ["dist", "prisma"],
+  "scripts": {
+    "generate": "prisma generate",
+    "migrate": "prisma migrate deploy",
+    "dev": "prisma migrate dev",
+    "studio": "prisma studio",
+    "build": "tsc && node -e \"fs.cpSync('src/generated/prisma','dist/generated/prisma',{recursive:true,force:true})\""
+  },
+  "dependencies": {
+    "@prisma/client": "^6.9.0",
+    "@interviewed/config": "*"
+  },
+  "devDependencies": {
+    "prisma": "^6.9.0",
+    "typescript": "^5.5.4",
+    "@types/node": "^20.14.10"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@interviewed/ai": "*",
+    "@interviewed/config": "*",
+    "@interviewed/database": "*",
+    "@interviewed/queue": "*",
+    "@interviewed/types": "*",
+    "amqplib": "^0.10.5",
+    "ioredis": "^5.4.0",
+    "mammoth": "^1.12.3",
+    "nodemailer": "^6.9.16",
+    "pdf-parse": "^2.4.5",
+    "pino": "^9.3.5",
+    "pino-pretty": "^11.2.2",
+    "uuid": "^10.0.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.10",
+    "@types/nodemailer": "^6.4.16",
+    "@types/pdf-parse": "^1.1.5",
+    "@types/uuid": "^10.0.0",
+    "tsx": "^4.16.2",
+    "typescript": "^5.5.4"
+  }
+}

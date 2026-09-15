@@ -1,0 +1,1 @@
+// Generated Prisma client (stub)
