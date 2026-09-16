@@ -157,6 +157,7 @@ services:
       REDIS_URL: redis://redis:6379
       RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
       JWT_SECRET: ${JWT_SECRET:-dev-secret-at-least-64-chars-long-enough-for-validation}
+      WORKER_PORT: "3002"
       AI_PROVIDER: openrouter
       OPENAI_API_KEY: ""
       ANTHROPIC_API_KEY: ""

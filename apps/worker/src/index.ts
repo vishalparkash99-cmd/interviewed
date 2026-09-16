@@ -5,6 +5,7 @@ import { createPrismaClient } from "@interviewed/database";
 import type { PrismaClient } from "@interviewed/database";
 import { createAIJob, processAIJob, toDbJobType } from "./ai-jobs";
 import type { AIJob } from "./ai-jobs";
+import { startHealthServer, type HealthServer } from "./health";
 
 const logger = createLogger("worker");
 
@@ -154,7 +155,11 @@ function buildSubscriptions(queues: ReturnType<typeof config.getRabbitMqQueues>)
   ];
 }
 
-function installShutdownHandlers(queue: QueueHandle, db: PrismaClient): void {
+function installShutdownHandlers(
+  queue: QueueHandle,
+  db: PrismaClient,
+  health: HealthServer
+): void {
   let shuttingDown = false;
 
   async function shutdown(signal: string): Promise<void> {
@@ -169,6 +174,7 @@ function installShutdownHandlers(queue: QueueHandle, db: PrismaClient): void {
     forceExit.unref();
 
     try {
+      await health.close();
       await queue.close();
       await db.$disconnect();
       logger.info("Worker shutdown complete");
@@ -193,7 +199,18 @@ async function main(): Promise<void> {
   const queue = createQueueConnection(config.getRabbitMqUrl(), { prefetchCount: 2 });
   const queues = config.getRabbitMqQueues();
 
-  await waitForQueue(queue);
+  const health = startHealthServer(config.getWorkerPort());
+
+  try {
+    await waitForQueue(queue);
+    health.setReady(true);
+  } catch (err) {
+    logger.error({ err }, "Queue connection failed");
+    await health.close();
+    await queue.close();
+    await db.$disconnect();
+    throw err;
+  }
 
   const subscriptions = buildSubscriptions(queues);
   for (const subscription of subscriptions) {
@@ -246,7 +263,7 @@ async function main(): Promise<void> {
   });
 
   logger.info("Worker started, listening on queues");
-  installShutdownHandlers(queue, db);
+  installShutdownHandlers(queue, db, health);
 }
 
 main().catch((err) => {
