@@ -600,7 +600,7 @@ const config = {
   },
   "relativeEnvPaths": {
     "rootEnvPath": null,
-    "schemaEnvPath": "../../../.env"
+    "schemaEnvPath": "../../../../../.env"
   },
   "relativePath": "../../../prisma",
   "clientVersion": "6.19.3",
@@ -609,6 +609,7 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
+  "postinstall": true,
   "inlineDatasources": {
     "db": {
       "url": {
@@ -627,8 +628,8 @@ const fs = require('fs')
 config.dirname = __dirname
 if (!fs.existsSync(path.join(__dirname, 'schema.prisma'))) {
   const alternativePaths = [
-    "src/generated/prisma",
-    "generated/prisma",
+    "packages/database/src/generated/prisma",
+    "database/src/generated/prisma",
   ]
   
   const alternativePath = alternativePaths.find((altPath) => {
@@ -658,7 +659,7 @@ Object.assign(exports, Prisma)
 
 // file annotations for bundling tools to include these files
 path.join(__dirname, "libquery_engine-debian-openssl-1.1.x.so.node");
-path.join(process.cwd(), "src/generated/prisma/libquery_engine-debian-openssl-1.1.x.so.node")
+path.join(process.cwd(), "packages/database/src/generated/prisma/libquery_engine-debian-openssl-1.1.x.so.node")
 // file annotations for bundling tools to include these files
 path.join(__dirname, "schema.prisma");
-path.join(process.cwd(), "src/generated/prisma/schema.prisma")
+path.join(process.cwd(), "packages/database/src/generated/prisma/schema.prisma")
