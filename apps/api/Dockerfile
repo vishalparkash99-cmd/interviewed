@@ -17,7 +17,7 @@ RUN npm ci
 
 COPY . .
 RUN npx prisma generate --schema=packages/database/prisma/schema.prisma
-RUN npm run build -w packages/types && npm run build -w packages/config && npm run build -w packages/queue && npm run build -w packages/ai && npm run build -w packages/storage && npm run build -w packages/database && npm run build -w apps/api
+RUN npm run build -w packages/types && npm run build -w packages/config && npm run build -w packages/queue && npm run build -w packages/ai && npm run build -w packages/storage && npm run build -w packages/database && npm run build -w apps/worker && npm run build -w apps/api
 
 FROM node:20-slim AS runner
 RUN apt-get update && apt-get install -y --no-install-recommends openssl && rm -rf /var/lib/apt/lists/*
@@ -43,6 +43,7 @@ COPY --from=builder /app/packages/queue/dist      packages/queue/dist
 COPY --from=builder /app/packages/ai/dist         packages/ai/dist
 COPY --from=builder /app/packages/storage/dist    packages/storage/dist
 COPY --from=builder /app/packages/database/dist   packages/database/dist
+COPY --from=builder /app/apps/worker/dist         apps/worker/dist
 COPY --from=builder /app/apps/api/dist            apps/api/dist
 
 # Regenerate Prisma typed client (fast; engine binary was installed via npm ci)

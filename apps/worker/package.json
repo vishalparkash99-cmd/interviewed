@@ -1,6 +1,16 @@
 {
+  "name": "@interviewed/worker",
   "private": true,
   "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
@@ -11,6 +21,7 @@
     "@interviewed/config": "*",
     "@interviewed/database": "*",
     "@interviewed/queue": "*",
+    "@interviewed/storage": "*",
     "@interviewed/types": "*",
     "amqplib": "^0.10.5",
     "ioredis": "^5.4.0",

@@ -26,6 +26,10 @@ type QueueHandle = {
   close: () => Promise<void>;
 };
 
+export type WorkerHandle = {
+  close: () => Promise<void>;
+};
+
 async function waitForQueue(queue: QueueHandle): Promise<void> {
   const maxAttempts = 10;
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
@@ -155,11 +159,82 @@ function buildSubscriptions(queues: ReturnType<typeof config.getRabbitMqQueues>)
   ];
 }
 
-function installShutdownHandlers(
-  queue: QueueHandle,
-  db: PrismaClient,
-  health: HealthServer
-): void {
+export async function startWorker(): Promise<WorkerHandle> {
+  logger.info("Queue worker initialization started");
+
+  const db = createPrismaClient();
+  const queue = createQueueConnection(config.getRabbitMqUrl(), { prefetchCount: 2 });
+  const queues = config.getRabbitMqQueues();
+
+  try {
+    await waitForQueue(queue);
+
+    const subscriptions = buildSubscriptions(queues);
+    for (const subscription of subscriptions) {
+      // The resume.parsing queue uses a dedicated handler that also triggers
+      // automatic candidate-job matching after a successful parse.
+      if (subscription.queue === queues.resumeParsing) continue;
+      await queue.subscribe(subscription.queue, async (msg) => {
+        await runJob(db, subscription, msg);
+      });
+      logger.info({ queue: subscription.queue }, "Subscribed to queue");
+    }
+
+    // Dedicated resume.parsing handler: parse the resume, then automatically
+    // publish candidate.matching jobs against all active jobs in the org.
+    await queue.subscribe(queues.resumeParsing, async (msg) => {
+      let processed: AIJob | undefined;
+      try {
+        processed = await runJob(
+          db,
+          {
+            queue: queues.resumeParsing,
+            type: "resume.parsing",
+            refs: (m, payload) => ({
+              candidateId: m.candidateId || (resolvePayload(payload).candidateId as string | undefined),
+            }),
+          },
+          msg
+        );
+        if (processed && processed.status === "completed") {
+          const payload = normalizePayload(msg.payload);
+          const organizationId = msg.organizationId || (payload.organizationId as string) || "";
+          const candidateId = msg.candidateId || (payload.candidateId as string);
+          if (candidateId) {
+            const activeJobs = await db.job.findMany({
+              where: { organizationId, status: "active" as never, deletedAt: null },
+              select: { id: true },
+            });
+            for (const job of activeJobs) {
+              await queue.publish(queues.matching, {
+                jobId: job.id,
+                candidateId,
+                organizationId,
+              });
+            }
+          }
+        }
+      } catch (err) {
+        logger.error({ err, jobId: msg.id }, "Resume parse handler failed");
+      }
+    });
+
+    logger.info("Queue workers started, listening on queues");
+
+    return {
+      close: async (): Promise<void> => {
+        await queue.close();
+        await db.$disconnect();
+      },
+    };
+  } catch (err) {
+    await queue.close();
+    await db.$disconnect();
+    throw err;
+  }
+}
+
+function installShutdownHandlers(close: () => Promise<void>, health: HealthServer): void {
   let shuttingDown = false;
 
   async function shutdown(signal: string): Promise<void> {
@@ -174,9 +249,8 @@ function installShutdownHandlers(
     forceExit.unref();
 
     try {
+      await close();
       await health.close();
-      await queue.close();
-      await db.$disconnect();
       logger.info("Worker shutdown complete");
       process.exit(0);
     } catch (err) {
@@ -195,78 +269,22 @@ function installShutdownHandlers(
 async function main(): Promise<void> {
   logger.info("Worker starting...");
 
-  const db = createPrismaClient();
-  const queue = createQueueConnection(config.getRabbitMqUrl(), { prefetchCount: 2 });
-  const queues = config.getRabbitMqQueues();
-
   const health = startHealthServer(config.getWorkerPort());
 
   try {
-    await waitForQueue(queue);
+    const worker = await startWorker();
     health.setReady(true);
+    installShutdownHandlers(worker.close, health);
   } catch (err) {
     logger.error({ err }, "Queue connection failed");
     await health.close();
-    await queue.close();
-    await db.$disconnect();
     throw err;
   }
-
-  const subscriptions = buildSubscriptions(queues);
-  for (const subscription of subscriptions) {
-    // The resume.parsing queue uses a dedicated handler that also triggers
-    // automatic candidate-job matching after a successful parse.
-    if (subscription.queue === queues.resumeParsing) continue;
-    await queue.subscribe(subscription.queue, async (msg) => {
-      await runJob(db, subscription, msg);
-    });
-    logger.info({ queue: subscription.queue }, "Subscribed to queue");
-  }
-
-  // Dedicated resume.parsing handler: parse the resume, then automatically
-  // publish candidate.matching jobs against all active jobs in the org.
-  await queue.subscribe(queues.resumeParsing, async (msg) => {
-    let processed: AIJob | undefined;
-    try {
-      processed = await runJob(
-        db,
-        {
-          queue: queues.resumeParsing,
-          type: "resume.parsing",
-          refs: (m, payload) => ({
-            candidateId: m.candidateId || (resolvePayload(payload).candidateId as string | undefined),
-          }),
-        },
-        msg
-      );
-      if (processed && processed.status === "completed") {
-        const payload = normalizePayload(msg.payload);
-        const organizationId = msg.organizationId || (payload.organizationId as string) || "";
-        const candidateId = msg.candidateId || (payload.candidateId as string);
-        if (candidateId) {
-          const activeJobs = await db.job.findMany({
-            where: { organizationId, status: "active" as never, deletedAt: null },
-            select: { id: true },
-          });
-          for (const job of activeJobs) {
-            await queue.publish(queues.matching, {
-              jobId: job.id,
-              candidateId,
-              organizationId,
-            });
-          }
-        }
-      }
-    } catch (err) {
-      logger.error({ err, jobId: msg.id }, "Resume parse handler failed");
-    }
-  });
-
-  logger.info("Worker started, listening on queues");
-  installShutdownHandlers(queue, db, health);
 }
 
-main().catch((err) => {
-  logger.error({ err }, "Worker failed to start");
-  process.exit(1);
-});
+if (typeof require !== "undefined" && require.main === module) {
+  main().catch((err) => {
+    logger.error({ err }, "Worker failed to start");
+    process.exit(1);
+  });
+}
