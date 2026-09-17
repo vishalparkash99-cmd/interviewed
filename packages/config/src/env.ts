@@ -116,7 +116,7 @@ const envSchema = z.object({
   FROM_EMAIL: z.string().email().default("noreply@interviewed.ai"),
   FROM_NAME: z.string().default("Interviewed"),
   NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
-  API_PORT: z.coerce.number().default(3001),
+  API_PORT: z.coerce.number().default(() => Number(process.env.PORT) || 3001),
   WEB_PORT: z.coerce.number().default(3000),
   WORKER_PORT: z.coerce.number().default(3002),
   RATE_LIMIT_WINDOW_MS: z.coerce.number().default(60000),

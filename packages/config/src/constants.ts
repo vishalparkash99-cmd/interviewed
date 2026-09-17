@@ -28,7 +28,7 @@ export const env = {
   FROM_EMAIL: process.env.FROM_EMAIL ?? "noreply@interviewed.ai",
   FROM_NAME: process.env.FROM_NAME ?? "Interviewed",
   NODE_ENV: process.env.NODE_ENV ?? "development",
-  API_PORT: Number(process.env.API_PORT) || 3001,
+  API_PORT: Number(process.env.API_PORT) || Number(process.env.PORT) || 3001,
   WEB_PORT: Number(process.env.WEB_PORT) || 3000,
   WORKER_PORT: Number(process.env.WORKER_PORT) || 3002,
   RATE_LIMIT_WINDOW_MS: Number(process.env.RATE_LIMIT_WINDOW_MS) || 60000,
