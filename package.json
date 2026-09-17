@@ -12,6 +12,7 @@
     "dev:worker": "npm run dev --workspace=apps/worker",
     "dev:web": "npm run dev --workspace=apps/web",
     "build": "npm run build --workspaces",
+    "build:web": "npm run build -w @interviewed/types && npm run build -w @interviewed/config && npm run build -w apps/web",
     "build:ci": "npm run prisma:generate && npm run build -w @interviewed/types && npm run build -w @interviewed/config && npm run build -w @interviewed/queue && npm run build -w @interviewed/ai && npm run build -w @interviewed/storage && npm run build -w @interviewed/database && npm run build -w apps/worker && npm run build -w apps/api",
     "test": "jest --coverage",
     "test:unit": "jest --testPathPattern='unit' --coverage=false",
