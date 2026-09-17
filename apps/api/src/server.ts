@@ -54,6 +54,18 @@ export async function createApiServer(): Promise<FastifyInstance> {
     },
   });
 
+  // Clients sometimes send JSON without a matching Content-Type header (e.g.
+  // browsers default fetch string bodies to text/plain). Parse it as an object
+  // instead of leaving a raw string that fails Zod's object validation; fall
+  // back to the original string when the body is not valid JSON.
+  server.addContentTypeParser("text/plain", { parseAs: "string" }, (_request, body, done) => {
+    try {
+      done(null, JSON.parse(String(body)));
+    } catch {
+      done(null, body);
+    }
+  });
+
   server.get("/health", async (_request: FastifyRequest, _reply: FastifyReply) => ({
     status: "ok",
     timestamp: new Date().toISOString(),

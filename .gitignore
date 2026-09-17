@@ -11,3 +11,7 @@ coverage/
 .vscode/
 .idea/
 .neon
+
+# Environment files (contain credentials)
+.env.localhost
+.env.development

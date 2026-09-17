@@ -77,7 +77,7 @@ services:
       dockerfile: apps/api/Dockerfile
     container_name: interviewed-api
     env_file:
-      - .env
+      - .env.localhost
     ports:
       - "3001:3001"
     depends_on:
@@ -144,7 +144,7 @@ services:
       dockerfile: apps/worker/Dockerfile
     container_name: interviewed-worker
     env_file:
-      - .env
+      - .env.localhost
     depends_on:
       postgres:
         condition: service_healthy

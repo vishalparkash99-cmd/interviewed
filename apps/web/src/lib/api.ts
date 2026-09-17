@@ -16,12 +16,11 @@ function toApiPath(path: string): string {
 export async function apiFetch<T = unknown>(path: string, options: RequestInit = {}): Promise<T> {
   const headers = new Headers(options.headers);
 
-  const isForm =
+  const hasJsonBody =
     typeof options.body !== "undefined" &&
     options.body !== null &&
-    !(options.body instanceof FormData) &&
-    typeof options.body !== "string";
-  if (isForm && !headers.has("Content-Type")) {
+    !(options.body instanceof FormData);
+  if (hasJsonBody && !headers.has("Content-Type")) {
     headers.set("Content-Type", "application/json");
   }
 

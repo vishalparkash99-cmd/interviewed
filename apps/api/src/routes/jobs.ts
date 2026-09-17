@@ -88,7 +88,6 @@ export async function registerJobRoutes(server: FastifyInstance): Promise<void> 
 
   server.post("/api/v1/jobs", { onRequest: [(server as any).requireRole(UserRole.OrgAdmin, UserRole.Recruiter)] }, async (request: FastifyRequest, reply: FastifyReply) => {
     const user = getUser(request);
-
     const parsed = createJobSchema.safeParse(request.body);
     if (!parsed.success) {
       reply.code(400);
