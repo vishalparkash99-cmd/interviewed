@@ -1,4 +1,4 @@
-# Interviewed - AI Recruitment Platform
+# Interviewed - AI Recruitment Platform For All
 
 ## Quick Start
 
