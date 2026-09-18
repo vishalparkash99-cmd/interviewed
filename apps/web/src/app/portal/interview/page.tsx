@@ -26,6 +26,31 @@ type JoinData = {
 
 type Phase = "connecting" | "ready" | "in_progress" | "completed" | "error";
 
+interface SpeechRecognitionLike {
+  lang: string;
+  continuous: boolean;
+  interimResults: boolean;
+  onresult: ((event: SpeechRecognitionEventLike) => void) | null;
+  onend: (() => void) | null;
+  onerror: ((event: { error?: string; message?: string }) => void) | null;
+  start: () => void;
+  stop: () => void;
+  abort: () => void;
+}
+
+interface SpeechRecognitionEventLike {
+  resultIndex: number;
+  results: ArrayLike<{ isFinal: boolean; [index: number]: { transcript: string } }>;
+}
+
+type SpeechRecognitionConstructor = new () => SpeechRecognitionLike;
+
+function getSpeechRecognition(): SpeechRecognitionConstructor | null {
+  if (typeof window === "undefined") return null;
+  const w = window as unknown as { SpeechRecognition?: SpeechRecognitionConstructor; webkitSpeechRecognition?: SpeechRecognitionConstructor };
+  return w.SpeechRecognition || w.webkitSpeechRecognition || null;
+}
+
 function formatTime(seconds: number): string {
   const m = Math.floor(seconds / 60);
   const s = seconds % 60;
@@ -48,11 +73,15 @@ function InterviewContent() {
   const [answer, setAnswer] = useState("");
   const [sending, setSending] = useState(false);
   const [answerTimer, setAnswerTimer] = useState(0);
+  const [voiceSupported, setVoiceSupported] = useState(false);
+  const [listening, setListening] = useState(false);
+  const [interim, setInterim] = useState("");
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const answerTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const msgIdRef = useRef(0);
+  const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
 
   const nextId = useCallback(() => {
     msgIdRef.current += 1;
@@ -186,8 +215,132 @@ function InterviewContent() {
     };
   }, [currentQuestion?.id, phase]);
 
+  // Detect Web Speech API support once
+  useEffect(() => {
+    setVoiceSupported(getSpeechRecognition() !== null);
+    return () => {
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.abort();
+        } catch {
+          // ignore stop errors on unmount
+        }
+        recognitionRef.current = null;
+      }
+    };
+  }, []);
+
+  // Abort any active recognition while submitting or once interview finishes
+  useEffect(() => {
+    if (sending || phase === "completed" || phase === "error") {
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.abort();
+        } catch {
+          // ignore
+        }
+        recognitionRef.current = null;
+      }
+      setListening(false);
+      setInterim("");
+    }
+  }, [sending, phase]);
+
+  const commitInterim = useCallback(() => {
+    setAnswer((prev) => {
+      const base = prev.trim();
+      const extra = interim.trim();
+      if (!extra) return prev;
+      return base ? `${base} ${extra}` : extra;
+    });
+    setInterim("");
+  }, [interim]);
+
+  const startVoiceInput = useCallback(() => {
+    const SR = getSpeechRecognition();
+    if (!SR) {
+      setVoiceSupported(false);
+      return;
+    }
+    if (recognitionRef.current) {
+      recognitionRef.current.abort();
+      recognitionRef.current = null;
+    }
+    const recognition = new SR();
+    recognition.lang = "en-US";
+    recognition.continuous = true;
+    recognition.interimResults = true;
+
+    recognition.onresult = (event: SpeechRecognitionEventLike) => {
+      let interimText = "";
+      for (let i = event.resultIndex; i < event.results.length; i += 1) {
+        const res = event.results[i];
+        if (res.isFinal) {
+          const chunk = res[0]?.transcript ?? "";
+          if (chunk.trim()) {
+            setAnswer((prev) => {
+              const base = prev.trim();
+              return base ? `${base} ${chunk.trim()}` : chunk.trim();
+            });
+          }
+        } else {
+          interimText += res[0]?.transcript ?? "";
+        }
+      }
+      setInterim(interimText);
+    };
+    recognition.onend = () => {
+      setListening(false);
+      setInterim("");
+    };
+    recognition.onerror = (event: { error?: string; message?: string }) => {
+      setListening(false);
+      setInterim("");
+    };
+    recognitionRef.current = recognition;
+    try {
+      recognition.start();
+      setListening(true);
+    } catch {
+      setListening(false);
+    }
+  }, []);
+
+  const stopVoiceInput = useCallback(() => {
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.stop();
+      } catch {
+        // ignore
+      }
+    }
+    setListening(false);
+    commitInterim();
+  }, [commitInterim]);
+
+  const toggleVoice = useCallback(() => {
+    if (listening) {
+      stopVoiceInput();
+    } else {
+      startVoiceInput();
+    }
+  }, [listening, startVoiceInput, stopVoiceInput]);
+
   const submitAnswer = async () => {
-    if (!answer.trim() || !currentQuestion || !interviewId || sending) return;
+    if (sending || !currentQuestion || !interviewId) return;
+    const finalAnswer = [answer.trim(), interim.trim()].filter(Boolean).join(" ");
+    if (!finalAnswer) return;
+
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.abort();
+      } catch {
+        // ignore
+      }
+      recognitionRef.current = null;
+    }
+    setInterim("");
+    setListening(false);
 
     setSending(true);
     setPhase("in_progress");
@@ -195,7 +348,7 @@ function InterviewContent() {
     const candidateMsg: Message = {
       id: nextId(),
       role: "candidate",
-      content: answer.trim(),
+      content: finalAnswer,
       timestamp: Date.now(),
     };
     setMessages((prev) => [...prev, candidateMsg]);
@@ -365,18 +518,30 @@ function InterviewContent() {
             <div style={{ display: "flex", gap: 10, alignItems: "flex-end" }}>
               <textarea
                 className="textarea"
-                value={answer}
+                value={`${answer}${interim ? (answer ? ` ${interim}` : interim) : ""}`}
                 onChange={(e) => setAnswer(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Type your answer here… (Ctrl+Enter to submit)"
+                placeholder="Type your answer here… or use the mic to speak (Ctrl+Enter to submit)"
                 rows={3}
                 disabled={sending}
                 autoFocus
               />
+              {voiceSupported && (
+                <button
+                  type="button"
+                  className={`btn ${listening ? "btn-danger" : "btn-secondary"}`}
+                  onClick={toggleVoice}
+                  disabled={sending}
+                  title={listening ? "Stop voice input" : "Start voice input"}
+                  style={{ height: 44, flexShrink: 0 }}
+                >
+                  {listening ? "◉ Listening" : "🎤 Mic"}
+                </button>
+              )}
               <button
                 className="btn btn-primary"
                 onClick={submitAnswer}
-                disabled={sending || !answer.trim()}
+                disabled={sending || !([answer.trim(), interim.trim()].filter(Boolean).join(" "))}
                 style={{ height: 44, flexShrink: 0 }}
               >
                 {sending ? <span className="spinner" /> : "Send"}
@@ -384,7 +549,9 @@ function InterviewContent() {
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", marginTop: 8 }}>
               <span className="text-muted">Answer time: {formatTime(answerTimer)}</span>
-              <span className="text-muted">Ctrl+Enter to submit</span>
+              <span className="text-muted">
+                {listening ? <strong style={{ color: "var(--color-danger, #dc3545)" }}>Listening — speak your answer…</strong> : "Ctrl+Enter to submit"}
+              </span>
             </div>
           </div>
         </div>

@@ -83,6 +83,12 @@ async function buildInterviewPlan(interviewId: string): Promise<never[] | object
     const job = interview.job;
     const candidate = interview.candidate;
 
+    const candidateWithResume = await db.candidate.findUnique({
+      where: { id: candidate.id },
+      include: { resume: true },
+    });
+    const resumeText = candidateWithResume?.resume?.extractedText ?? "";
+
     const requiredSkills = Array.isArray(job.requiredSkills) ? (job.requiredSkills as string[]) : [];
     const rawResponsibilities = Array.isArray(job.rolesResponsibilities) ? (job.rolesResponsibilities as unknown[]) : [];
     const rolesResponsibilities = rawResponsibilities.map((r) => {
@@ -104,6 +110,7 @@ async function buildInterviewPlan(interviewId: string): Promise<never[] | object
         skills: Array.isArray(normalized.skills) ? (normalized.skills as string[]) : [],
         experience: Array.isArray(normalized.experience) ? (normalized.experience as Array<{ title: string; company: string; summary: string }>) : [],
       },
+      resumeText,
       candidateMatchScore: match?.overallScore ?? 0,
       interviewDurationMinutes: interview.totalDuration,
       difficulty: job.interviewDifficulty || "medium",
@@ -629,6 +636,113 @@ export async function registerInterviewRoutes(server: FastifyInstance): Promise<
     });
 
     return { data: segments };
+  });
+
+  // Per-question diagnostic feedback (multi-axis scores, strengths, omissions, sample answer, tips)
+  server.get("/api/v1/interviews/:id/feedback", { onRequest: [(server as any).requireRole(UserRole.OrgAdmin, UserRole.Recruiter)] }, async (request: FastifyRequest, reply: FastifyReply) => {
+    const { id } = request.params as { id: string };
+    const user = getUser(request);
+
+    const interview = await db.interview.findFirst({ where: { id, ...orgClause(user) } });
+    if (!interview) {
+      reply.code(404);
+      return { error: "Interview not found" };
+    }
+
+    const feedbackRows = await db.interviewQuestionFeedback.findMany({
+      where: { interviewId: id },
+      orderBy: { createdAt: "asc" },
+    });
+    const questions = await db.interviewQuestion.findMany({
+      where: { interviewId: id },
+      orderBy: { sequence: "asc" },
+      select: { id: true, question: true, section: true, sequence: true },
+    });
+    const questionById = new Map(questions.map((q) => [q.id, q]));
+
+    const data = feedbackRows.map((row) => {
+      const question = questionById.get(row.questionId);
+      return {
+        id: row.id,
+        questionId: row.questionId,
+        question: question?.question ?? null,
+        section: question?.section ?? null,
+        sequence: question?.sequence ?? null,
+        scores: {
+          technicalAccuracy: row.technicalAccuracy,
+          communicationClarity: row.communicationClarity,
+          problemSolvingStructure: row.problemSolvingStructure,
+          pacingAndConciseness: row.pacingAndConciseness,
+          overallScore: row.overallScore,
+        },
+        strengths: (row.strengths as unknown[]) ?? [],
+        keyOmissions: (row.keyOmissions as unknown[]) ?? [],
+        improvedAnswer: row.improvedAnswer ?? "",
+        actionableTips: (row.actionableTips as unknown[]) ?? [],
+        source: row.source,
+        createdAt: row.createdAt,
+      };
+    });
+
+    return {
+      data,
+      generated: data.length > 0,
+      interviewId: id,
+    };
+  });
+
+  // Resume + JD tailored question generation for an interview
+  server.post("/api/v1/interviews/:id/questions/tailored", { onRequest: [(server as any).requireRole(UserRole.OrgAdmin, UserRole.Recruiter)] }, async (request: FastifyRequest, reply: FastifyReply) => {
+    const { id } = request.params as { id: string };
+    const user = getUser(request);
+
+    const interview = await db.interview.findFirst({
+      where: { id, ...orgClause(user) },
+      include: { job: true, candidate: { include: { resume: true } } },
+    });
+    if (!interview) {
+      reply.code(404);
+      return { error: "Interview not found" };
+    }
+
+    const body = (request.body ?? {}) as Record<string, unknown>;
+    const rawCount = Number(body.count);
+    const count = Number.isFinite(rawCount) ? Math.min(Math.max(Math.round(rawCount), 1), 10) : 5;
+    const experienceLevel = typeof body.experienceLevel === "string" && body.experienceLevel.trim()
+      ? sanitizeInput(body.experienceLevel)
+      : `${interview.candidate.yearsOfExperience || 0}+ years`;
+
+    const resumeText = interview.candidate.resume?.extractedText ?? "";
+    const jobDescription = interview.job.description?.trim() ?? "";
+    if (!resumeText.trim() || !jobDescription) {
+      reply.code(400);
+      return { error: "A candidate resume and an interview job description are required to generate tailored questions." };
+    }
+
+    const planner = new InterviewPlanner(getAIProvider());
+    const questions = await planner.generateTailoredQuestions(
+      {
+        resumeText,
+        jobDescription,
+        roleTitle: interview.job.title,
+        experienceLevel,
+      },
+      count
+    );
+
+    await logAuditEvent({
+      action: "interview.questions.tailored",
+      entityType: "interview",
+      entityId: id,
+      actorId: user.id,
+      actorEmail: user.email,
+      organizationId: interview.organizationId,
+      metadata: { count: questions.length },
+      ipAddress: getClientIp(request),
+      userAgent: getClientUserAgent(request),
+    });
+
+    return { data: questions };
   });
 
   server.post("/api/v1/interviews/candidate/join", { config: { rateLimit: { max: 20, timeWindow: "1 minute" } } }, async (request: FastifyRequest, reply: FastifyReply) => {

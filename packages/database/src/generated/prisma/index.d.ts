@@ -84,6 +84,11 @@ export type InterviewQuestion = $Result.DefaultSelection<Prisma.$InterviewQuesti
  */
 export type InterviewAnswer = $Result.DefaultSelection<Prisma.$InterviewAnswerPayload>
 /**
+ * Model InterviewQuestionFeedback
+ * 
+ */
+export type InterviewQuestionFeedback = $Result.DefaultSelection<Prisma.$InterviewQuestionFeedbackPayload>
+/**
  * Model TranscriptSegment
  * 
  */
@@ -522,6 +527,16 @@ export class PrismaClient<
     * ```
     */
   get interviewAnswer(): Prisma.InterviewAnswerDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.interviewQuestionFeedback`: Exposes CRUD operations for the **InterviewQuestionFeedback** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more InterviewQuestionFeedbacks
+    * const interviewQuestionFeedbacks = await prisma.interviewQuestionFeedback.findMany()
+    * ```
+    */
+  get interviewQuestionFeedback(): Prisma.InterviewQuestionFeedbackDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.transcriptSegment`: Exposes CRUD operations for the **TranscriptSegment** model.
@@ -1067,6 +1082,7 @@ export namespace Prisma {
     InterviewSession: 'InterviewSession',
     InterviewQuestion: 'InterviewQuestion',
     InterviewAnswer: 'InterviewAnswer',
+    InterviewQuestionFeedback: 'InterviewQuestionFeedback',
     TranscriptSegment: 'TranscriptSegment',
     InterviewEvaluation: 'InterviewEvaluation',
     InterviewReport: 'InterviewReport',
@@ -1094,7 +1110,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "organization" | "user" | "refreshToken" | "emailVerificationToken" | "passwordResetToken" | "role" | "job" | "candidate" | "resume" | "candidateJobMatch" | "interview" | "interviewSession" | "interviewQuestion" | "interviewAnswer" | "transcriptSegment" | "interviewEvaluation" | "interviewReport" | "email" | "auditLog" | "aIProcessingJob" | "emailConfig" | "rateLimit" | "cachedEmbedding"
+      modelProps: "organization" | "user" | "refreshToken" | "emailVerificationToken" | "passwordResetToken" | "role" | "job" | "candidate" | "resume" | "candidateJobMatch" | "interview" | "interviewSession" | "interviewQuestion" | "interviewAnswer" | "interviewQuestionFeedback" | "transcriptSegment" | "interviewEvaluation" | "interviewReport" | "email" | "auditLog" | "aIProcessingJob" | "emailConfig" | "rateLimit" | "cachedEmbedding"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2134,6 +2150,80 @@ export namespace Prisma {
           }
         }
       }
+      InterviewQuestionFeedback: {
+        payload: Prisma.$InterviewQuestionFeedbackPayload<ExtArgs>
+        fields: Prisma.InterviewQuestionFeedbackFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.InterviewQuestionFeedbackFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewQuestionFeedbackPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.InterviewQuestionFeedbackFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewQuestionFeedbackPayload>
+          }
+          findFirst: {
+            args: Prisma.InterviewQuestionFeedbackFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewQuestionFeedbackPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.InterviewQuestionFeedbackFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewQuestionFeedbackPayload>
+          }
+          findMany: {
+            args: Prisma.InterviewQuestionFeedbackFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewQuestionFeedbackPayload>[]
+          }
+          create: {
+            args: Prisma.InterviewQuestionFeedbackCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewQuestionFeedbackPayload>
+          }
+          createMany: {
+            args: Prisma.InterviewQuestionFeedbackCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.InterviewQuestionFeedbackCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewQuestionFeedbackPayload>[]
+          }
+          delete: {
+            args: Prisma.InterviewQuestionFeedbackDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewQuestionFeedbackPayload>
+          }
+          update: {
+            args: Prisma.InterviewQuestionFeedbackUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewQuestionFeedbackPayload>
+          }
+          deleteMany: {
+            args: Prisma.InterviewQuestionFeedbackDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.InterviewQuestionFeedbackUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.InterviewQuestionFeedbackUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewQuestionFeedbackPayload>[]
+          }
+          upsert: {
+            args: Prisma.InterviewQuestionFeedbackUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewQuestionFeedbackPayload>
+          }
+          aggregate: {
+            args: Prisma.InterviewQuestionFeedbackAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateInterviewQuestionFeedback>
+          }
+          groupBy: {
+            args: Prisma.InterviewQuestionFeedbackGroupByArgs<ExtArgs>
+            result: $Utils.Optional<InterviewQuestionFeedbackGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.InterviewQuestionFeedbackCountArgs<ExtArgs>
+            result: $Utils.Optional<InterviewQuestionFeedbackCountAggregateOutputType> | number
+          }
+        }
+      }
       TranscriptSegment: {
         payload: Prisma.$TranscriptSegmentPayload<ExtArgs>
         fields: Prisma.TranscriptSegmentFieldRefs
@@ -2910,6 +3000,7 @@ export namespace Prisma {
     interviewSession?: InterviewSessionOmit
     interviewQuestion?: InterviewQuestionOmit
     interviewAnswer?: InterviewAnswerOmit
+    interviewQuestionFeedback?: InterviewQuestionFeedbackOmit
     transcriptSegment?: TranscriptSegmentOmit
     interviewEvaluation?: InterviewEvaluationOmit
     interviewReport?: InterviewReportOmit
@@ -3253,6 +3344,7 @@ export namespace Prisma {
     questions: number
     answers: number
     transcriptSegments: number
+    questionFeedback: number
   }
 
   export type InterviewCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3260,6 +3352,7 @@ export namespace Prisma {
     questions?: boolean | InterviewCountOutputTypeCountQuestionsArgs
     answers?: boolean | InterviewCountOutputTypeCountAnswersArgs
     transcriptSegments?: boolean | InterviewCountOutputTypeCountTranscriptSegmentsArgs
+    questionFeedback?: boolean | InterviewCountOutputTypeCountQuestionFeedbackArgs
   }
 
   // Custom InputTypes
@@ -3301,6 +3394,13 @@ export namespace Prisma {
     where?: TranscriptSegmentWhereInput
   }
 
+  /**
+   * InterviewCountOutputType without action
+   */
+  export type InterviewCountOutputTypeCountQuestionFeedbackArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InterviewQuestionFeedbackWhereInput
+  }
+
 
   /**
    * Count Type InterviewQuestionCountOutputType
@@ -3308,10 +3408,12 @@ export namespace Prisma {
 
   export type InterviewQuestionCountOutputType = {
     answers: number
+    feedback: number
   }
 
   export type InterviewQuestionCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     answers?: boolean | InterviewQuestionCountOutputTypeCountAnswersArgs
+    feedback?: boolean | InterviewQuestionCountOutputTypeCountFeedbackArgs
   }
 
   // Custom InputTypes
@@ -3330,6 +3432,44 @@ export namespace Prisma {
    */
   export type InterviewQuestionCountOutputTypeCountAnswersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: InterviewAnswerWhereInput
+  }
+
+  /**
+   * InterviewQuestionCountOutputType without action
+   */
+  export type InterviewQuestionCountOutputTypeCountFeedbackArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InterviewQuestionFeedbackWhereInput
+  }
+
+
+  /**
+   * Count Type InterviewAnswerCountOutputType
+   */
+
+  export type InterviewAnswerCountOutputType = {
+    feedback: number
+  }
+
+  export type InterviewAnswerCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    feedback?: boolean | InterviewAnswerCountOutputTypeCountFeedbackArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * InterviewAnswerCountOutputType without action
+   */
+  export type InterviewAnswerCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewAnswerCountOutputType
+     */
+    select?: InterviewAnswerCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * InterviewAnswerCountOutputType without action
+   */
+  export type InterviewAnswerCountOutputTypeCountFeedbackArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InterviewQuestionFeedbackWhereInput
   }
 
 
@@ -16042,6 +16182,7 @@ export namespace Prisma {
     questions?: boolean | Interview$questionsArgs<ExtArgs>
     answers?: boolean | Interview$answersArgs<ExtArgs>
     transcriptSegments?: boolean | Interview$transcriptSegmentsArgs<ExtArgs>
+    questionFeedback?: boolean | Interview$questionFeedbackArgs<ExtArgs>
     _count?: boolean | InterviewCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["interview"]>
 
@@ -16140,6 +16281,7 @@ export namespace Prisma {
     questions?: boolean | Interview$questionsArgs<ExtArgs>
     answers?: boolean | Interview$answersArgs<ExtArgs>
     transcriptSegments?: boolean | Interview$transcriptSegmentsArgs<ExtArgs>
+    questionFeedback?: boolean | Interview$questionFeedbackArgs<ExtArgs>
     _count?: boolean | InterviewCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type InterviewIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -16165,6 +16307,7 @@ export namespace Prisma {
       questions: Prisma.$InterviewQuestionPayload<ExtArgs>[]
       answers: Prisma.$InterviewAnswerPayload<ExtArgs>[]
       transcriptSegments: Prisma.$TranscriptSegmentPayload<ExtArgs>[]
+      questionFeedback: Prisma.$InterviewQuestionFeedbackPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -16593,6 +16736,7 @@ export namespace Prisma {
     questions<T extends Interview$questionsArgs<ExtArgs> = {}>(args?: Subset<T, Interview$questionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InterviewQuestionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     answers<T extends Interview$answersArgs<ExtArgs> = {}>(args?: Subset<T, Interview$answersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InterviewAnswerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     transcriptSegments<T extends Interview$transcriptSegmentsArgs<ExtArgs> = {}>(args?: Subset<T, Interview$transcriptSegmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TranscriptSegmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    questionFeedback<T extends Interview$questionFeedbackArgs<ExtArgs> = {}>(args?: Subset<T, Interview$questionFeedbackArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InterviewQuestionFeedbackPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -17172,6 +17316,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: TranscriptSegmentScalarFieldEnum | TranscriptSegmentScalarFieldEnum[]
+  }
+
+  /**
+   * Interview.questionFeedback
+   */
+  export type Interview$questionFeedbackArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewQuestionFeedback
+     */
+    select?: InterviewQuestionFeedbackSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewQuestionFeedback
+     */
+    omit?: InterviewQuestionFeedbackOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewQuestionFeedbackInclude<ExtArgs> | null
+    where?: InterviewQuestionFeedbackWhereInput
+    orderBy?: InterviewQuestionFeedbackOrderByWithRelationInput | InterviewQuestionFeedbackOrderByWithRelationInput[]
+    cursor?: InterviewQuestionFeedbackWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: InterviewQuestionFeedbackScalarFieldEnum | InterviewQuestionFeedbackScalarFieldEnum[]
   }
 
   /**
@@ -18517,6 +18685,7 @@ export namespace Prisma {
     createdAt?: boolean
     interview?: boolean | InterviewDefaultArgs<ExtArgs>
     answers?: boolean | InterviewQuestion$answersArgs<ExtArgs>
+    feedback?: boolean | InterviewQuestion$feedbackArgs<ExtArgs>
     _count?: boolean | InterviewQuestionCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["interviewQuestion"]>
 
@@ -18568,6 +18737,7 @@ export namespace Prisma {
   export type InterviewQuestionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     interview?: boolean | InterviewDefaultArgs<ExtArgs>
     answers?: boolean | InterviewQuestion$answersArgs<ExtArgs>
+    feedback?: boolean | InterviewQuestion$feedbackArgs<ExtArgs>
     _count?: boolean | InterviewQuestionCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type InterviewQuestionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -18582,6 +18752,7 @@ export namespace Prisma {
     objects: {
       interview: Prisma.$InterviewPayload<ExtArgs>
       answers: Prisma.$InterviewAnswerPayload<ExtArgs>[]
+      feedback: Prisma.$InterviewQuestionFeedbackPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -18991,6 +19162,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     interview<T extends InterviewDefaultArgs<ExtArgs> = {}>(args?: Subset<T, InterviewDefaultArgs<ExtArgs>>): Prisma__InterviewClient<$Result.GetResult<Prisma.$InterviewPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     answers<T extends InterviewQuestion$answersArgs<ExtArgs> = {}>(args?: Subset<T, InterviewQuestion$answersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InterviewAnswerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    feedback<T extends InterviewQuestion$feedbackArgs<ExtArgs> = {}>(args?: Subset<T, InterviewQuestion$feedbackArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InterviewQuestionFeedbackPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -19451,6 +19623,30 @@ export namespace Prisma {
   }
 
   /**
+   * InterviewQuestion.feedback
+   */
+  export type InterviewQuestion$feedbackArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewQuestionFeedback
+     */
+    select?: InterviewQuestionFeedbackSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewQuestionFeedback
+     */
+    omit?: InterviewQuestionFeedbackOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewQuestionFeedbackInclude<ExtArgs> | null
+    where?: InterviewQuestionFeedbackWhereInput
+    orderBy?: InterviewQuestionFeedbackOrderByWithRelationInput | InterviewQuestionFeedbackOrderByWithRelationInput[]
+    cursor?: InterviewQuestionFeedbackWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: InterviewQuestionFeedbackScalarFieldEnum | InterviewQuestionFeedbackScalarFieldEnum[]
+  }
+
+  /**
    * InterviewQuestion without action
    */
   export type InterviewQuestionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -19689,6 +19885,8 @@ export namespace Prisma {
     createdAt?: boolean
     interview?: boolean | InterviewDefaultArgs<ExtArgs>
     question?: boolean | InterviewQuestionDefaultArgs<ExtArgs>
+    feedback?: boolean | InterviewAnswer$feedbackArgs<ExtArgs>
+    _count?: boolean | InterviewAnswerCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["interviewAnswer"]>
 
   export type InterviewAnswerSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -19729,6 +19927,8 @@ export namespace Prisma {
   export type InterviewAnswerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     interview?: boolean | InterviewDefaultArgs<ExtArgs>
     question?: boolean | InterviewQuestionDefaultArgs<ExtArgs>
+    feedback?: boolean | InterviewAnswer$feedbackArgs<ExtArgs>
+    _count?: boolean | InterviewAnswerCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type InterviewAnswerIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     interview?: boolean | InterviewDefaultArgs<ExtArgs>
@@ -19744,6 +19944,7 @@ export namespace Prisma {
     objects: {
       interview: Prisma.$InterviewPayload<ExtArgs>
       question: Prisma.$InterviewQuestionPayload<ExtArgs>
+      feedback: Prisma.$InterviewQuestionFeedbackPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -20149,6 +20350,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     interview<T extends InterviewDefaultArgs<ExtArgs> = {}>(args?: Subset<T, InterviewDefaultArgs<ExtArgs>>): Prisma__InterviewClient<$Result.GetResult<Prisma.$InterviewPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     question<T extends InterviewQuestionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, InterviewQuestionDefaultArgs<ExtArgs>>): Prisma__InterviewQuestionClient<$Result.GetResult<Prisma.$InterviewQuestionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    feedback<T extends InterviewAnswer$feedbackArgs<ExtArgs> = {}>(args?: Subset<T, InterviewAnswer$feedbackArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InterviewQuestionFeedbackPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -20581,6 +20783,30 @@ export namespace Prisma {
   }
 
   /**
+   * InterviewAnswer.feedback
+   */
+  export type InterviewAnswer$feedbackArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewQuestionFeedback
+     */
+    select?: InterviewQuestionFeedbackSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewQuestionFeedback
+     */
+    omit?: InterviewQuestionFeedbackOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewQuestionFeedbackInclude<ExtArgs> | null
+    where?: InterviewQuestionFeedbackWhereInput
+    orderBy?: InterviewQuestionFeedbackOrderByWithRelationInput | InterviewQuestionFeedbackOrderByWithRelationInput[]
+    cursor?: InterviewQuestionFeedbackWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: InterviewQuestionFeedbackScalarFieldEnum | InterviewQuestionFeedbackScalarFieldEnum[]
+  }
+
+  /**
    * InterviewAnswer without action
    */
   export type InterviewAnswerDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -20596,6 +20822,1280 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: InterviewAnswerInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model InterviewQuestionFeedback
+   */
+
+  export type AggregateInterviewQuestionFeedback = {
+    _count: InterviewQuestionFeedbackCountAggregateOutputType | null
+    _avg: InterviewQuestionFeedbackAvgAggregateOutputType | null
+    _sum: InterviewQuestionFeedbackSumAggregateOutputType | null
+    _min: InterviewQuestionFeedbackMinAggregateOutputType | null
+    _max: InterviewQuestionFeedbackMaxAggregateOutputType | null
+  }
+
+  export type InterviewQuestionFeedbackAvgAggregateOutputType = {
+    technicalAccuracy: number | null
+    communicationClarity: number | null
+    problemSolvingStructure: number | null
+    pacingAndConciseness: number | null
+    overallScore: number | null
+  }
+
+  export type InterviewQuestionFeedbackSumAggregateOutputType = {
+    technicalAccuracy: number | null
+    communicationClarity: number | null
+    problemSolvingStructure: number | null
+    pacingAndConciseness: number | null
+    overallScore: number | null
+  }
+
+  export type InterviewQuestionFeedbackMinAggregateOutputType = {
+    id: string | null
+    interviewId: string | null
+    questionId: string | null
+    answerId: string | null
+    technicalAccuracy: number | null
+    communicationClarity: number | null
+    problemSolvingStructure: number | null
+    pacingAndConciseness: number | null
+    overallScore: number | null
+    improvedAnswer: string | null
+    source: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type InterviewQuestionFeedbackMaxAggregateOutputType = {
+    id: string | null
+    interviewId: string | null
+    questionId: string | null
+    answerId: string | null
+    technicalAccuracy: number | null
+    communicationClarity: number | null
+    problemSolvingStructure: number | null
+    pacingAndConciseness: number | null
+    overallScore: number | null
+    improvedAnswer: string | null
+    source: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type InterviewQuestionFeedbackCountAggregateOutputType = {
+    id: number
+    interviewId: number
+    questionId: number
+    answerId: number
+    technicalAccuracy: number
+    communicationClarity: number
+    problemSolvingStructure: number
+    pacingAndConciseness: number
+    overallScore: number
+    strengths: number
+    keyOmissions: number
+    improvedAnswer: number
+    actionableTips: number
+    source: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type InterviewQuestionFeedbackAvgAggregateInputType = {
+    technicalAccuracy?: true
+    communicationClarity?: true
+    problemSolvingStructure?: true
+    pacingAndConciseness?: true
+    overallScore?: true
+  }
+
+  export type InterviewQuestionFeedbackSumAggregateInputType = {
+    technicalAccuracy?: true
+    communicationClarity?: true
+    problemSolvingStructure?: true
+    pacingAndConciseness?: true
+    overallScore?: true
+  }
+
+  export type InterviewQuestionFeedbackMinAggregateInputType = {
+    id?: true
+    interviewId?: true
+    questionId?: true
+    answerId?: true
+    technicalAccuracy?: true
+    communicationClarity?: true
+    problemSolvingStructure?: true
+    pacingAndConciseness?: true
+    overallScore?: true
+    improvedAnswer?: true
+    source?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type InterviewQuestionFeedbackMaxAggregateInputType = {
+    id?: true
+    interviewId?: true
+    questionId?: true
+    answerId?: true
+    technicalAccuracy?: true
+    communicationClarity?: true
+    problemSolvingStructure?: true
+    pacingAndConciseness?: true
+    overallScore?: true
+    improvedAnswer?: true
+    source?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type InterviewQuestionFeedbackCountAggregateInputType = {
+    id?: true
+    interviewId?: true
+    questionId?: true
+    answerId?: true
+    technicalAccuracy?: true
+    communicationClarity?: true
+    problemSolvingStructure?: true
+    pacingAndConciseness?: true
+    overallScore?: true
+    strengths?: true
+    keyOmissions?: true
+    improvedAnswer?: true
+    actionableTips?: true
+    source?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type InterviewQuestionFeedbackAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which InterviewQuestionFeedback to aggregate.
+     */
+    where?: InterviewQuestionFeedbackWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InterviewQuestionFeedbacks to fetch.
+     */
+    orderBy?: InterviewQuestionFeedbackOrderByWithRelationInput | InterviewQuestionFeedbackOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: InterviewQuestionFeedbackWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InterviewQuestionFeedbacks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InterviewQuestionFeedbacks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned InterviewQuestionFeedbacks
+    **/
+    _count?: true | InterviewQuestionFeedbackCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: InterviewQuestionFeedbackAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: InterviewQuestionFeedbackSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: InterviewQuestionFeedbackMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: InterviewQuestionFeedbackMaxAggregateInputType
+  }
+
+  export type GetInterviewQuestionFeedbackAggregateType<T extends InterviewQuestionFeedbackAggregateArgs> = {
+        [P in keyof T & keyof AggregateInterviewQuestionFeedback]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateInterviewQuestionFeedback[P]>
+      : GetScalarType<T[P], AggregateInterviewQuestionFeedback[P]>
+  }
+
+
+
+
+  export type InterviewQuestionFeedbackGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InterviewQuestionFeedbackWhereInput
+    orderBy?: InterviewQuestionFeedbackOrderByWithAggregationInput | InterviewQuestionFeedbackOrderByWithAggregationInput[]
+    by: InterviewQuestionFeedbackScalarFieldEnum[] | InterviewQuestionFeedbackScalarFieldEnum
+    having?: InterviewQuestionFeedbackScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: InterviewQuestionFeedbackCountAggregateInputType | true
+    _avg?: InterviewQuestionFeedbackAvgAggregateInputType
+    _sum?: InterviewQuestionFeedbackSumAggregateInputType
+    _min?: InterviewQuestionFeedbackMinAggregateInputType
+    _max?: InterviewQuestionFeedbackMaxAggregateInputType
+  }
+
+  export type InterviewQuestionFeedbackGroupByOutputType = {
+    id: string
+    interviewId: string
+    questionId: string
+    answerId: string | null
+    technicalAccuracy: number
+    communicationClarity: number
+    problemSolvingStructure: number
+    pacingAndConciseness: number
+    overallScore: number
+    strengths: JsonValue
+    keyOmissions: JsonValue
+    improvedAnswer: string | null
+    actionableTips: JsonValue
+    source: string
+    createdAt: Date
+    updatedAt: Date
+    _count: InterviewQuestionFeedbackCountAggregateOutputType | null
+    _avg: InterviewQuestionFeedbackAvgAggregateOutputType | null
+    _sum: InterviewQuestionFeedbackSumAggregateOutputType | null
+    _min: InterviewQuestionFeedbackMinAggregateOutputType | null
+    _max: InterviewQuestionFeedbackMaxAggregateOutputType | null
+  }
+
+  type GetInterviewQuestionFeedbackGroupByPayload<T extends InterviewQuestionFeedbackGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<InterviewQuestionFeedbackGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof InterviewQuestionFeedbackGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], InterviewQuestionFeedbackGroupByOutputType[P]>
+            : GetScalarType<T[P], InterviewQuestionFeedbackGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type InterviewQuestionFeedbackSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    interviewId?: boolean
+    questionId?: boolean
+    answerId?: boolean
+    technicalAccuracy?: boolean
+    communicationClarity?: boolean
+    problemSolvingStructure?: boolean
+    pacingAndConciseness?: boolean
+    overallScore?: boolean
+    strengths?: boolean
+    keyOmissions?: boolean
+    improvedAnswer?: boolean
+    actionableTips?: boolean
+    source?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    interview?: boolean | InterviewDefaultArgs<ExtArgs>
+    question?: boolean | InterviewQuestionDefaultArgs<ExtArgs>
+    answer?: boolean | InterviewQuestionFeedback$answerArgs<ExtArgs>
+  }, ExtArgs["result"]["interviewQuestionFeedback"]>
+
+  export type InterviewQuestionFeedbackSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    interviewId?: boolean
+    questionId?: boolean
+    answerId?: boolean
+    technicalAccuracy?: boolean
+    communicationClarity?: boolean
+    problemSolvingStructure?: boolean
+    pacingAndConciseness?: boolean
+    overallScore?: boolean
+    strengths?: boolean
+    keyOmissions?: boolean
+    improvedAnswer?: boolean
+    actionableTips?: boolean
+    source?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    interview?: boolean | InterviewDefaultArgs<ExtArgs>
+    question?: boolean | InterviewQuestionDefaultArgs<ExtArgs>
+    answer?: boolean | InterviewQuestionFeedback$answerArgs<ExtArgs>
+  }, ExtArgs["result"]["interviewQuestionFeedback"]>
+
+  export type InterviewQuestionFeedbackSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    interviewId?: boolean
+    questionId?: boolean
+    answerId?: boolean
+    technicalAccuracy?: boolean
+    communicationClarity?: boolean
+    problemSolvingStructure?: boolean
+    pacingAndConciseness?: boolean
+    overallScore?: boolean
+    strengths?: boolean
+    keyOmissions?: boolean
+    improvedAnswer?: boolean
+    actionableTips?: boolean
+    source?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    interview?: boolean | InterviewDefaultArgs<ExtArgs>
+    question?: boolean | InterviewQuestionDefaultArgs<ExtArgs>
+    answer?: boolean | InterviewQuestionFeedback$answerArgs<ExtArgs>
+  }, ExtArgs["result"]["interviewQuestionFeedback"]>
+
+  export type InterviewQuestionFeedbackSelectScalar = {
+    id?: boolean
+    interviewId?: boolean
+    questionId?: boolean
+    answerId?: boolean
+    technicalAccuracy?: boolean
+    communicationClarity?: boolean
+    problemSolvingStructure?: boolean
+    pacingAndConciseness?: boolean
+    overallScore?: boolean
+    strengths?: boolean
+    keyOmissions?: boolean
+    improvedAnswer?: boolean
+    actionableTips?: boolean
+    source?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type InterviewQuestionFeedbackOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "interviewId" | "questionId" | "answerId" | "technicalAccuracy" | "communicationClarity" | "problemSolvingStructure" | "pacingAndConciseness" | "overallScore" | "strengths" | "keyOmissions" | "improvedAnswer" | "actionableTips" | "source" | "createdAt" | "updatedAt", ExtArgs["result"]["interviewQuestionFeedback"]>
+  export type InterviewQuestionFeedbackInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    interview?: boolean | InterviewDefaultArgs<ExtArgs>
+    question?: boolean | InterviewQuestionDefaultArgs<ExtArgs>
+    answer?: boolean | InterviewQuestionFeedback$answerArgs<ExtArgs>
+  }
+  export type InterviewQuestionFeedbackIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    interview?: boolean | InterviewDefaultArgs<ExtArgs>
+    question?: boolean | InterviewQuestionDefaultArgs<ExtArgs>
+    answer?: boolean | InterviewQuestionFeedback$answerArgs<ExtArgs>
+  }
+  export type InterviewQuestionFeedbackIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    interview?: boolean | InterviewDefaultArgs<ExtArgs>
+    question?: boolean | InterviewQuestionDefaultArgs<ExtArgs>
+    answer?: boolean | InterviewQuestionFeedback$answerArgs<ExtArgs>
+  }
+
+  export type $InterviewQuestionFeedbackPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "InterviewQuestionFeedback"
+    objects: {
+      interview: Prisma.$InterviewPayload<ExtArgs>
+      question: Prisma.$InterviewQuestionPayload<ExtArgs>
+      answer: Prisma.$InterviewAnswerPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      interviewId: string
+      questionId: string
+      answerId: string | null
+      technicalAccuracy: number
+      communicationClarity: number
+      problemSolvingStructure: number
+      pacingAndConciseness: number
+      overallScore: number
+      strengths: Prisma.JsonValue
+      keyOmissions: Prisma.JsonValue
+      improvedAnswer: string | null
+      actionableTips: Prisma.JsonValue
+      source: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["interviewQuestionFeedback"]>
+    composites: {}
+  }
+
+  type InterviewQuestionFeedbackGetPayload<S extends boolean | null | undefined | InterviewQuestionFeedbackDefaultArgs> = $Result.GetResult<Prisma.$InterviewQuestionFeedbackPayload, S>
+
+  type InterviewQuestionFeedbackCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<InterviewQuestionFeedbackFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: InterviewQuestionFeedbackCountAggregateInputType | true
+    }
+
+  export interface InterviewQuestionFeedbackDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['InterviewQuestionFeedback'], meta: { name: 'InterviewQuestionFeedback' } }
+    /**
+     * Find zero or one InterviewQuestionFeedback that matches the filter.
+     * @param {InterviewQuestionFeedbackFindUniqueArgs} args - Arguments to find a InterviewQuestionFeedback
+     * @example
+     * // Get one InterviewQuestionFeedback
+     * const interviewQuestionFeedback = await prisma.interviewQuestionFeedback.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends InterviewQuestionFeedbackFindUniqueArgs>(args: SelectSubset<T, InterviewQuestionFeedbackFindUniqueArgs<ExtArgs>>): Prisma__InterviewQuestionFeedbackClient<$Result.GetResult<Prisma.$InterviewQuestionFeedbackPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one InterviewQuestionFeedback that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {InterviewQuestionFeedbackFindUniqueOrThrowArgs} args - Arguments to find a InterviewQuestionFeedback
+     * @example
+     * // Get one InterviewQuestionFeedback
+     * const interviewQuestionFeedback = await prisma.interviewQuestionFeedback.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends InterviewQuestionFeedbackFindUniqueOrThrowArgs>(args: SelectSubset<T, InterviewQuestionFeedbackFindUniqueOrThrowArgs<ExtArgs>>): Prisma__InterviewQuestionFeedbackClient<$Result.GetResult<Prisma.$InterviewQuestionFeedbackPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first InterviewQuestionFeedback that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InterviewQuestionFeedbackFindFirstArgs} args - Arguments to find a InterviewQuestionFeedback
+     * @example
+     * // Get one InterviewQuestionFeedback
+     * const interviewQuestionFeedback = await prisma.interviewQuestionFeedback.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends InterviewQuestionFeedbackFindFirstArgs>(args?: SelectSubset<T, InterviewQuestionFeedbackFindFirstArgs<ExtArgs>>): Prisma__InterviewQuestionFeedbackClient<$Result.GetResult<Prisma.$InterviewQuestionFeedbackPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first InterviewQuestionFeedback that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InterviewQuestionFeedbackFindFirstOrThrowArgs} args - Arguments to find a InterviewQuestionFeedback
+     * @example
+     * // Get one InterviewQuestionFeedback
+     * const interviewQuestionFeedback = await prisma.interviewQuestionFeedback.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends InterviewQuestionFeedbackFindFirstOrThrowArgs>(args?: SelectSubset<T, InterviewQuestionFeedbackFindFirstOrThrowArgs<ExtArgs>>): Prisma__InterviewQuestionFeedbackClient<$Result.GetResult<Prisma.$InterviewQuestionFeedbackPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more InterviewQuestionFeedbacks that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InterviewQuestionFeedbackFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all InterviewQuestionFeedbacks
+     * const interviewQuestionFeedbacks = await prisma.interviewQuestionFeedback.findMany()
+     * 
+     * // Get first 10 InterviewQuestionFeedbacks
+     * const interviewQuestionFeedbacks = await prisma.interviewQuestionFeedback.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const interviewQuestionFeedbackWithIdOnly = await prisma.interviewQuestionFeedback.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends InterviewQuestionFeedbackFindManyArgs>(args?: SelectSubset<T, InterviewQuestionFeedbackFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InterviewQuestionFeedbackPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a InterviewQuestionFeedback.
+     * @param {InterviewQuestionFeedbackCreateArgs} args - Arguments to create a InterviewQuestionFeedback.
+     * @example
+     * // Create one InterviewQuestionFeedback
+     * const InterviewQuestionFeedback = await prisma.interviewQuestionFeedback.create({
+     *   data: {
+     *     // ... data to create a InterviewQuestionFeedback
+     *   }
+     * })
+     * 
+     */
+    create<T extends InterviewQuestionFeedbackCreateArgs>(args: SelectSubset<T, InterviewQuestionFeedbackCreateArgs<ExtArgs>>): Prisma__InterviewQuestionFeedbackClient<$Result.GetResult<Prisma.$InterviewQuestionFeedbackPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many InterviewQuestionFeedbacks.
+     * @param {InterviewQuestionFeedbackCreateManyArgs} args - Arguments to create many InterviewQuestionFeedbacks.
+     * @example
+     * // Create many InterviewQuestionFeedbacks
+     * const interviewQuestionFeedback = await prisma.interviewQuestionFeedback.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends InterviewQuestionFeedbackCreateManyArgs>(args?: SelectSubset<T, InterviewQuestionFeedbackCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many InterviewQuestionFeedbacks and returns the data saved in the database.
+     * @param {InterviewQuestionFeedbackCreateManyAndReturnArgs} args - Arguments to create many InterviewQuestionFeedbacks.
+     * @example
+     * // Create many InterviewQuestionFeedbacks
+     * const interviewQuestionFeedback = await prisma.interviewQuestionFeedback.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many InterviewQuestionFeedbacks and only return the `id`
+     * const interviewQuestionFeedbackWithIdOnly = await prisma.interviewQuestionFeedback.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends InterviewQuestionFeedbackCreateManyAndReturnArgs>(args?: SelectSubset<T, InterviewQuestionFeedbackCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InterviewQuestionFeedbackPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a InterviewQuestionFeedback.
+     * @param {InterviewQuestionFeedbackDeleteArgs} args - Arguments to delete one InterviewQuestionFeedback.
+     * @example
+     * // Delete one InterviewQuestionFeedback
+     * const InterviewQuestionFeedback = await prisma.interviewQuestionFeedback.delete({
+     *   where: {
+     *     // ... filter to delete one InterviewQuestionFeedback
+     *   }
+     * })
+     * 
+     */
+    delete<T extends InterviewQuestionFeedbackDeleteArgs>(args: SelectSubset<T, InterviewQuestionFeedbackDeleteArgs<ExtArgs>>): Prisma__InterviewQuestionFeedbackClient<$Result.GetResult<Prisma.$InterviewQuestionFeedbackPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one InterviewQuestionFeedback.
+     * @param {InterviewQuestionFeedbackUpdateArgs} args - Arguments to update one InterviewQuestionFeedback.
+     * @example
+     * // Update one InterviewQuestionFeedback
+     * const interviewQuestionFeedback = await prisma.interviewQuestionFeedback.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends InterviewQuestionFeedbackUpdateArgs>(args: SelectSubset<T, InterviewQuestionFeedbackUpdateArgs<ExtArgs>>): Prisma__InterviewQuestionFeedbackClient<$Result.GetResult<Prisma.$InterviewQuestionFeedbackPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more InterviewQuestionFeedbacks.
+     * @param {InterviewQuestionFeedbackDeleteManyArgs} args - Arguments to filter InterviewQuestionFeedbacks to delete.
+     * @example
+     * // Delete a few InterviewQuestionFeedbacks
+     * const { count } = await prisma.interviewQuestionFeedback.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends InterviewQuestionFeedbackDeleteManyArgs>(args?: SelectSubset<T, InterviewQuestionFeedbackDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more InterviewQuestionFeedbacks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InterviewQuestionFeedbackUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many InterviewQuestionFeedbacks
+     * const interviewQuestionFeedback = await prisma.interviewQuestionFeedback.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends InterviewQuestionFeedbackUpdateManyArgs>(args: SelectSubset<T, InterviewQuestionFeedbackUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more InterviewQuestionFeedbacks and returns the data updated in the database.
+     * @param {InterviewQuestionFeedbackUpdateManyAndReturnArgs} args - Arguments to update many InterviewQuestionFeedbacks.
+     * @example
+     * // Update many InterviewQuestionFeedbacks
+     * const interviewQuestionFeedback = await prisma.interviewQuestionFeedback.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more InterviewQuestionFeedbacks and only return the `id`
+     * const interviewQuestionFeedbackWithIdOnly = await prisma.interviewQuestionFeedback.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends InterviewQuestionFeedbackUpdateManyAndReturnArgs>(args: SelectSubset<T, InterviewQuestionFeedbackUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InterviewQuestionFeedbackPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one InterviewQuestionFeedback.
+     * @param {InterviewQuestionFeedbackUpsertArgs} args - Arguments to update or create a InterviewQuestionFeedback.
+     * @example
+     * // Update or create a InterviewQuestionFeedback
+     * const interviewQuestionFeedback = await prisma.interviewQuestionFeedback.upsert({
+     *   create: {
+     *     // ... data to create a InterviewQuestionFeedback
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the InterviewQuestionFeedback we want to update
+     *   }
+     * })
+     */
+    upsert<T extends InterviewQuestionFeedbackUpsertArgs>(args: SelectSubset<T, InterviewQuestionFeedbackUpsertArgs<ExtArgs>>): Prisma__InterviewQuestionFeedbackClient<$Result.GetResult<Prisma.$InterviewQuestionFeedbackPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of InterviewQuestionFeedbacks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InterviewQuestionFeedbackCountArgs} args - Arguments to filter InterviewQuestionFeedbacks to count.
+     * @example
+     * // Count the number of InterviewQuestionFeedbacks
+     * const count = await prisma.interviewQuestionFeedback.count({
+     *   where: {
+     *     // ... the filter for the InterviewQuestionFeedbacks we want to count
+     *   }
+     * })
+    **/
+    count<T extends InterviewQuestionFeedbackCountArgs>(
+      args?: Subset<T, InterviewQuestionFeedbackCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], InterviewQuestionFeedbackCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a InterviewQuestionFeedback.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InterviewQuestionFeedbackAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends InterviewQuestionFeedbackAggregateArgs>(args: Subset<T, InterviewQuestionFeedbackAggregateArgs>): Prisma.PrismaPromise<GetInterviewQuestionFeedbackAggregateType<T>>
+
+    /**
+     * Group by InterviewQuestionFeedback.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InterviewQuestionFeedbackGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends InterviewQuestionFeedbackGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: InterviewQuestionFeedbackGroupByArgs['orderBy'] }
+        : { orderBy?: InterviewQuestionFeedbackGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, InterviewQuestionFeedbackGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetInterviewQuestionFeedbackGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the InterviewQuestionFeedback model
+   */
+  readonly fields: InterviewQuestionFeedbackFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for InterviewQuestionFeedback.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__InterviewQuestionFeedbackClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    interview<T extends InterviewDefaultArgs<ExtArgs> = {}>(args?: Subset<T, InterviewDefaultArgs<ExtArgs>>): Prisma__InterviewClient<$Result.GetResult<Prisma.$InterviewPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    question<T extends InterviewQuestionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, InterviewQuestionDefaultArgs<ExtArgs>>): Prisma__InterviewQuestionClient<$Result.GetResult<Prisma.$InterviewQuestionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    answer<T extends InterviewQuestionFeedback$answerArgs<ExtArgs> = {}>(args?: Subset<T, InterviewQuestionFeedback$answerArgs<ExtArgs>>): Prisma__InterviewAnswerClient<$Result.GetResult<Prisma.$InterviewAnswerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the InterviewQuestionFeedback model
+   */
+  interface InterviewQuestionFeedbackFieldRefs {
+    readonly id: FieldRef<"InterviewQuestionFeedback", 'String'>
+    readonly interviewId: FieldRef<"InterviewQuestionFeedback", 'String'>
+    readonly questionId: FieldRef<"InterviewQuestionFeedback", 'String'>
+    readonly answerId: FieldRef<"InterviewQuestionFeedback", 'String'>
+    readonly technicalAccuracy: FieldRef<"InterviewQuestionFeedback", 'Float'>
+    readonly communicationClarity: FieldRef<"InterviewQuestionFeedback", 'Float'>
+    readonly problemSolvingStructure: FieldRef<"InterviewQuestionFeedback", 'Float'>
+    readonly pacingAndConciseness: FieldRef<"InterviewQuestionFeedback", 'Float'>
+    readonly overallScore: FieldRef<"InterviewQuestionFeedback", 'Float'>
+    readonly strengths: FieldRef<"InterviewQuestionFeedback", 'Json'>
+    readonly keyOmissions: FieldRef<"InterviewQuestionFeedback", 'Json'>
+    readonly improvedAnswer: FieldRef<"InterviewQuestionFeedback", 'String'>
+    readonly actionableTips: FieldRef<"InterviewQuestionFeedback", 'Json'>
+    readonly source: FieldRef<"InterviewQuestionFeedback", 'String'>
+    readonly createdAt: FieldRef<"InterviewQuestionFeedback", 'DateTime'>
+    readonly updatedAt: FieldRef<"InterviewQuestionFeedback", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * InterviewQuestionFeedback findUnique
+   */
+  export type InterviewQuestionFeedbackFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewQuestionFeedback
+     */
+    select?: InterviewQuestionFeedbackSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewQuestionFeedback
+     */
+    omit?: InterviewQuestionFeedbackOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewQuestionFeedbackInclude<ExtArgs> | null
+    /**
+     * Filter, which InterviewQuestionFeedback to fetch.
+     */
+    where: InterviewQuestionFeedbackWhereUniqueInput
+  }
+
+  /**
+   * InterviewQuestionFeedback findUniqueOrThrow
+   */
+  export type InterviewQuestionFeedbackFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewQuestionFeedback
+     */
+    select?: InterviewQuestionFeedbackSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewQuestionFeedback
+     */
+    omit?: InterviewQuestionFeedbackOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewQuestionFeedbackInclude<ExtArgs> | null
+    /**
+     * Filter, which InterviewQuestionFeedback to fetch.
+     */
+    where: InterviewQuestionFeedbackWhereUniqueInput
+  }
+
+  /**
+   * InterviewQuestionFeedback findFirst
+   */
+  export type InterviewQuestionFeedbackFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewQuestionFeedback
+     */
+    select?: InterviewQuestionFeedbackSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewQuestionFeedback
+     */
+    omit?: InterviewQuestionFeedbackOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewQuestionFeedbackInclude<ExtArgs> | null
+    /**
+     * Filter, which InterviewQuestionFeedback to fetch.
+     */
+    where?: InterviewQuestionFeedbackWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InterviewQuestionFeedbacks to fetch.
+     */
+    orderBy?: InterviewQuestionFeedbackOrderByWithRelationInput | InterviewQuestionFeedbackOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for InterviewQuestionFeedbacks.
+     */
+    cursor?: InterviewQuestionFeedbackWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InterviewQuestionFeedbacks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InterviewQuestionFeedbacks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of InterviewQuestionFeedbacks.
+     */
+    distinct?: InterviewQuestionFeedbackScalarFieldEnum | InterviewQuestionFeedbackScalarFieldEnum[]
+  }
+
+  /**
+   * InterviewQuestionFeedback findFirstOrThrow
+   */
+  export type InterviewQuestionFeedbackFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewQuestionFeedback
+     */
+    select?: InterviewQuestionFeedbackSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewQuestionFeedback
+     */
+    omit?: InterviewQuestionFeedbackOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewQuestionFeedbackInclude<ExtArgs> | null
+    /**
+     * Filter, which InterviewQuestionFeedback to fetch.
+     */
+    where?: InterviewQuestionFeedbackWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InterviewQuestionFeedbacks to fetch.
+     */
+    orderBy?: InterviewQuestionFeedbackOrderByWithRelationInput | InterviewQuestionFeedbackOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for InterviewQuestionFeedbacks.
+     */
+    cursor?: InterviewQuestionFeedbackWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InterviewQuestionFeedbacks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InterviewQuestionFeedbacks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of InterviewQuestionFeedbacks.
+     */
+    distinct?: InterviewQuestionFeedbackScalarFieldEnum | InterviewQuestionFeedbackScalarFieldEnum[]
+  }
+
+  /**
+   * InterviewQuestionFeedback findMany
+   */
+  export type InterviewQuestionFeedbackFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewQuestionFeedback
+     */
+    select?: InterviewQuestionFeedbackSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewQuestionFeedback
+     */
+    omit?: InterviewQuestionFeedbackOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewQuestionFeedbackInclude<ExtArgs> | null
+    /**
+     * Filter, which InterviewQuestionFeedbacks to fetch.
+     */
+    where?: InterviewQuestionFeedbackWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InterviewQuestionFeedbacks to fetch.
+     */
+    orderBy?: InterviewQuestionFeedbackOrderByWithRelationInput | InterviewQuestionFeedbackOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing InterviewQuestionFeedbacks.
+     */
+    cursor?: InterviewQuestionFeedbackWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InterviewQuestionFeedbacks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InterviewQuestionFeedbacks.
+     */
+    skip?: number
+    distinct?: InterviewQuestionFeedbackScalarFieldEnum | InterviewQuestionFeedbackScalarFieldEnum[]
+  }
+
+  /**
+   * InterviewQuestionFeedback create
+   */
+  export type InterviewQuestionFeedbackCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewQuestionFeedback
+     */
+    select?: InterviewQuestionFeedbackSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewQuestionFeedback
+     */
+    omit?: InterviewQuestionFeedbackOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewQuestionFeedbackInclude<ExtArgs> | null
+    /**
+     * The data needed to create a InterviewQuestionFeedback.
+     */
+    data: XOR<InterviewQuestionFeedbackCreateInput, InterviewQuestionFeedbackUncheckedCreateInput>
+  }
+
+  /**
+   * InterviewQuestionFeedback createMany
+   */
+  export type InterviewQuestionFeedbackCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many InterviewQuestionFeedbacks.
+     */
+    data: InterviewQuestionFeedbackCreateManyInput | InterviewQuestionFeedbackCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * InterviewQuestionFeedback createManyAndReturn
+   */
+  export type InterviewQuestionFeedbackCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewQuestionFeedback
+     */
+    select?: InterviewQuestionFeedbackSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewQuestionFeedback
+     */
+    omit?: InterviewQuestionFeedbackOmit<ExtArgs> | null
+    /**
+     * The data used to create many InterviewQuestionFeedbacks.
+     */
+    data: InterviewQuestionFeedbackCreateManyInput | InterviewQuestionFeedbackCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewQuestionFeedbackIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * InterviewQuestionFeedback update
+   */
+  export type InterviewQuestionFeedbackUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewQuestionFeedback
+     */
+    select?: InterviewQuestionFeedbackSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewQuestionFeedback
+     */
+    omit?: InterviewQuestionFeedbackOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewQuestionFeedbackInclude<ExtArgs> | null
+    /**
+     * The data needed to update a InterviewQuestionFeedback.
+     */
+    data: XOR<InterviewQuestionFeedbackUpdateInput, InterviewQuestionFeedbackUncheckedUpdateInput>
+    /**
+     * Choose, which InterviewQuestionFeedback to update.
+     */
+    where: InterviewQuestionFeedbackWhereUniqueInput
+  }
+
+  /**
+   * InterviewQuestionFeedback updateMany
+   */
+  export type InterviewQuestionFeedbackUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update InterviewQuestionFeedbacks.
+     */
+    data: XOR<InterviewQuestionFeedbackUpdateManyMutationInput, InterviewQuestionFeedbackUncheckedUpdateManyInput>
+    /**
+     * Filter which InterviewQuestionFeedbacks to update
+     */
+    where?: InterviewQuestionFeedbackWhereInput
+    /**
+     * Limit how many InterviewQuestionFeedbacks to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * InterviewQuestionFeedback updateManyAndReturn
+   */
+  export type InterviewQuestionFeedbackUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewQuestionFeedback
+     */
+    select?: InterviewQuestionFeedbackSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewQuestionFeedback
+     */
+    omit?: InterviewQuestionFeedbackOmit<ExtArgs> | null
+    /**
+     * The data used to update InterviewQuestionFeedbacks.
+     */
+    data: XOR<InterviewQuestionFeedbackUpdateManyMutationInput, InterviewQuestionFeedbackUncheckedUpdateManyInput>
+    /**
+     * Filter which InterviewQuestionFeedbacks to update
+     */
+    where?: InterviewQuestionFeedbackWhereInput
+    /**
+     * Limit how many InterviewQuestionFeedbacks to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewQuestionFeedbackIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * InterviewQuestionFeedback upsert
+   */
+  export type InterviewQuestionFeedbackUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewQuestionFeedback
+     */
+    select?: InterviewQuestionFeedbackSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewQuestionFeedback
+     */
+    omit?: InterviewQuestionFeedbackOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewQuestionFeedbackInclude<ExtArgs> | null
+    /**
+     * The filter to search for the InterviewQuestionFeedback to update in case it exists.
+     */
+    where: InterviewQuestionFeedbackWhereUniqueInput
+    /**
+     * In case the InterviewQuestionFeedback found by the `where` argument doesn't exist, create a new InterviewQuestionFeedback with this data.
+     */
+    create: XOR<InterviewQuestionFeedbackCreateInput, InterviewQuestionFeedbackUncheckedCreateInput>
+    /**
+     * In case the InterviewQuestionFeedback was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<InterviewQuestionFeedbackUpdateInput, InterviewQuestionFeedbackUncheckedUpdateInput>
+  }
+
+  /**
+   * InterviewQuestionFeedback delete
+   */
+  export type InterviewQuestionFeedbackDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewQuestionFeedback
+     */
+    select?: InterviewQuestionFeedbackSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewQuestionFeedback
+     */
+    omit?: InterviewQuestionFeedbackOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewQuestionFeedbackInclude<ExtArgs> | null
+    /**
+     * Filter which InterviewQuestionFeedback to delete.
+     */
+    where: InterviewQuestionFeedbackWhereUniqueInput
+  }
+
+  /**
+   * InterviewQuestionFeedback deleteMany
+   */
+  export type InterviewQuestionFeedbackDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which InterviewQuestionFeedbacks to delete
+     */
+    where?: InterviewQuestionFeedbackWhereInput
+    /**
+     * Limit how many InterviewQuestionFeedbacks to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * InterviewQuestionFeedback.answer
+   */
+  export type InterviewQuestionFeedback$answerArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewAnswer
+     */
+    select?: InterviewAnswerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewAnswer
+     */
+    omit?: InterviewAnswerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewAnswerInclude<ExtArgs> | null
+    where?: InterviewAnswerWhereInput
+  }
+
+  /**
+   * InterviewQuestionFeedback without action
+   */
+  export type InterviewQuestionFeedbackDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewQuestionFeedback
+     */
+    select?: InterviewQuestionFeedbackSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewQuestionFeedback
+     */
+    omit?: InterviewQuestionFeedbackOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewQuestionFeedbackInclude<ExtArgs> | null
   }
 
 
@@ -31125,6 +32625,28 @@ export namespace Prisma {
   export type InterviewAnswerScalarFieldEnum = (typeof InterviewAnswerScalarFieldEnum)[keyof typeof InterviewAnswerScalarFieldEnum]
 
 
+  export const InterviewQuestionFeedbackScalarFieldEnum: {
+    id: 'id',
+    interviewId: 'interviewId',
+    questionId: 'questionId',
+    answerId: 'answerId',
+    technicalAccuracy: 'technicalAccuracy',
+    communicationClarity: 'communicationClarity',
+    problemSolvingStructure: 'problemSolvingStructure',
+    pacingAndConciseness: 'pacingAndConciseness',
+    overallScore: 'overallScore',
+    strengths: 'strengths',
+    keyOmissions: 'keyOmissions',
+    improvedAnswer: 'improvedAnswer',
+    actionableTips: 'actionableTips',
+    source: 'source',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type InterviewQuestionFeedbackScalarFieldEnum = (typeof InterviewQuestionFeedbackScalarFieldEnum)[keyof typeof InterviewQuestionFeedbackScalarFieldEnum]
+
+
   export const TranscriptSegmentScalarFieldEnum: {
     id: 'id',
     interviewId: 'interviewId',
@@ -32614,6 +34136,7 @@ export namespace Prisma {
     questions?: InterviewQuestionListRelationFilter
     answers?: InterviewAnswerListRelationFilter
     transcriptSegments?: TranscriptSegmentListRelationFilter
+    questionFeedback?: InterviewQuestionFeedbackListRelationFilter
   }
 
   export type InterviewOrderByWithRelationInput = {
@@ -32649,6 +34172,7 @@ export namespace Prisma {
     questions?: InterviewQuestionOrderByRelationAggregateInput
     answers?: InterviewAnswerOrderByRelationAggregateInput
     transcriptSegments?: TranscriptSegmentOrderByRelationAggregateInput
+    questionFeedback?: InterviewQuestionFeedbackOrderByRelationAggregateInput
   }
 
   export type InterviewWhereUniqueInput = Prisma.AtLeast<{
@@ -32687,6 +34211,7 @@ export namespace Prisma {
     questions?: InterviewQuestionListRelationFilter
     answers?: InterviewAnswerListRelationFilter
     transcriptSegments?: TranscriptSegmentListRelationFilter
+    questionFeedback?: InterviewQuestionFeedbackListRelationFilter
   }, "id" | "interviewKey" | "secureToken">
 
   export type InterviewOrderByWithAggregationInput = {
@@ -32831,6 +34356,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"InterviewQuestion"> | Date | string
     interview?: XOR<InterviewScalarRelationFilter, InterviewWhereInput>
     answers?: InterviewAnswerListRelationFilter
+    feedback?: InterviewQuestionFeedbackListRelationFilter
   }
 
   export type InterviewQuestionOrderByWithRelationInput = {
@@ -32847,6 +34373,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     interview?: InterviewOrderByWithRelationInput
     answers?: InterviewAnswerOrderByRelationAggregateInput
+    feedback?: InterviewQuestionFeedbackOrderByRelationAggregateInput
   }
 
   export type InterviewQuestionWhereUniqueInput = Prisma.AtLeast<{
@@ -32866,6 +34393,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"InterviewQuestion"> | Date | string
     interview?: XOR<InterviewScalarRelationFilter, InterviewWhereInput>
     answers?: InterviewAnswerListRelationFilter
+    feedback?: InterviewQuestionFeedbackListRelationFilter
   }, "id">
 
   export type InterviewQuestionOrderByWithAggregationInput = {
@@ -32917,6 +34445,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"InterviewAnswer"> | Date | string
     interview?: XOR<InterviewScalarRelationFilter, InterviewWhereInput>
     question?: XOR<InterviewQuestionScalarRelationFilter, InterviewQuestionWhereInput>
+    feedback?: InterviewQuestionFeedbackListRelationFilter
   }
 
   export type InterviewAnswerOrderByWithRelationInput = {
@@ -32929,6 +34458,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     interview?: InterviewOrderByWithRelationInput
     question?: InterviewQuestionOrderByWithRelationInput
+    feedback?: InterviewQuestionFeedbackOrderByRelationAggregateInput
   }
 
   export type InterviewAnswerWhereUniqueInput = Prisma.AtLeast<{
@@ -32944,6 +34474,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"InterviewAnswer"> | Date | string
     interview?: XOR<InterviewScalarRelationFilter, InterviewWhereInput>
     question?: XOR<InterviewQuestionScalarRelationFilter, InterviewQuestionWhereInput>
+    feedback?: InterviewQuestionFeedbackListRelationFilter
   }, "id">
 
   export type InterviewAnswerOrderByWithAggregationInput = {
@@ -32972,6 +34503,125 @@ export namespace Prisma {
     durationSeconds?: IntWithAggregatesFilter<"InterviewAnswer"> | number
     confidence?: FloatNullableWithAggregatesFilter<"InterviewAnswer"> | number | null
     createdAt?: DateTimeWithAggregatesFilter<"InterviewAnswer"> | Date | string
+  }
+
+  export type InterviewQuestionFeedbackWhereInput = {
+    AND?: InterviewQuestionFeedbackWhereInput | InterviewQuestionFeedbackWhereInput[]
+    OR?: InterviewQuestionFeedbackWhereInput[]
+    NOT?: InterviewQuestionFeedbackWhereInput | InterviewQuestionFeedbackWhereInput[]
+    id?: StringFilter<"InterviewQuestionFeedback"> | string
+    interviewId?: StringFilter<"InterviewQuestionFeedback"> | string
+    questionId?: StringFilter<"InterviewQuestionFeedback"> | string
+    answerId?: StringNullableFilter<"InterviewQuestionFeedback"> | string | null
+    technicalAccuracy?: FloatFilter<"InterviewQuestionFeedback"> | number
+    communicationClarity?: FloatFilter<"InterviewQuestionFeedback"> | number
+    problemSolvingStructure?: FloatFilter<"InterviewQuestionFeedback"> | number
+    pacingAndConciseness?: FloatFilter<"InterviewQuestionFeedback"> | number
+    overallScore?: FloatFilter<"InterviewQuestionFeedback"> | number
+    strengths?: JsonFilter<"InterviewQuestionFeedback">
+    keyOmissions?: JsonFilter<"InterviewQuestionFeedback">
+    improvedAnswer?: StringNullableFilter<"InterviewQuestionFeedback"> | string | null
+    actionableTips?: JsonFilter<"InterviewQuestionFeedback">
+    source?: StringFilter<"InterviewQuestionFeedback"> | string
+    createdAt?: DateTimeFilter<"InterviewQuestionFeedback"> | Date | string
+    updatedAt?: DateTimeFilter<"InterviewQuestionFeedback"> | Date | string
+    interview?: XOR<InterviewScalarRelationFilter, InterviewWhereInput>
+    question?: XOR<InterviewQuestionScalarRelationFilter, InterviewQuestionWhereInput>
+    answer?: XOR<InterviewAnswerNullableScalarRelationFilter, InterviewAnswerWhereInput> | null
+  }
+
+  export type InterviewQuestionFeedbackOrderByWithRelationInput = {
+    id?: SortOrder
+    interviewId?: SortOrder
+    questionId?: SortOrder
+    answerId?: SortOrderInput | SortOrder
+    technicalAccuracy?: SortOrder
+    communicationClarity?: SortOrder
+    problemSolvingStructure?: SortOrder
+    pacingAndConciseness?: SortOrder
+    overallScore?: SortOrder
+    strengths?: SortOrder
+    keyOmissions?: SortOrder
+    improvedAnswer?: SortOrderInput | SortOrder
+    actionableTips?: SortOrder
+    source?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    interview?: InterviewOrderByWithRelationInput
+    question?: InterviewQuestionOrderByWithRelationInput
+    answer?: InterviewAnswerOrderByWithRelationInput
+  }
+
+  export type InterviewQuestionFeedbackWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    interviewId_questionId?: InterviewQuestionFeedbackInterviewIdQuestionIdCompoundUniqueInput
+    AND?: InterviewQuestionFeedbackWhereInput | InterviewQuestionFeedbackWhereInput[]
+    OR?: InterviewQuestionFeedbackWhereInput[]
+    NOT?: InterviewQuestionFeedbackWhereInput | InterviewQuestionFeedbackWhereInput[]
+    interviewId?: StringFilter<"InterviewQuestionFeedback"> | string
+    questionId?: StringFilter<"InterviewQuestionFeedback"> | string
+    answerId?: StringNullableFilter<"InterviewQuestionFeedback"> | string | null
+    technicalAccuracy?: FloatFilter<"InterviewQuestionFeedback"> | number
+    communicationClarity?: FloatFilter<"InterviewQuestionFeedback"> | number
+    problemSolvingStructure?: FloatFilter<"InterviewQuestionFeedback"> | number
+    pacingAndConciseness?: FloatFilter<"InterviewQuestionFeedback"> | number
+    overallScore?: FloatFilter<"InterviewQuestionFeedback"> | number
+    strengths?: JsonFilter<"InterviewQuestionFeedback">
+    keyOmissions?: JsonFilter<"InterviewQuestionFeedback">
+    improvedAnswer?: StringNullableFilter<"InterviewQuestionFeedback"> | string | null
+    actionableTips?: JsonFilter<"InterviewQuestionFeedback">
+    source?: StringFilter<"InterviewQuestionFeedback"> | string
+    createdAt?: DateTimeFilter<"InterviewQuestionFeedback"> | Date | string
+    updatedAt?: DateTimeFilter<"InterviewQuestionFeedback"> | Date | string
+    interview?: XOR<InterviewScalarRelationFilter, InterviewWhereInput>
+    question?: XOR<InterviewQuestionScalarRelationFilter, InterviewQuestionWhereInput>
+    answer?: XOR<InterviewAnswerNullableScalarRelationFilter, InterviewAnswerWhereInput> | null
+  }, "id" | "interviewId_questionId">
+
+  export type InterviewQuestionFeedbackOrderByWithAggregationInput = {
+    id?: SortOrder
+    interviewId?: SortOrder
+    questionId?: SortOrder
+    answerId?: SortOrderInput | SortOrder
+    technicalAccuracy?: SortOrder
+    communicationClarity?: SortOrder
+    problemSolvingStructure?: SortOrder
+    pacingAndConciseness?: SortOrder
+    overallScore?: SortOrder
+    strengths?: SortOrder
+    keyOmissions?: SortOrder
+    improvedAnswer?: SortOrderInput | SortOrder
+    actionableTips?: SortOrder
+    source?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: InterviewQuestionFeedbackCountOrderByAggregateInput
+    _avg?: InterviewQuestionFeedbackAvgOrderByAggregateInput
+    _max?: InterviewQuestionFeedbackMaxOrderByAggregateInput
+    _min?: InterviewQuestionFeedbackMinOrderByAggregateInput
+    _sum?: InterviewQuestionFeedbackSumOrderByAggregateInput
+  }
+
+  export type InterviewQuestionFeedbackScalarWhereWithAggregatesInput = {
+    AND?: InterviewQuestionFeedbackScalarWhereWithAggregatesInput | InterviewQuestionFeedbackScalarWhereWithAggregatesInput[]
+    OR?: InterviewQuestionFeedbackScalarWhereWithAggregatesInput[]
+    NOT?: InterviewQuestionFeedbackScalarWhereWithAggregatesInput | InterviewQuestionFeedbackScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"InterviewQuestionFeedback"> | string
+    interviewId?: StringWithAggregatesFilter<"InterviewQuestionFeedback"> | string
+    questionId?: StringWithAggregatesFilter<"InterviewQuestionFeedback"> | string
+    answerId?: StringNullableWithAggregatesFilter<"InterviewQuestionFeedback"> | string | null
+    technicalAccuracy?: FloatWithAggregatesFilter<"InterviewQuestionFeedback"> | number
+    communicationClarity?: FloatWithAggregatesFilter<"InterviewQuestionFeedback"> | number
+    problemSolvingStructure?: FloatWithAggregatesFilter<"InterviewQuestionFeedback"> | number
+    pacingAndConciseness?: FloatWithAggregatesFilter<"InterviewQuestionFeedback"> | number
+    overallScore?: FloatWithAggregatesFilter<"InterviewQuestionFeedback"> | number
+    strengths?: JsonWithAggregatesFilter<"InterviewQuestionFeedback">
+    keyOmissions?: JsonWithAggregatesFilter<"InterviewQuestionFeedback">
+    improvedAnswer?: StringNullableWithAggregatesFilter<"InterviewQuestionFeedback"> | string | null
+    actionableTips?: JsonWithAggregatesFilter<"InterviewQuestionFeedback">
+    source?: StringWithAggregatesFilter<"InterviewQuestionFeedback"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"InterviewQuestionFeedback"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"InterviewQuestionFeedback"> | Date | string
   }
 
   export type TranscriptSegmentWhereInput = {
@@ -35014,6 +36664,7 @@ export namespace Prisma {
     questions?: InterviewQuestionCreateNestedManyWithoutInterviewInput
     answers?: InterviewAnswerCreateNestedManyWithoutInterviewInput
     transcriptSegments?: TranscriptSegmentCreateNestedManyWithoutInterviewInput
+    questionFeedback?: InterviewQuestionFeedbackCreateNestedManyWithoutInterviewInput
   }
 
   export type InterviewUncheckedCreateInput = {
@@ -35046,6 +36697,7 @@ export namespace Prisma {
     questions?: InterviewQuestionUncheckedCreateNestedManyWithoutInterviewInput
     answers?: InterviewAnswerUncheckedCreateNestedManyWithoutInterviewInput
     transcriptSegments?: TranscriptSegmentUncheckedCreateNestedManyWithoutInterviewInput
+    questionFeedback?: InterviewQuestionFeedbackUncheckedCreateNestedManyWithoutInterviewInput
   }
 
   export type InterviewUpdateInput = {
@@ -35078,6 +36730,7 @@ export namespace Prisma {
     questions?: InterviewQuestionUpdateManyWithoutInterviewNestedInput
     answers?: InterviewAnswerUpdateManyWithoutInterviewNestedInput
     transcriptSegments?: TranscriptSegmentUpdateManyWithoutInterviewNestedInput
+    questionFeedback?: InterviewQuestionFeedbackUpdateManyWithoutInterviewNestedInput
   }
 
   export type InterviewUncheckedUpdateInput = {
@@ -35110,6 +36763,7 @@ export namespace Prisma {
     questions?: InterviewQuestionUncheckedUpdateManyWithoutInterviewNestedInput
     answers?: InterviewAnswerUncheckedUpdateManyWithoutInterviewNestedInput
     transcriptSegments?: TranscriptSegmentUncheckedUpdateManyWithoutInterviewNestedInput
+    questionFeedback?: InterviewQuestionFeedbackUncheckedUpdateManyWithoutInterviewNestedInput
   }
 
   export type InterviewCreateManyInput = {
@@ -35269,6 +36923,7 @@ export namespace Prisma {
     createdAt?: Date | string
     interview: InterviewCreateNestedOneWithoutQuestionsInput
     answers?: InterviewAnswerCreateNestedManyWithoutQuestionInput
+    feedback?: InterviewQuestionFeedbackCreateNestedManyWithoutQuestionInput
   }
 
   export type InterviewQuestionUncheckedCreateInput = {
@@ -35284,6 +36939,7 @@ export namespace Prisma {
     sequence: number
     createdAt?: Date | string
     answers?: InterviewAnswerUncheckedCreateNestedManyWithoutQuestionInput
+    feedback?: InterviewQuestionFeedbackUncheckedCreateNestedManyWithoutQuestionInput
   }
 
   export type InterviewQuestionUpdateInput = {
@@ -35299,6 +36955,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     interview?: InterviewUpdateOneRequiredWithoutQuestionsNestedInput
     answers?: InterviewAnswerUpdateManyWithoutQuestionNestedInput
+    feedback?: InterviewQuestionFeedbackUpdateManyWithoutQuestionNestedInput
   }
 
   export type InterviewQuestionUncheckedUpdateInput = {
@@ -35314,6 +36971,7 @@ export namespace Prisma {
     sequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     answers?: InterviewAnswerUncheckedUpdateManyWithoutQuestionNestedInput
+    feedback?: InterviewQuestionFeedbackUncheckedUpdateManyWithoutQuestionNestedInput
   }
 
   export type InterviewQuestionCreateManyInput = {
@@ -35365,6 +37023,7 @@ export namespace Prisma {
     createdAt?: Date | string
     interview: InterviewCreateNestedOneWithoutAnswersInput
     question: InterviewQuestionCreateNestedOneWithoutAnswersInput
+    feedback?: InterviewQuestionFeedbackCreateNestedManyWithoutAnswerInput
   }
 
   export type InterviewAnswerUncheckedCreateInput = {
@@ -35375,6 +37034,7 @@ export namespace Prisma {
     durationSeconds: number
     confidence?: number | null
     createdAt?: Date | string
+    feedback?: InterviewQuestionFeedbackUncheckedCreateNestedManyWithoutAnswerInput
   }
 
   export type InterviewAnswerUpdateInput = {
@@ -35385,6 +37045,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     interview?: InterviewUpdateOneRequiredWithoutAnswersNestedInput
     question?: InterviewQuestionUpdateOneRequiredWithoutAnswersNestedInput
+    feedback?: InterviewQuestionFeedbackUpdateManyWithoutAnswerNestedInput
   }
 
   export type InterviewAnswerUncheckedUpdateInput = {
@@ -35395,6 +37056,7 @@ export namespace Prisma {
     durationSeconds?: IntFieldUpdateOperationsInput | number
     confidence?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    feedback?: InterviewQuestionFeedbackUncheckedUpdateManyWithoutAnswerNestedInput
   }
 
   export type InterviewAnswerCreateManyInput = {
@@ -35423,6 +37085,136 @@ export namespace Prisma {
     durationSeconds?: IntFieldUpdateOperationsInput | number
     confidence?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InterviewQuestionFeedbackCreateInput = {
+    id?: string
+    technicalAccuracy: number
+    communicationClarity: number
+    problemSolvingStructure: number
+    pacingAndConciseness: number
+    overallScore: number
+    strengths?: JsonNullValueInput | InputJsonValue
+    keyOmissions?: JsonNullValueInput | InputJsonValue
+    improvedAnswer?: string | null
+    actionableTips?: JsonNullValueInput | InputJsonValue
+    source?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    interview: InterviewCreateNestedOneWithoutQuestionFeedbackInput
+    question: InterviewQuestionCreateNestedOneWithoutFeedbackInput
+    answer?: InterviewAnswerCreateNestedOneWithoutFeedbackInput
+  }
+
+  export type InterviewQuestionFeedbackUncheckedCreateInput = {
+    id?: string
+    interviewId: string
+    questionId: string
+    answerId?: string | null
+    technicalAccuracy: number
+    communicationClarity: number
+    problemSolvingStructure: number
+    pacingAndConciseness: number
+    overallScore: number
+    strengths?: JsonNullValueInput | InputJsonValue
+    keyOmissions?: JsonNullValueInput | InputJsonValue
+    improvedAnswer?: string | null
+    actionableTips?: JsonNullValueInput | InputJsonValue
+    source?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type InterviewQuestionFeedbackUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    technicalAccuracy?: FloatFieldUpdateOperationsInput | number
+    communicationClarity?: FloatFieldUpdateOperationsInput | number
+    problemSolvingStructure?: FloatFieldUpdateOperationsInput | number
+    pacingAndConciseness?: FloatFieldUpdateOperationsInput | number
+    overallScore?: FloatFieldUpdateOperationsInput | number
+    strengths?: JsonNullValueInput | InputJsonValue
+    keyOmissions?: JsonNullValueInput | InputJsonValue
+    improvedAnswer?: NullableStringFieldUpdateOperationsInput | string | null
+    actionableTips?: JsonNullValueInput | InputJsonValue
+    source?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    interview?: InterviewUpdateOneRequiredWithoutQuestionFeedbackNestedInput
+    question?: InterviewQuestionUpdateOneRequiredWithoutFeedbackNestedInput
+    answer?: InterviewAnswerUpdateOneWithoutFeedbackNestedInput
+  }
+
+  export type InterviewQuestionFeedbackUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    interviewId?: StringFieldUpdateOperationsInput | string
+    questionId?: StringFieldUpdateOperationsInput | string
+    answerId?: NullableStringFieldUpdateOperationsInput | string | null
+    technicalAccuracy?: FloatFieldUpdateOperationsInput | number
+    communicationClarity?: FloatFieldUpdateOperationsInput | number
+    problemSolvingStructure?: FloatFieldUpdateOperationsInput | number
+    pacingAndConciseness?: FloatFieldUpdateOperationsInput | number
+    overallScore?: FloatFieldUpdateOperationsInput | number
+    strengths?: JsonNullValueInput | InputJsonValue
+    keyOmissions?: JsonNullValueInput | InputJsonValue
+    improvedAnswer?: NullableStringFieldUpdateOperationsInput | string | null
+    actionableTips?: JsonNullValueInput | InputJsonValue
+    source?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InterviewQuestionFeedbackCreateManyInput = {
+    id?: string
+    interviewId: string
+    questionId: string
+    answerId?: string | null
+    technicalAccuracy: number
+    communicationClarity: number
+    problemSolvingStructure: number
+    pacingAndConciseness: number
+    overallScore: number
+    strengths?: JsonNullValueInput | InputJsonValue
+    keyOmissions?: JsonNullValueInput | InputJsonValue
+    improvedAnswer?: string | null
+    actionableTips?: JsonNullValueInput | InputJsonValue
+    source?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type InterviewQuestionFeedbackUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    technicalAccuracy?: FloatFieldUpdateOperationsInput | number
+    communicationClarity?: FloatFieldUpdateOperationsInput | number
+    problemSolvingStructure?: FloatFieldUpdateOperationsInput | number
+    pacingAndConciseness?: FloatFieldUpdateOperationsInput | number
+    overallScore?: FloatFieldUpdateOperationsInput | number
+    strengths?: JsonNullValueInput | InputJsonValue
+    keyOmissions?: JsonNullValueInput | InputJsonValue
+    improvedAnswer?: NullableStringFieldUpdateOperationsInput | string | null
+    actionableTips?: JsonNullValueInput | InputJsonValue
+    source?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InterviewQuestionFeedbackUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    interviewId?: StringFieldUpdateOperationsInput | string
+    questionId?: StringFieldUpdateOperationsInput | string
+    answerId?: NullableStringFieldUpdateOperationsInput | string | null
+    technicalAccuracy?: FloatFieldUpdateOperationsInput | number
+    communicationClarity?: FloatFieldUpdateOperationsInput | number
+    problemSolvingStructure?: FloatFieldUpdateOperationsInput | number
+    pacingAndConciseness?: FloatFieldUpdateOperationsInput | number
+    overallScore?: FloatFieldUpdateOperationsInput | number
+    strengths?: JsonNullValueInput | InputJsonValue
+    keyOmissions?: JsonNullValueInput | InputJsonValue
+    improvedAnswer?: NullableStringFieldUpdateOperationsInput | string | null
+    actionableTips?: JsonNullValueInput | InputJsonValue
+    source?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TranscriptSegmentCreateInput = {
@@ -37386,6 +39178,12 @@ export namespace Prisma {
     none?: TranscriptSegmentWhereInput
   }
 
+  export type InterviewQuestionFeedbackListRelationFilter = {
+    every?: InterviewQuestionFeedbackWhereInput
+    some?: InterviewQuestionFeedbackWhereInput
+    none?: InterviewQuestionFeedbackWhereInput
+  }
+
   export type InterviewSessionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -37399,6 +39197,10 @@ export namespace Prisma {
   }
 
   export type TranscriptSegmentOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type InterviewQuestionFeedbackOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -37647,6 +39449,83 @@ export namespace Prisma {
     _sum?: NestedFloatNullableFilter<$PrismaModel>
     _min?: NestedFloatNullableFilter<$PrismaModel>
     _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
+  export type InterviewAnswerNullableScalarRelationFilter = {
+    is?: InterviewAnswerWhereInput | null
+    isNot?: InterviewAnswerWhereInput | null
+  }
+
+  export type InterviewQuestionFeedbackInterviewIdQuestionIdCompoundUniqueInput = {
+    interviewId: string
+    questionId: string
+  }
+
+  export type InterviewQuestionFeedbackCountOrderByAggregateInput = {
+    id?: SortOrder
+    interviewId?: SortOrder
+    questionId?: SortOrder
+    answerId?: SortOrder
+    technicalAccuracy?: SortOrder
+    communicationClarity?: SortOrder
+    problemSolvingStructure?: SortOrder
+    pacingAndConciseness?: SortOrder
+    overallScore?: SortOrder
+    strengths?: SortOrder
+    keyOmissions?: SortOrder
+    improvedAnswer?: SortOrder
+    actionableTips?: SortOrder
+    source?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type InterviewQuestionFeedbackAvgOrderByAggregateInput = {
+    technicalAccuracy?: SortOrder
+    communicationClarity?: SortOrder
+    problemSolvingStructure?: SortOrder
+    pacingAndConciseness?: SortOrder
+    overallScore?: SortOrder
+  }
+
+  export type InterviewQuestionFeedbackMaxOrderByAggregateInput = {
+    id?: SortOrder
+    interviewId?: SortOrder
+    questionId?: SortOrder
+    answerId?: SortOrder
+    technicalAccuracy?: SortOrder
+    communicationClarity?: SortOrder
+    problemSolvingStructure?: SortOrder
+    pacingAndConciseness?: SortOrder
+    overallScore?: SortOrder
+    improvedAnswer?: SortOrder
+    source?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type InterviewQuestionFeedbackMinOrderByAggregateInput = {
+    id?: SortOrder
+    interviewId?: SortOrder
+    questionId?: SortOrder
+    answerId?: SortOrder
+    technicalAccuracy?: SortOrder
+    communicationClarity?: SortOrder
+    problemSolvingStructure?: SortOrder
+    pacingAndConciseness?: SortOrder
+    overallScore?: SortOrder
+    improvedAnswer?: SortOrder
+    source?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type InterviewQuestionFeedbackSumOrderByAggregateInput = {
+    technicalAccuracy?: SortOrder
+    communicationClarity?: SortOrder
+    problemSolvingStructure?: SortOrder
+    pacingAndConciseness?: SortOrder
+    overallScore?: SortOrder
   }
 
   export type TranscriptSegmentCountOrderByAggregateInput = {
@@ -39278,6 +41157,13 @@ export namespace Prisma {
     connect?: TranscriptSegmentWhereUniqueInput | TranscriptSegmentWhereUniqueInput[]
   }
 
+  export type InterviewQuestionFeedbackCreateNestedManyWithoutInterviewInput = {
+    create?: XOR<InterviewQuestionFeedbackCreateWithoutInterviewInput, InterviewQuestionFeedbackUncheckedCreateWithoutInterviewInput> | InterviewQuestionFeedbackCreateWithoutInterviewInput[] | InterviewQuestionFeedbackUncheckedCreateWithoutInterviewInput[]
+    connectOrCreate?: InterviewQuestionFeedbackCreateOrConnectWithoutInterviewInput | InterviewQuestionFeedbackCreateOrConnectWithoutInterviewInput[]
+    createMany?: InterviewQuestionFeedbackCreateManyInterviewInputEnvelope
+    connect?: InterviewQuestionFeedbackWhereUniqueInput | InterviewQuestionFeedbackWhereUniqueInput[]
+  }
+
   export type InterviewEvaluationUncheckedCreateNestedOneWithoutInterviewInput = {
     create?: XOR<InterviewEvaluationCreateWithoutInterviewInput, InterviewEvaluationUncheckedCreateWithoutInterviewInput>
     connectOrCreate?: InterviewEvaluationCreateOrConnectWithoutInterviewInput
@@ -39316,6 +41202,13 @@ export namespace Prisma {
     connectOrCreate?: TranscriptSegmentCreateOrConnectWithoutInterviewInput | TranscriptSegmentCreateOrConnectWithoutInterviewInput[]
     createMany?: TranscriptSegmentCreateManyInterviewInputEnvelope
     connect?: TranscriptSegmentWhereUniqueInput | TranscriptSegmentWhereUniqueInput[]
+  }
+
+  export type InterviewQuestionFeedbackUncheckedCreateNestedManyWithoutInterviewInput = {
+    create?: XOR<InterviewQuestionFeedbackCreateWithoutInterviewInput, InterviewQuestionFeedbackUncheckedCreateWithoutInterviewInput> | InterviewQuestionFeedbackCreateWithoutInterviewInput[] | InterviewQuestionFeedbackUncheckedCreateWithoutInterviewInput[]
+    connectOrCreate?: InterviewQuestionFeedbackCreateOrConnectWithoutInterviewInput | InterviewQuestionFeedbackCreateOrConnectWithoutInterviewInput[]
+    createMany?: InterviewQuestionFeedbackCreateManyInterviewInputEnvelope
+    connect?: InterviewQuestionFeedbackWhereUniqueInput | InterviewQuestionFeedbackWhereUniqueInput[]
   }
 
   export type EnumInterviewStatusFieldUpdateOperationsInput = {
@@ -39422,6 +41315,20 @@ export namespace Prisma {
     deleteMany?: TranscriptSegmentScalarWhereInput | TranscriptSegmentScalarWhereInput[]
   }
 
+  export type InterviewQuestionFeedbackUpdateManyWithoutInterviewNestedInput = {
+    create?: XOR<InterviewQuestionFeedbackCreateWithoutInterviewInput, InterviewQuestionFeedbackUncheckedCreateWithoutInterviewInput> | InterviewQuestionFeedbackCreateWithoutInterviewInput[] | InterviewQuestionFeedbackUncheckedCreateWithoutInterviewInput[]
+    connectOrCreate?: InterviewQuestionFeedbackCreateOrConnectWithoutInterviewInput | InterviewQuestionFeedbackCreateOrConnectWithoutInterviewInput[]
+    upsert?: InterviewQuestionFeedbackUpsertWithWhereUniqueWithoutInterviewInput | InterviewQuestionFeedbackUpsertWithWhereUniqueWithoutInterviewInput[]
+    createMany?: InterviewQuestionFeedbackCreateManyInterviewInputEnvelope
+    set?: InterviewQuestionFeedbackWhereUniqueInput | InterviewQuestionFeedbackWhereUniqueInput[]
+    disconnect?: InterviewQuestionFeedbackWhereUniqueInput | InterviewQuestionFeedbackWhereUniqueInput[]
+    delete?: InterviewQuestionFeedbackWhereUniqueInput | InterviewQuestionFeedbackWhereUniqueInput[]
+    connect?: InterviewQuestionFeedbackWhereUniqueInput | InterviewQuestionFeedbackWhereUniqueInput[]
+    update?: InterviewQuestionFeedbackUpdateWithWhereUniqueWithoutInterviewInput | InterviewQuestionFeedbackUpdateWithWhereUniqueWithoutInterviewInput[]
+    updateMany?: InterviewQuestionFeedbackUpdateManyWithWhereWithoutInterviewInput | InterviewQuestionFeedbackUpdateManyWithWhereWithoutInterviewInput[]
+    deleteMany?: InterviewQuestionFeedbackScalarWhereInput | InterviewQuestionFeedbackScalarWhereInput[]
+  }
+
   export type InterviewEvaluationUncheckedUpdateOneWithoutInterviewNestedInput = {
     create?: XOR<InterviewEvaluationCreateWithoutInterviewInput, InterviewEvaluationUncheckedCreateWithoutInterviewInput>
     connectOrCreate?: InterviewEvaluationCreateOrConnectWithoutInterviewInput
@@ -39498,6 +41405,20 @@ export namespace Prisma {
     deleteMany?: TranscriptSegmentScalarWhereInput | TranscriptSegmentScalarWhereInput[]
   }
 
+  export type InterviewQuestionFeedbackUncheckedUpdateManyWithoutInterviewNestedInput = {
+    create?: XOR<InterviewQuestionFeedbackCreateWithoutInterviewInput, InterviewQuestionFeedbackUncheckedCreateWithoutInterviewInput> | InterviewQuestionFeedbackCreateWithoutInterviewInput[] | InterviewQuestionFeedbackUncheckedCreateWithoutInterviewInput[]
+    connectOrCreate?: InterviewQuestionFeedbackCreateOrConnectWithoutInterviewInput | InterviewQuestionFeedbackCreateOrConnectWithoutInterviewInput[]
+    upsert?: InterviewQuestionFeedbackUpsertWithWhereUniqueWithoutInterviewInput | InterviewQuestionFeedbackUpsertWithWhereUniqueWithoutInterviewInput[]
+    createMany?: InterviewQuestionFeedbackCreateManyInterviewInputEnvelope
+    set?: InterviewQuestionFeedbackWhereUniqueInput | InterviewQuestionFeedbackWhereUniqueInput[]
+    disconnect?: InterviewQuestionFeedbackWhereUniqueInput | InterviewQuestionFeedbackWhereUniqueInput[]
+    delete?: InterviewQuestionFeedbackWhereUniqueInput | InterviewQuestionFeedbackWhereUniqueInput[]
+    connect?: InterviewQuestionFeedbackWhereUniqueInput | InterviewQuestionFeedbackWhereUniqueInput[]
+    update?: InterviewQuestionFeedbackUpdateWithWhereUniqueWithoutInterviewInput | InterviewQuestionFeedbackUpdateWithWhereUniqueWithoutInterviewInput[]
+    updateMany?: InterviewQuestionFeedbackUpdateManyWithWhereWithoutInterviewInput | InterviewQuestionFeedbackUpdateManyWithWhereWithoutInterviewInput[]
+    deleteMany?: InterviewQuestionFeedbackScalarWhereInput | InterviewQuestionFeedbackScalarWhereInput[]
+  }
+
   export type InterviewCreateNestedOneWithoutSessionsInput = {
     create?: XOR<InterviewCreateWithoutSessionsInput, InterviewUncheckedCreateWithoutSessionsInput>
     connectOrCreate?: InterviewCreateOrConnectWithoutSessionsInput
@@ -39525,11 +41446,25 @@ export namespace Prisma {
     connect?: InterviewAnswerWhereUniqueInput | InterviewAnswerWhereUniqueInput[]
   }
 
+  export type InterviewQuestionFeedbackCreateNestedManyWithoutQuestionInput = {
+    create?: XOR<InterviewQuestionFeedbackCreateWithoutQuestionInput, InterviewQuestionFeedbackUncheckedCreateWithoutQuestionInput> | InterviewQuestionFeedbackCreateWithoutQuestionInput[] | InterviewQuestionFeedbackUncheckedCreateWithoutQuestionInput[]
+    connectOrCreate?: InterviewQuestionFeedbackCreateOrConnectWithoutQuestionInput | InterviewQuestionFeedbackCreateOrConnectWithoutQuestionInput[]
+    createMany?: InterviewQuestionFeedbackCreateManyQuestionInputEnvelope
+    connect?: InterviewQuestionFeedbackWhereUniqueInput | InterviewQuestionFeedbackWhereUniqueInput[]
+  }
+
   export type InterviewAnswerUncheckedCreateNestedManyWithoutQuestionInput = {
     create?: XOR<InterviewAnswerCreateWithoutQuestionInput, InterviewAnswerUncheckedCreateWithoutQuestionInput> | InterviewAnswerCreateWithoutQuestionInput[] | InterviewAnswerUncheckedCreateWithoutQuestionInput[]
     connectOrCreate?: InterviewAnswerCreateOrConnectWithoutQuestionInput | InterviewAnswerCreateOrConnectWithoutQuestionInput[]
     createMany?: InterviewAnswerCreateManyQuestionInputEnvelope
     connect?: InterviewAnswerWhereUniqueInput | InterviewAnswerWhereUniqueInput[]
+  }
+
+  export type InterviewQuestionFeedbackUncheckedCreateNestedManyWithoutQuestionInput = {
+    create?: XOR<InterviewQuestionFeedbackCreateWithoutQuestionInput, InterviewQuestionFeedbackUncheckedCreateWithoutQuestionInput> | InterviewQuestionFeedbackCreateWithoutQuestionInput[] | InterviewQuestionFeedbackUncheckedCreateWithoutQuestionInput[]
+    connectOrCreate?: InterviewQuestionFeedbackCreateOrConnectWithoutQuestionInput | InterviewQuestionFeedbackCreateOrConnectWithoutQuestionInput[]
+    createMany?: InterviewQuestionFeedbackCreateManyQuestionInputEnvelope
+    connect?: InterviewQuestionFeedbackWhereUniqueInput | InterviewQuestionFeedbackWhereUniqueInput[]
   }
 
   export type InterviewUpdateOneRequiredWithoutQuestionsNestedInput = {
@@ -39554,6 +41489,20 @@ export namespace Prisma {
     deleteMany?: InterviewAnswerScalarWhereInput | InterviewAnswerScalarWhereInput[]
   }
 
+  export type InterviewQuestionFeedbackUpdateManyWithoutQuestionNestedInput = {
+    create?: XOR<InterviewQuestionFeedbackCreateWithoutQuestionInput, InterviewQuestionFeedbackUncheckedCreateWithoutQuestionInput> | InterviewQuestionFeedbackCreateWithoutQuestionInput[] | InterviewQuestionFeedbackUncheckedCreateWithoutQuestionInput[]
+    connectOrCreate?: InterviewQuestionFeedbackCreateOrConnectWithoutQuestionInput | InterviewQuestionFeedbackCreateOrConnectWithoutQuestionInput[]
+    upsert?: InterviewQuestionFeedbackUpsertWithWhereUniqueWithoutQuestionInput | InterviewQuestionFeedbackUpsertWithWhereUniqueWithoutQuestionInput[]
+    createMany?: InterviewQuestionFeedbackCreateManyQuestionInputEnvelope
+    set?: InterviewQuestionFeedbackWhereUniqueInput | InterviewQuestionFeedbackWhereUniqueInput[]
+    disconnect?: InterviewQuestionFeedbackWhereUniqueInput | InterviewQuestionFeedbackWhereUniqueInput[]
+    delete?: InterviewQuestionFeedbackWhereUniqueInput | InterviewQuestionFeedbackWhereUniqueInput[]
+    connect?: InterviewQuestionFeedbackWhereUniqueInput | InterviewQuestionFeedbackWhereUniqueInput[]
+    update?: InterviewQuestionFeedbackUpdateWithWhereUniqueWithoutQuestionInput | InterviewQuestionFeedbackUpdateWithWhereUniqueWithoutQuestionInput[]
+    updateMany?: InterviewQuestionFeedbackUpdateManyWithWhereWithoutQuestionInput | InterviewQuestionFeedbackUpdateManyWithWhereWithoutQuestionInput[]
+    deleteMany?: InterviewQuestionFeedbackScalarWhereInput | InterviewQuestionFeedbackScalarWhereInput[]
+  }
+
   export type InterviewAnswerUncheckedUpdateManyWithoutQuestionNestedInput = {
     create?: XOR<InterviewAnswerCreateWithoutQuestionInput, InterviewAnswerUncheckedCreateWithoutQuestionInput> | InterviewAnswerCreateWithoutQuestionInput[] | InterviewAnswerUncheckedCreateWithoutQuestionInput[]
     connectOrCreate?: InterviewAnswerCreateOrConnectWithoutQuestionInput | InterviewAnswerCreateOrConnectWithoutQuestionInput[]
@@ -39568,6 +41517,20 @@ export namespace Prisma {
     deleteMany?: InterviewAnswerScalarWhereInput | InterviewAnswerScalarWhereInput[]
   }
 
+  export type InterviewQuestionFeedbackUncheckedUpdateManyWithoutQuestionNestedInput = {
+    create?: XOR<InterviewQuestionFeedbackCreateWithoutQuestionInput, InterviewQuestionFeedbackUncheckedCreateWithoutQuestionInput> | InterviewQuestionFeedbackCreateWithoutQuestionInput[] | InterviewQuestionFeedbackUncheckedCreateWithoutQuestionInput[]
+    connectOrCreate?: InterviewQuestionFeedbackCreateOrConnectWithoutQuestionInput | InterviewQuestionFeedbackCreateOrConnectWithoutQuestionInput[]
+    upsert?: InterviewQuestionFeedbackUpsertWithWhereUniqueWithoutQuestionInput | InterviewQuestionFeedbackUpsertWithWhereUniqueWithoutQuestionInput[]
+    createMany?: InterviewQuestionFeedbackCreateManyQuestionInputEnvelope
+    set?: InterviewQuestionFeedbackWhereUniqueInput | InterviewQuestionFeedbackWhereUniqueInput[]
+    disconnect?: InterviewQuestionFeedbackWhereUniqueInput | InterviewQuestionFeedbackWhereUniqueInput[]
+    delete?: InterviewQuestionFeedbackWhereUniqueInput | InterviewQuestionFeedbackWhereUniqueInput[]
+    connect?: InterviewQuestionFeedbackWhereUniqueInput | InterviewQuestionFeedbackWhereUniqueInput[]
+    update?: InterviewQuestionFeedbackUpdateWithWhereUniqueWithoutQuestionInput | InterviewQuestionFeedbackUpdateWithWhereUniqueWithoutQuestionInput[]
+    updateMany?: InterviewQuestionFeedbackUpdateManyWithWhereWithoutQuestionInput | InterviewQuestionFeedbackUpdateManyWithWhereWithoutQuestionInput[]
+    deleteMany?: InterviewQuestionFeedbackScalarWhereInput | InterviewQuestionFeedbackScalarWhereInput[]
+  }
+
   export type InterviewCreateNestedOneWithoutAnswersInput = {
     create?: XOR<InterviewCreateWithoutAnswersInput, InterviewUncheckedCreateWithoutAnswersInput>
     connectOrCreate?: InterviewCreateOrConnectWithoutAnswersInput
@@ -39578,6 +41541,20 @@ export namespace Prisma {
     create?: XOR<InterviewQuestionCreateWithoutAnswersInput, InterviewQuestionUncheckedCreateWithoutAnswersInput>
     connectOrCreate?: InterviewQuestionCreateOrConnectWithoutAnswersInput
     connect?: InterviewQuestionWhereUniqueInput
+  }
+
+  export type InterviewQuestionFeedbackCreateNestedManyWithoutAnswerInput = {
+    create?: XOR<InterviewQuestionFeedbackCreateWithoutAnswerInput, InterviewQuestionFeedbackUncheckedCreateWithoutAnswerInput> | InterviewQuestionFeedbackCreateWithoutAnswerInput[] | InterviewQuestionFeedbackUncheckedCreateWithoutAnswerInput[]
+    connectOrCreate?: InterviewQuestionFeedbackCreateOrConnectWithoutAnswerInput | InterviewQuestionFeedbackCreateOrConnectWithoutAnswerInput[]
+    createMany?: InterviewQuestionFeedbackCreateManyAnswerInputEnvelope
+    connect?: InterviewQuestionFeedbackWhereUniqueInput | InterviewQuestionFeedbackWhereUniqueInput[]
+  }
+
+  export type InterviewQuestionFeedbackUncheckedCreateNestedManyWithoutAnswerInput = {
+    create?: XOR<InterviewQuestionFeedbackCreateWithoutAnswerInput, InterviewQuestionFeedbackUncheckedCreateWithoutAnswerInput> | InterviewQuestionFeedbackCreateWithoutAnswerInput[] | InterviewQuestionFeedbackUncheckedCreateWithoutAnswerInput[]
+    connectOrCreate?: InterviewQuestionFeedbackCreateOrConnectWithoutAnswerInput | InterviewQuestionFeedbackCreateOrConnectWithoutAnswerInput[]
+    createMany?: InterviewQuestionFeedbackCreateManyAnswerInputEnvelope
+    connect?: InterviewQuestionFeedbackWhereUniqueInput | InterviewQuestionFeedbackWhereUniqueInput[]
   }
 
   export type NullableFloatFieldUpdateOperationsInput = {
@@ -39602,6 +41579,78 @@ export namespace Prisma {
     upsert?: InterviewQuestionUpsertWithoutAnswersInput
     connect?: InterviewQuestionWhereUniqueInput
     update?: XOR<XOR<InterviewQuestionUpdateToOneWithWhereWithoutAnswersInput, InterviewQuestionUpdateWithoutAnswersInput>, InterviewQuestionUncheckedUpdateWithoutAnswersInput>
+  }
+
+  export type InterviewQuestionFeedbackUpdateManyWithoutAnswerNestedInput = {
+    create?: XOR<InterviewQuestionFeedbackCreateWithoutAnswerInput, InterviewQuestionFeedbackUncheckedCreateWithoutAnswerInput> | InterviewQuestionFeedbackCreateWithoutAnswerInput[] | InterviewQuestionFeedbackUncheckedCreateWithoutAnswerInput[]
+    connectOrCreate?: InterviewQuestionFeedbackCreateOrConnectWithoutAnswerInput | InterviewQuestionFeedbackCreateOrConnectWithoutAnswerInput[]
+    upsert?: InterviewQuestionFeedbackUpsertWithWhereUniqueWithoutAnswerInput | InterviewQuestionFeedbackUpsertWithWhereUniqueWithoutAnswerInput[]
+    createMany?: InterviewQuestionFeedbackCreateManyAnswerInputEnvelope
+    set?: InterviewQuestionFeedbackWhereUniqueInput | InterviewQuestionFeedbackWhereUniqueInput[]
+    disconnect?: InterviewQuestionFeedbackWhereUniqueInput | InterviewQuestionFeedbackWhereUniqueInput[]
+    delete?: InterviewQuestionFeedbackWhereUniqueInput | InterviewQuestionFeedbackWhereUniqueInput[]
+    connect?: InterviewQuestionFeedbackWhereUniqueInput | InterviewQuestionFeedbackWhereUniqueInput[]
+    update?: InterviewQuestionFeedbackUpdateWithWhereUniqueWithoutAnswerInput | InterviewQuestionFeedbackUpdateWithWhereUniqueWithoutAnswerInput[]
+    updateMany?: InterviewQuestionFeedbackUpdateManyWithWhereWithoutAnswerInput | InterviewQuestionFeedbackUpdateManyWithWhereWithoutAnswerInput[]
+    deleteMany?: InterviewQuestionFeedbackScalarWhereInput | InterviewQuestionFeedbackScalarWhereInput[]
+  }
+
+  export type InterviewQuestionFeedbackUncheckedUpdateManyWithoutAnswerNestedInput = {
+    create?: XOR<InterviewQuestionFeedbackCreateWithoutAnswerInput, InterviewQuestionFeedbackUncheckedCreateWithoutAnswerInput> | InterviewQuestionFeedbackCreateWithoutAnswerInput[] | InterviewQuestionFeedbackUncheckedCreateWithoutAnswerInput[]
+    connectOrCreate?: InterviewQuestionFeedbackCreateOrConnectWithoutAnswerInput | InterviewQuestionFeedbackCreateOrConnectWithoutAnswerInput[]
+    upsert?: InterviewQuestionFeedbackUpsertWithWhereUniqueWithoutAnswerInput | InterviewQuestionFeedbackUpsertWithWhereUniqueWithoutAnswerInput[]
+    createMany?: InterviewQuestionFeedbackCreateManyAnswerInputEnvelope
+    set?: InterviewQuestionFeedbackWhereUniqueInput | InterviewQuestionFeedbackWhereUniqueInput[]
+    disconnect?: InterviewQuestionFeedbackWhereUniqueInput | InterviewQuestionFeedbackWhereUniqueInput[]
+    delete?: InterviewQuestionFeedbackWhereUniqueInput | InterviewQuestionFeedbackWhereUniqueInput[]
+    connect?: InterviewQuestionFeedbackWhereUniqueInput | InterviewQuestionFeedbackWhereUniqueInput[]
+    update?: InterviewQuestionFeedbackUpdateWithWhereUniqueWithoutAnswerInput | InterviewQuestionFeedbackUpdateWithWhereUniqueWithoutAnswerInput[]
+    updateMany?: InterviewQuestionFeedbackUpdateManyWithWhereWithoutAnswerInput | InterviewQuestionFeedbackUpdateManyWithWhereWithoutAnswerInput[]
+    deleteMany?: InterviewQuestionFeedbackScalarWhereInput | InterviewQuestionFeedbackScalarWhereInput[]
+  }
+
+  export type InterviewCreateNestedOneWithoutQuestionFeedbackInput = {
+    create?: XOR<InterviewCreateWithoutQuestionFeedbackInput, InterviewUncheckedCreateWithoutQuestionFeedbackInput>
+    connectOrCreate?: InterviewCreateOrConnectWithoutQuestionFeedbackInput
+    connect?: InterviewWhereUniqueInput
+  }
+
+  export type InterviewQuestionCreateNestedOneWithoutFeedbackInput = {
+    create?: XOR<InterviewQuestionCreateWithoutFeedbackInput, InterviewQuestionUncheckedCreateWithoutFeedbackInput>
+    connectOrCreate?: InterviewQuestionCreateOrConnectWithoutFeedbackInput
+    connect?: InterviewQuestionWhereUniqueInput
+  }
+
+  export type InterviewAnswerCreateNestedOneWithoutFeedbackInput = {
+    create?: XOR<InterviewAnswerCreateWithoutFeedbackInput, InterviewAnswerUncheckedCreateWithoutFeedbackInput>
+    connectOrCreate?: InterviewAnswerCreateOrConnectWithoutFeedbackInput
+    connect?: InterviewAnswerWhereUniqueInput
+  }
+
+  export type InterviewUpdateOneRequiredWithoutQuestionFeedbackNestedInput = {
+    create?: XOR<InterviewCreateWithoutQuestionFeedbackInput, InterviewUncheckedCreateWithoutQuestionFeedbackInput>
+    connectOrCreate?: InterviewCreateOrConnectWithoutQuestionFeedbackInput
+    upsert?: InterviewUpsertWithoutQuestionFeedbackInput
+    connect?: InterviewWhereUniqueInput
+    update?: XOR<XOR<InterviewUpdateToOneWithWhereWithoutQuestionFeedbackInput, InterviewUpdateWithoutQuestionFeedbackInput>, InterviewUncheckedUpdateWithoutQuestionFeedbackInput>
+  }
+
+  export type InterviewQuestionUpdateOneRequiredWithoutFeedbackNestedInput = {
+    create?: XOR<InterviewQuestionCreateWithoutFeedbackInput, InterviewQuestionUncheckedCreateWithoutFeedbackInput>
+    connectOrCreate?: InterviewQuestionCreateOrConnectWithoutFeedbackInput
+    upsert?: InterviewQuestionUpsertWithoutFeedbackInput
+    connect?: InterviewQuestionWhereUniqueInput
+    update?: XOR<XOR<InterviewQuestionUpdateToOneWithWhereWithoutFeedbackInput, InterviewQuestionUpdateWithoutFeedbackInput>, InterviewQuestionUncheckedUpdateWithoutFeedbackInput>
+  }
+
+  export type InterviewAnswerUpdateOneWithoutFeedbackNestedInput = {
+    create?: XOR<InterviewAnswerCreateWithoutFeedbackInput, InterviewAnswerUncheckedCreateWithoutFeedbackInput>
+    connectOrCreate?: InterviewAnswerCreateOrConnectWithoutFeedbackInput
+    upsert?: InterviewAnswerUpsertWithoutFeedbackInput
+    disconnect?: InterviewAnswerWhereInput | boolean
+    delete?: InterviewAnswerWhereInput | boolean
+    connect?: InterviewAnswerWhereUniqueInput
+    update?: XOR<XOR<InterviewAnswerUpdateToOneWithWhereWithoutFeedbackInput, InterviewAnswerUpdateWithoutFeedbackInput>, InterviewAnswerUncheckedUpdateWithoutFeedbackInput>
   }
 
   export type InterviewCreateNestedOneWithoutTranscriptSegmentsInput = {
@@ -40409,6 +42458,7 @@ export namespace Prisma {
     questions?: InterviewQuestionCreateNestedManyWithoutInterviewInput
     answers?: InterviewAnswerCreateNestedManyWithoutInterviewInput
     transcriptSegments?: TranscriptSegmentCreateNestedManyWithoutInterviewInput
+    questionFeedback?: InterviewQuestionFeedbackCreateNestedManyWithoutInterviewInput
   }
 
   export type InterviewUncheckedCreateWithoutOrganizationInput = {
@@ -40440,6 +42490,7 @@ export namespace Prisma {
     questions?: InterviewQuestionUncheckedCreateNestedManyWithoutInterviewInput
     answers?: InterviewAnswerUncheckedCreateNestedManyWithoutInterviewInput
     transcriptSegments?: TranscriptSegmentUncheckedCreateNestedManyWithoutInterviewInput
+    questionFeedback?: InterviewQuestionFeedbackUncheckedCreateNestedManyWithoutInterviewInput
   }
 
   export type InterviewCreateOrConnectWithoutOrganizationInput = {
@@ -41873,6 +43924,7 @@ export namespace Prisma {
     questions?: InterviewQuestionCreateNestedManyWithoutInterviewInput
     answers?: InterviewAnswerCreateNestedManyWithoutInterviewInput
     transcriptSegments?: TranscriptSegmentCreateNestedManyWithoutInterviewInput
+    questionFeedback?: InterviewQuestionFeedbackCreateNestedManyWithoutInterviewInput
   }
 
   export type InterviewUncheckedCreateWithoutJobInput = {
@@ -41904,6 +43956,7 @@ export namespace Prisma {
     questions?: InterviewQuestionUncheckedCreateNestedManyWithoutInterviewInput
     answers?: InterviewAnswerUncheckedCreateNestedManyWithoutInterviewInput
     transcriptSegments?: TranscriptSegmentUncheckedCreateNestedManyWithoutInterviewInput
+    questionFeedback?: InterviewQuestionFeedbackUncheckedCreateNestedManyWithoutInterviewInput
   }
 
   export type InterviewCreateOrConnectWithoutJobInput = {
@@ -42306,6 +44359,7 @@ export namespace Prisma {
     questions?: InterviewQuestionCreateNestedManyWithoutInterviewInput
     answers?: InterviewAnswerCreateNestedManyWithoutInterviewInput
     transcriptSegments?: TranscriptSegmentCreateNestedManyWithoutInterviewInput
+    questionFeedback?: InterviewQuestionFeedbackCreateNestedManyWithoutInterviewInput
   }
 
   export type InterviewUncheckedCreateWithoutCandidateInput = {
@@ -42337,6 +44391,7 @@ export namespace Prisma {
     questions?: InterviewQuestionUncheckedCreateNestedManyWithoutInterviewInput
     answers?: InterviewAnswerUncheckedCreateNestedManyWithoutInterviewInput
     transcriptSegments?: TranscriptSegmentUncheckedCreateNestedManyWithoutInterviewInput
+    questionFeedback?: InterviewQuestionFeedbackUncheckedCreateNestedManyWithoutInterviewInput
   }
 
   export type InterviewCreateOrConnectWithoutCandidateInput = {
@@ -43297,6 +45352,7 @@ export namespace Prisma {
     sequence: number
     createdAt?: Date | string
     answers?: InterviewAnswerCreateNestedManyWithoutQuestionInput
+    feedback?: InterviewQuestionFeedbackCreateNestedManyWithoutQuestionInput
   }
 
   export type InterviewQuestionUncheckedCreateWithoutInterviewInput = {
@@ -43311,6 +45367,7 @@ export namespace Prisma {
     sequence: number
     createdAt?: Date | string
     answers?: InterviewAnswerUncheckedCreateNestedManyWithoutQuestionInput
+    feedback?: InterviewQuestionFeedbackUncheckedCreateNestedManyWithoutQuestionInput
   }
 
   export type InterviewQuestionCreateOrConnectWithoutInterviewInput = {
@@ -43330,6 +45387,7 @@ export namespace Prisma {
     confidence?: number | null
     createdAt?: Date | string
     question: InterviewQuestionCreateNestedOneWithoutAnswersInput
+    feedback?: InterviewQuestionFeedbackCreateNestedManyWithoutAnswerInput
   }
 
   export type InterviewAnswerUncheckedCreateWithoutInterviewInput = {
@@ -43339,6 +45397,7 @@ export namespace Prisma {
     durationSeconds: number
     confidence?: number | null
     createdAt?: Date | string
+    feedback?: InterviewQuestionFeedbackUncheckedCreateNestedManyWithoutAnswerInput
   }
 
   export type InterviewAnswerCreateOrConnectWithoutInterviewInput = {
@@ -43378,6 +45437,52 @@ export namespace Prisma {
 
   export type TranscriptSegmentCreateManyInterviewInputEnvelope = {
     data: TranscriptSegmentCreateManyInterviewInput | TranscriptSegmentCreateManyInterviewInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type InterviewQuestionFeedbackCreateWithoutInterviewInput = {
+    id?: string
+    technicalAccuracy: number
+    communicationClarity: number
+    problemSolvingStructure: number
+    pacingAndConciseness: number
+    overallScore: number
+    strengths?: JsonNullValueInput | InputJsonValue
+    keyOmissions?: JsonNullValueInput | InputJsonValue
+    improvedAnswer?: string | null
+    actionableTips?: JsonNullValueInput | InputJsonValue
+    source?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    question: InterviewQuestionCreateNestedOneWithoutFeedbackInput
+    answer?: InterviewAnswerCreateNestedOneWithoutFeedbackInput
+  }
+
+  export type InterviewQuestionFeedbackUncheckedCreateWithoutInterviewInput = {
+    id?: string
+    questionId: string
+    answerId?: string | null
+    technicalAccuracy: number
+    communicationClarity: number
+    problemSolvingStructure: number
+    pacingAndConciseness: number
+    overallScore: number
+    strengths?: JsonNullValueInput | InputJsonValue
+    keyOmissions?: JsonNullValueInput | InputJsonValue
+    improvedAnswer?: string | null
+    actionableTips?: JsonNullValueInput | InputJsonValue
+    source?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type InterviewQuestionFeedbackCreateOrConnectWithoutInterviewInput = {
+    where: InterviewQuestionFeedbackWhereUniqueInput
+    create: XOR<InterviewQuestionFeedbackCreateWithoutInterviewInput, InterviewQuestionFeedbackUncheckedCreateWithoutInterviewInput>
+  }
+
+  export type InterviewQuestionFeedbackCreateManyInterviewInputEnvelope = {
+    data: InterviewQuestionFeedbackCreateManyInterviewInput | InterviewQuestionFeedbackCreateManyInterviewInput[]
     skipDuplicates?: boolean
   }
 
@@ -43797,6 +45902,44 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"TranscriptSegment"> | Date | string
   }
 
+  export type InterviewQuestionFeedbackUpsertWithWhereUniqueWithoutInterviewInput = {
+    where: InterviewQuestionFeedbackWhereUniqueInput
+    update: XOR<InterviewQuestionFeedbackUpdateWithoutInterviewInput, InterviewQuestionFeedbackUncheckedUpdateWithoutInterviewInput>
+    create: XOR<InterviewQuestionFeedbackCreateWithoutInterviewInput, InterviewQuestionFeedbackUncheckedCreateWithoutInterviewInput>
+  }
+
+  export type InterviewQuestionFeedbackUpdateWithWhereUniqueWithoutInterviewInput = {
+    where: InterviewQuestionFeedbackWhereUniqueInput
+    data: XOR<InterviewQuestionFeedbackUpdateWithoutInterviewInput, InterviewQuestionFeedbackUncheckedUpdateWithoutInterviewInput>
+  }
+
+  export type InterviewQuestionFeedbackUpdateManyWithWhereWithoutInterviewInput = {
+    where: InterviewQuestionFeedbackScalarWhereInput
+    data: XOR<InterviewQuestionFeedbackUpdateManyMutationInput, InterviewQuestionFeedbackUncheckedUpdateManyWithoutInterviewInput>
+  }
+
+  export type InterviewQuestionFeedbackScalarWhereInput = {
+    AND?: InterviewQuestionFeedbackScalarWhereInput | InterviewQuestionFeedbackScalarWhereInput[]
+    OR?: InterviewQuestionFeedbackScalarWhereInput[]
+    NOT?: InterviewQuestionFeedbackScalarWhereInput | InterviewQuestionFeedbackScalarWhereInput[]
+    id?: StringFilter<"InterviewQuestionFeedback"> | string
+    interviewId?: StringFilter<"InterviewQuestionFeedback"> | string
+    questionId?: StringFilter<"InterviewQuestionFeedback"> | string
+    answerId?: StringNullableFilter<"InterviewQuestionFeedback"> | string | null
+    technicalAccuracy?: FloatFilter<"InterviewQuestionFeedback"> | number
+    communicationClarity?: FloatFilter<"InterviewQuestionFeedback"> | number
+    problemSolvingStructure?: FloatFilter<"InterviewQuestionFeedback"> | number
+    pacingAndConciseness?: FloatFilter<"InterviewQuestionFeedback"> | number
+    overallScore?: FloatFilter<"InterviewQuestionFeedback"> | number
+    strengths?: JsonFilter<"InterviewQuestionFeedback">
+    keyOmissions?: JsonFilter<"InterviewQuestionFeedback">
+    improvedAnswer?: StringNullableFilter<"InterviewQuestionFeedback"> | string | null
+    actionableTips?: JsonFilter<"InterviewQuestionFeedback">
+    source?: StringFilter<"InterviewQuestionFeedback"> | string
+    createdAt?: DateTimeFilter<"InterviewQuestionFeedback"> | Date | string
+    updatedAt?: DateTimeFilter<"InterviewQuestionFeedback"> | Date | string
+  }
+
   export type InterviewCreateWithoutSessionsInput = {
     id?: string
     interviewKey: string
@@ -43826,6 +45969,7 @@ export namespace Prisma {
     questions?: InterviewQuestionCreateNestedManyWithoutInterviewInput
     answers?: InterviewAnswerCreateNestedManyWithoutInterviewInput
     transcriptSegments?: TranscriptSegmentCreateNestedManyWithoutInterviewInput
+    questionFeedback?: InterviewQuestionFeedbackCreateNestedManyWithoutInterviewInput
   }
 
   export type InterviewUncheckedCreateWithoutSessionsInput = {
@@ -43857,6 +46001,7 @@ export namespace Prisma {
     questions?: InterviewQuestionUncheckedCreateNestedManyWithoutInterviewInput
     answers?: InterviewAnswerUncheckedCreateNestedManyWithoutInterviewInput
     transcriptSegments?: TranscriptSegmentUncheckedCreateNestedManyWithoutInterviewInput
+    questionFeedback?: InterviewQuestionFeedbackUncheckedCreateNestedManyWithoutInterviewInput
   }
 
   export type InterviewCreateOrConnectWithoutSessionsInput = {
@@ -43904,6 +46049,7 @@ export namespace Prisma {
     questions?: InterviewQuestionUpdateManyWithoutInterviewNestedInput
     answers?: InterviewAnswerUpdateManyWithoutInterviewNestedInput
     transcriptSegments?: TranscriptSegmentUpdateManyWithoutInterviewNestedInput
+    questionFeedback?: InterviewQuestionFeedbackUpdateManyWithoutInterviewNestedInput
   }
 
   export type InterviewUncheckedUpdateWithoutSessionsInput = {
@@ -43935,6 +46081,7 @@ export namespace Prisma {
     questions?: InterviewQuestionUncheckedUpdateManyWithoutInterviewNestedInput
     answers?: InterviewAnswerUncheckedUpdateManyWithoutInterviewNestedInput
     transcriptSegments?: TranscriptSegmentUncheckedUpdateManyWithoutInterviewNestedInput
+    questionFeedback?: InterviewQuestionFeedbackUncheckedUpdateManyWithoutInterviewNestedInput
   }
 
   export type InterviewCreateWithoutQuestionsInput = {
@@ -43966,6 +46113,7 @@ export namespace Prisma {
     sessions?: InterviewSessionCreateNestedManyWithoutInterviewInput
     answers?: InterviewAnswerCreateNestedManyWithoutInterviewInput
     transcriptSegments?: TranscriptSegmentCreateNestedManyWithoutInterviewInput
+    questionFeedback?: InterviewQuestionFeedbackCreateNestedManyWithoutInterviewInput
   }
 
   export type InterviewUncheckedCreateWithoutQuestionsInput = {
@@ -43997,6 +46145,7 @@ export namespace Prisma {
     sessions?: InterviewSessionUncheckedCreateNestedManyWithoutInterviewInput
     answers?: InterviewAnswerUncheckedCreateNestedManyWithoutInterviewInput
     transcriptSegments?: TranscriptSegmentUncheckedCreateNestedManyWithoutInterviewInput
+    questionFeedback?: InterviewQuestionFeedbackUncheckedCreateNestedManyWithoutInterviewInput
   }
 
   export type InterviewCreateOrConnectWithoutQuestionsInput = {
@@ -44011,6 +46160,7 @@ export namespace Prisma {
     confidence?: number | null
     createdAt?: Date | string
     interview: InterviewCreateNestedOneWithoutAnswersInput
+    feedback?: InterviewQuestionFeedbackCreateNestedManyWithoutAnswerInput
   }
 
   export type InterviewAnswerUncheckedCreateWithoutQuestionInput = {
@@ -44020,6 +46170,7 @@ export namespace Prisma {
     durationSeconds: number
     confidence?: number | null
     createdAt?: Date | string
+    feedback?: InterviewQuestionFeedbackUncheckedCreateNestedManyWithoutAnswerInput
   }
 
   export type InterviewAnswerCreateOrConnectWithoutQuestionInput = {
@@ -44029,6 +46180,52 @@ export namespace Prisma {
 
   export type InterviewAnswerCreateManyQuestionInputEnvelope = {
     data: InterviewAnswerCreateManyQuestionInput | InterviewAnswerCreateManyQuestionInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type InterviewQuestionFeedbackCreateWithoutQuestionInput = {
+    id?: string
+    technicalAccuracy: number
+    communicationClarity: number
+    problemSolvingStructure: number
+    pacingAndConciseness: number
+    overallScore: number
+    strengths?: JsonNullValueInput | InputJsonValue
+    keyOmissions?: JsonNullValueInput | InputJsonValue
+    improvedAnswer?: string | null
+    actionableTips?: JsonNullValueInput | InputJsonValue
+    source?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    interview: InterviewCreateNestedOneWithoutQuestionFeedbackInput
+    answer?: InterviewAnswerCreateNestedOneWithoutFeedbackInput
+  }
+
+  export type InterviewQuestionFeedbackUncheckedCreateWithoutQuestionInput = {
+    id?: string
+    interviewId: string
+    answerId?: string | null
+    technicalAccuracy: number
+    communicationClarity: number
+    problemSolvingStructure: number
+    pacingAndConciseness: number
+    overallScore: number
+    strengths?: JsonNullValueInput | InputJsonValue
+    keyOmissions?: JsonNullValueInput | InputJsonValue
+    improvedAnswer?: string | null
+    actionableTips?: JsonNullValueInput | InputJsonValue
+    source?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type InterviewQuestionFeedbackCreateOrConnectWithoutQuestionInput = {
+    where: InterviewQuestionFeedbackWhereUniqueInput
+    create: XOR<InterviewQuestionFeedbackCreateWithoutQuestionInput, InterviewQuestionFeedbackUncheckedCreateWithoutQuestionInput>
+  }
+
+  export type InterviewQuestionFeedbackCreateManyQuestionInputEnvelope = {
+    data: InterviewQuestionFeedbackCreateManyQuestionInput | InterviewQuestionFeedbackCreateManyQuestionInput[]
     skipDuplicates?: boolean
   }
 
@@ -44072,6 +46269,7 @@ export namespace Prisma {
     sessions?: InterviewSessionUpdateManyWithoutInterviewNestedInput
     answers?: InterviewAnswerUpdateManyWithoutInterviewNestedInput
     transcriptSegments?: TranscriptSegmentUpdateManyWithoutInterviewNestedInput
+    questionFeedback?: InterviewQuestionFeedbackUpdateManyWithoutInterviewNestedInput
   }
 
   export type InterviewUncheckedUpdateWithoutQuestionsInput = {
@@ -44103,6 +46301,7 @@ export namespace Prisma {
     sessions?: InterviewSessionUncheckedUpdateManyWithoutInterviewNestedInput
     answers?: InterviewAnswerUncheckedUpdateManyWithoutInterviewNestedInput
     transcriptSegments?: TranscriptSegmentUncheckedUpdateManyWithoutInterviewNestedInput
+    questionFeedback?: InterviewQuestionFeedbackUncheckedUpdateManyWithoutInterviewNestedInput
   }
 
   export type InterviewAnswerUpsertWithWhereUniqueWithoutQuestionInput = {
@@ -44119,6 +46318,22 @@ export namespace Prisma {
   export type InterviewAnswerUpdateManyWithWhereWithoutQuestionInput = {
     where: InterviewAnswerScalarWhereInput
     data: XOR<InterviewAnswerUpdateManyMutationInput, InterviewAnswerUncheckedUpdateManyWithoutQuestionInput>
+  }
+
+  export type InterviewQuestionFeedbackUpsertWithWhereUniqueWithoutQuestionInput = {
+    where: InterviewQuestionFeedbackWhereUniqueInput
+    update: XOR<InterviewQuestionFeedbackUpdateWithoutQuestionInput, InterviewQuestionFeedbackUncheckedUpdateWithoutQuestionInput>
+    create: XOR<InterviewQuestionFeedbackCreateWithoutQuestionInput, InterviewQuestionFeedbackUncheckedCreateWithoutQuestionInput>
+  }
+
+  export type InterviewQuestionFeedbackUpdateWithWhereUniqueWithoutQuestionInput = {
+    where: InterviewQuestionFeedbackWhereUniqueInput
+    data: XOR<InterviewQuestionFeedbackUpdateWithoutQuestionInput, InterviewQuestionFeedbackUncheckedUpdateWithoutQuestionInput>
+  }
+
+  export type InterviewQuestionFeedbackUpdateManyWithWhereWithoutQuestionInput = {
+    where: InterviewQuestionFeedbackScalarWhereInput
+    data: XOR<InterviewQuestionFeedbackUpdateManyMutationInput, InterviewQuestionFeedbackUncheckedUpdateManyWithoutQuestionInput>
   }
 
   export type InterviewCreateWithoutAnswersInput = {
@@ -44150,6 +46365,7 @@ export namespace Prisma {
     sessions?: InterviewSessionCreateNestedManyWithoutInterviewInput
     questions?: InterviewQuestionCreateNestedManyWithoutInterviewInput
     transcriptSegments?: TranscriptSegmentCreateNestedManyWithoutInterviewInput
+    questionFeedback?: InterviewQuestionFeedbackCreateNestedManyWithoutInterviewInput
   }
 
   export type InterviewUncheckedCreateWithoutAnswersInput = {
@@ -44181,6 +46397,7 @@ export namespace Prisma {
     sessions?: InterviewSessionUncheckedCreateNestedManyWithoutInterviewInput
     questions?: InterviewQuestionUncheckedCreateNestedManyWithoutInterviewInput
     transcriptSegments?: TranscriptSegmentUncheckedCreateNestedManyWithoutInterviewInput
+    questionFeedback?: InterviewQuestionFeedbackUncheckedCreateNestedManyWithoutInterviewInput
   }
 
   export type InterviewCreateOrConnectWithoutAnswersInput = {
@@ -44200,6 +46417,7 @@ export namespace Prisma {
     sequence: number
     createdAt?: Date | string
     interview: InterviewCreateNestedOneWithoutQuestionsInput
+    feedback?: InterviewQuestionFeedbackCreateNestedManyWithoutQuestionInput
   }
 
   export type InterviewQuestionUncheckedCreateWithoutAnswersInput = {
@@ -44214,11 +46432,58 @@ export namespace Prisma {
     context?: JsonNullValueInput | InputJsonValue
     sequence: number
     createdAt?: Date | string
+    feedback?: InterviewQuestionFeedbackUncheckedCreateNestedManyWithoutQuestionInput
   }
 
   export type InterviewQuestionCreateOrConnectWithoutAnswersInput = {
     where: InterviewQuestionWhereUniqueInput
     create: XOR<InterviewQuestionCreateWithoutAnswersInput, InterviewQuestionUncheckedCreateWithoutAnswersInput>
+  }
+
+  export type InterviewQuestionFeedbackCreateWithoutAnswerInput = {
+    id?: string
+    technicalAccuracy: number
+    communicationClarity: number
+    problemSolvingStructure: number
+    pacingAndConciseness: number
+    overallScore: number
+    strengths?: JsonNullValueInput | InputJsonValue
+    keyOmissions?: JsonNullValueInput | InputJsonValue
+    improvedAnswer?: string | null
+    actionableTips?: JsonNullValueInput | InputJsonValue
+    source?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    interview: InterviewCreateNestedOneWithoutQuestionFeedbackInput
+    question: InterviewQuestionCreateNestedOneWithoutFeedbackInput
+  }
+
+  export type InterviewQuestionFeedbackUncheckedCreateWithoutAnswerInput = {
+    id?: string
+    interviewId: string
+    questionId: string
+    technicalAccuracy: number
+    communicationClarity: number
+    problemSolvingStructure: number
+    pacingAndConciseness: number
+    overallScore: number
+    strengths?: JsonNullValueInput | InputJsonValue
+    keyOmissions?: JsonNullValueInput | InputJsonValue
+    improvedAnswer?: string | null
+    actionableTips?: JsonNullValueInput | InputJsonValue
+    source?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type InterviewQuestionFeedbackCreateOrConnectWithoutAnswerInput = {
+    where: InterviewQuestionFeedbackWhereUniqueInput
+    create: XOR<InterviewQuestionFeedbackCreateWithoutAnswerInput, InterviewQuestionFeedbackUncheckedCreateWithoutAnswerInput>
+  }
+
+  export type InterviewQuestionFeedbackCreateManyAnswerInputEnvelope = {
+    data: InterviewQuestionFeedbackCreateManyAnswerInput | InterviewQuestionFeedbackCreateManyAnswerInput[]
+    skipDuplicates?: boolean
   }
 
   export type InterviewUpsertWithoutAnswersInput = {
@@ -44261,6 +46526,7 @@ export namespace Prisma {
     sessions?: InterviewSessionUpdateManyWithoutInterviewNestedInput
     questions?: InterviewQuestionUpdateManyWithoutInterviewNestedInput
     transcriptSegments?: TranscriptSegmentUpdateManyWithoutInterviewNestedInput
+    questionFeedback?: InterviewQuestionFeedbackUpdateManyWithoutInterviewNestedInput
   }
 
   export type InterviewUncheckedUpdateWithoutAnswersInput = {
@@ -44292,6 +46558,7 @@ export namespace Prisma {
     sessions?: InterviewSessionUncheckedUpdateManyWithoutInterviewNestedInput
     questions?: InterviewQuestionUncheckedUpdateManyWithoutInterviewNestedInput
     transcriptSegments?: TranscriptSegmentUncheckedUpdateManyWithoutInterviewNestedInput
+    questionFeedback?: InterviewQuestionFeedbackUncheckedUpdateManyWithoutInterviewNestedInput
   }
 
   export type InterviewQuestionUpsertWithoutAnswersInput = {
@@ -44317,6 +46584,7 @@ export namespace Prisma {
     sequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     interview?: InterviewUpdateOneRequiredWithoutQuestionsNestedInput
+    feedback?: InterviewQuestionFeedbackUpdateManyWithoutQuestionNestedInput
   }
 
   export type InterviewQuestionUncheckedUpdateWithoutAnswersInput = {
@@ -44330,6 +46598,299 @@ export namespace Prisma {
     followUpToId?: NullableStringFieldUpdateOperationsInput | string | null
     context?: JsonNullValueInput | InputJsonValue
     sequence?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    feedback?: InterviewQuestionFeedbackUncheckedUpdateManyWithoutQuestionNestedInput
+  }
+
+  export type InterviewQuestionFeedbackUpsertWithWhereUniqueWithoutAnswerInput = {
+    where: InterviewQuestionFeedbackWhereUniqueInput
+    update: XOR<InterviewQuestionFeedbackUpdateWithoutAnswerInput, InterviewQuestionFeedbackUncheckedUpdateWithoutAnswerInput>
+    create: XOR<InterviewQuestionFeedbackCreateWithoutAnswerInput, InterviewQuestionFeedbackUncheckedCreateWithoutAnswerInput>
+  }
+
+  export type InterviewQuestionFeedbackUpdateWithWhereUniqueWithoutAnswerInput = {
+    where: InterviewQuestionFeedbackWhereUniqueInput
+    data: XOR<InterviewQuestionFeedbackUpdateWithoutAnswerInput, InterviewQuestionFeedbackUncheckedUpdateWithoutAnswerInput>
+  }
+
+  export type InterviewQuestionFeedbackUpdateManyWithWhereWithoutAnswerInput = {
+    where: InterviewQuestionFeedbackScalarWhereInput
+    data: XOR<InterviewQuestionFeedbackUpdateManyMutationInput, InterviewQuestionFeedbackUncheckedUpdateManyWithoutAnswerInput>
+  }
+
+  export type InterviewCreateWithoutQuestionFeedbackInput = {
+    id?: string
+    interviewKey: string
+    secureToken: string
+    inviteExpiresAt?: Date | string | null
+    status?: $Enums.InterviewStatus
+    plan?: JsonNullValueInput | InputJsonValue
+    currentSectionIndex?: number
+    totalDuration?: number
+    elapsedSeconds?: number
+    startedAt?: Date | string | null
+    endedAt?: Date | string | null
+    recordingUrl?: string | null
+    transcript?: string | null
+    candidateFeedback?: JsonNullValueInput | InputJsonValue
+    recordingConsent?: boolean
+    recordingDisclosed?: boolean
+    deviceInfo?: JsonNullValueInput | InputJsonValue
+    ipAddress?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    candidate: CandidateCreateNestedOneWithoutInterviewsInput
+    job: JobCreateNestedOneWithoutInterviewsInput
+    evaluation?: InterviewEvaluationCreateNestedOneWithoutInterviewInput
+    report?: InterviewReportCreateNestedOneWithoutInterviewInput
+    organization: OrganizationCreateNestedOneWithoutInterviewsInput
+    sessions?: InterviewSessionCreateNestedManyWithoutInterviewInput
+    questions?: InterviewQuestionCreateNestedManyWithoutInterviewInput
+    answers?: InterviewAnswerCreateNestedManyWithoutInterviewInput
+    transcriptSegments?: TranscriptSegmentCreateNestedManyWithoutInterviewInput
+  }
+
+  export type InterviewUncheckedCreateWithoutQuestionFeedbackInput = {
+    id?: string
+    candidateId: string
+    jobId: string
+    interviewKey: string
+    secureToken: string
+    inviteExpiresAt?: Date | string | null
+    status?: $Enums.InterviewStatus
+    plan?: JsonNullValueInput | InputJsonValue
+    currentSectionIndex?: number
+    totalDuration?: number
+    elapsedSeconds?: number
+    startedAt?: Date | string | null
+    endedAt?: Date | string | null
+    recordingUrl?: string | null
+    transcript?: string | null
+    candidateFeedback?: JsonNullValueInput | InputJsonValue
+    recordingConsent?: boolean
+    recordingDisclosed?: boolean
+    deviceInfo?: JsonNullValueInput | InputJsonValue
+    ipAddress?: string | null
+    organizationId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    evaluation?: InterviewEvaluationUncheckedCreateNestedOneWithoutInterviewInput
+    report?: InterviewReportUncheckedCreateNestedOneWithoutInterviewInput
+    sessions?: InterviewSessionUncheckedCreateNestedManyWithoutInterviewInput
+    questions?: InterviewQuestionUncheckedCreateNestedManyWithoutInterviewInput
+    answers?: InterviewAnswerUncheckedCreateNestedManyWithoutInterviewInput
+    transcriptSegments?: TranscriptSegmentUncheckedCreateNestedManyWithoutInterviewInput
+  }
+
+  export type InterviewCreateOrConnectWithoutQuestionFeedbackInput = {
+    where: InterviewWhereUniqueInput
+    create: XOR<InterviewCreateWithoutQuestionFeedbackInput, InterviewUncheckedCreateWithoutQuestionFeedbackInput>
+  }
+
+  export type InterviewQuestionCreateWithoutFeedbackInput = {
+    id?: string
+    section: string
+    question: string
+    type: string
+    difficulty: string
+    isFollowUp?: boolean
+    followUpToId?: string | null
+    context?: JsonNullValueInput | InputJsonValue
+    sequence: number
+    createdAt?: Date | string
+    interview: InterviewCreateNestedOneWithoutQuestionsInput
+    answers?: InterviewAnswerCreateNestedManyWithoutQuestionInput
+  }
+
+  export type InterviewQuestionUncheckedCreateWithoutFeedbackInput = {
+    id?: string
+    interviewId: string
+    section: string
+    question: string
+    type: string
+    difficulty: string
+    isFollowUp?: boolean
+    followUpToId?: string | null
+    context?: JsonNullValueInput | InputJsonValue
+    sequence: number
+    createdAt?: Date | string
+    answers?: InterviewAnswerUncheckedCreateNestedManyWithoutQuestionInput
+  }
+
+  export type InterviewQuestionCreateOrConnectWithoutFeedbackInput = {
+    where: InterviewQuestionWhereUniqueInput
+    create: XOR<InterviewQuestionCreateWithoutFeedbackInput, InterviewQuestionUncheckedCreateWithoutFeedbackInput>
+  }
+
+  export type InterviewAnswerCreateWithoutFeedbackInput = {
+    id?: string
+    answer: string
+    durationSeconds: number
+    confidence?: number | null
+    createdAt?: Date | string
+    interview: InterviewCreateNestedOneWithoutAnswersInput
+    question: InterviewQuestionCreateNestedOneWithoutAnswersInput
+  }
+
+  export type InterviewAnswerUncheckedCreateWithoutFeedbackInput = {
+    id?: string
+    interviewId: string
+    questionId: string
+    answer: string
+    durationSeconds: number
+    confidence?: number | null
+    createdAt?: Date | string
+  }
+
+  export type InterviewAnswerCreateOrConnectWithoutFeedbackInput = {
+    where: InterviewAnswerWhereUniqueInput
+    create: XOR<InterviewAnswerCreateWithoutFeedbackInput, InterviewAnswerUncheckedCreateWithoutFeedbackInput>
+  }
+
+  export type InterviewUpsertWithoutQuestionFeedbackInput = {
+    update: XOR<InterviewUpdateWithoutQuestionFeedbackInput, InterviewUncheckedUpdateWithoutQuestionFeedbackInput>
+    create: XOR<InterviewCreateWithoutQuestionFeedbackInput, InterviewUncheckedCreateWithoutQuestionFeedbackInput>
+    where?: InterviewWhereInput
+  }
+
+  export type InterviewUpdateToOneWithWhereWithoutQuestionFeedbackInput = {
+    where?: InterviewWhereInput
+    data: XOR<InterviewUpdateWithoutQuestionFeedbackInput, InterviewUncheckedUpdateWithoutQuestionFeedbackInput>
+  }
+
+  export type InterviewUpdateWithoutQuestionFeedbackInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    interviewKey?: StringFieldUpdateOperationsInput | string
+    secureToken?: StringFieldUpdateOperationsInput | string
+    inviteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
+    plan?: JsonNullValueInput | InputJsonValue
+    currentSectionIndex?: IntFieldUpdateOperationsInput | number
+    totalDuration?: IntFieldUpdateOperationsInput | number
+    elapsedSeconds?: IntFieldUpdateOperationsInput | number
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    transcript?: NullableStringFieldUpdateOperationsInput | string | null
+    candidateFeedback?: JsonNullValueInput | InputJsonValue
+    recordingConsent?: BoolFieldUpdateOperationsInput | boolean
+    recordingDisclosed?: BoolFieldUpdateOperationsInput | boolean
+    deviceInfo?: JsonNullValueInput | InputJsonValue
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    candidate?: CandidateUpdateOneRequiredWithoutInterviewsNestedInput
+    job?: JobUpdateOneRequiredWithoutInterviewsNestedInput
+    evaluation?: InterviewEvaluationUpdateOneWithoutInterviewNestedInput
+    report?: InterviewReportUpdateOneWithoutInterviewNestedInput
+    organization?: OrganizationUpdateOneRequiredWithoutInterviewsNestedInput
+    sessions?: InterviewSessionUpdateManyWithoutInterviewNestedInput
+    questions?: InterviewQuestionUpdateManyWithoutInterviewNestedInput
+    answers?: InterviewAnswerUpdateManyWithoutInterviewNestedInput
+    transcriptSegments?: TranscriptSegmentUpdateManyWithoutInterviewNestedInput
+  }
+
+  export type InterviewUncheckedUpdateWithoutQuestionFeedbackInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    candidateId?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    interviewKey?: StringFieldUpdateOperationsInput | string
+    secureToken?: StringFieldUpdateOperationsInput | string
+    inviteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
+    plan?: JsonNullValueInput | InputJsonValue
+    currentSectionIndex?: IntFieldUpdateOperationsInput | number
+    totalDuration?: IntFieldUpdateOperationsInput | number
+    elapsedSeconds?: IntFieldUpdateOperationsInput | number
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    transcript?: NullableStringFieldUpdateOperationsInput | string | null
+    candidateFeedback?: JsonNullValueInput | InputJsonValue
+    recordingConsent?: BoolFieldUpdateOperationsInput | boolean
+    recordingDisclosed?: BoolFieldUpdateOperationsInput | boolean
+    deviceInfo?: JsonNullValueInput | InputJsonValue
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    organizationId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    evaluation?: InterviewEvaluationUncheckedUpdateOneWithoutInterviewNestedInput
+    report?: InterviewReportUncheckedUpdateOneWithoutInterviewNestedInput
+    sessions?: InterviewSessionUncheckedUpdateManyWithoutInterviewNestedInput
+    questions?: InterviewQuestionUncheckedUpdateManyWithoutInterviewNestedInput
+    answers?: InterviewAnswerUncheckedUpdateManyWithoutInterviewNestedInput
+    transcriptSegments?: TranscriptSegmentUncheckedUpdateManyWithoutInterviewNestedInput
+  }
+
+  export type InterviewQuestionUpsertWithoutFeedbackInput = {
+    update: XOR<InterviewQuestionUpdateWithoutFeedbackInput, InterviewQuestionUncheckedUpdateWithoutFeedbackInput>
+    create: XOR<InterviewQuestionCreateWithoutFeedbackInput, InterviewQuestionUncheckedCreateWithoutFeedbackInput>
+    where?: InterviewQuestionWhereInput
+  }
+
+  export type InterviewQuestionUpdateToOneWithWhereWithoutFeedbackInput = {
+    where?: InterviewQuestionWhereInput
+    data: XOR<InterviewQuestionUpdateWithoutFeedbackInput, InterviewQuestionUncheckedUpdateWithoutFeedbackInput>
+  }
+
+  export type InterviewQuestionUpdateWithoutFeedbackInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    section?: StringFieldUpdateOperationsInput | string
+    question?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    difficulty?: StringFieldUpdateOperationsInput | string
+    isFollowUp?: BoolFieldUpdateOperationsInput | boolean
+    followUpToId?: NullableStringFieldUpdateOperationsInput | string | null
+    context?: JsonNullValueInput | InputJsonValue
+    sequence?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    interview?: InterviewUpdateOneRequiredWithoutQuestionsNestedInput
+    answers?: InterviewAnswerUpdateManyWithoutQuestionNestedInput
+  }
+
+  export type InterviewQuestionUncheckedUpdateWithoutFeedbackInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    interviewId?: StringFieldUpdateOperationsInput | string
+    section?: StringFieldUpdateOperationsInput | string
+    question?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    difficulty?: StringFieldUpdateOperationsInput | string
+    isFollowUp?: BoolFieldUpdateOperationsInput | boolean
+    followUpToId?: NullableStringFieldUpdateOperationsInput | string | null
+    context?: JsonNullValueInput | InputJsonValue
+    sequence?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    answers?: InterviewAnswerUncheckedUpdateManyWithoutQuestionNestedInput
+  }
+
+  export type InterviewAnswerUpsertWithoutFeedbackInput = {
+    update: XOR<InterviewAnswerUpdateWithoutFeedbackInput, InterviewAnswerUncheckedUpdateWithoutFeedbackInput>
+    create: XOR<InterviewAnswerCreateWithoutFeedbackInput, InterviewAnswerUncheckedCreateWithoutFeedbackInput>
+    where?: InterviewAnswerWhereInput
+  }
+
+  export type InterviewAnswerUpdateToOneWithWhereWithoutFeedbackInput = {
+    where?: InterviewAnswerWhereInput
+    data: XOR<InterviewAnswerUpdateWithoutFeedbackInput, InterviewAnswerUncheckedUpdateWithoutFeedbackInput>
+  }
+
+  export type InterviewAnswerUpdateWithoutFeedbackInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    answer?: StringFieldUpdateOperationsInput | string
+    durationSeconds?: IntFieldUpdateOperationsInput | number
+    confidence?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    interview?: InterviewUpdateOneRequiredWithoutAnswersNestedInput
+    question?: InterviewQuestionUpdateOneRequiredWithoutAnswersNestedInput
+  }
+
+  export type InterviewAnswerUncheckedUpdateWithoutFeedbackInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    interviewId?: StringFieldUpdateOperationsInput | string
+    questionId?: StringFieldUpdateOperationsInput | string
+    answer?: StringFieldUpdateOperationsInput | string
+    durationSeconds?: IntFieldUpdateOperationsInput | number
+    confidence?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -44362,6 +46923,7 @@ export namespace Prisma {
     sessions?: InterviewSessionCreateNestedManyWithoutInterviewInput
     questions?: InterviewQuestionCreateNestedManyWithoutInterviewInput
     answers?: InterviewAnswerCreateNestedManyWithoutInterviewInput
+    questionFeedback?: InterviewQuestionFeedbackCreateNestedManyWithoutInterviewInput
   }
 
   export type InterviewUncheckedCreateWithoutTranscriptSegmentsInput = {
@@ -44393,6 +46955,7 @@ export namespace Prisma {
     sessions?: InterviewSessionUncheckedCreateNestedManyWithoutInterviewInput
     questions?: InterviewQuestionUncheckedCreateNestedManyWithoutInterviewInput
     answers?: InterviewAnswerUncheckedCreateNestedManyWithoutInterviewInput
+    questionFeedback?: InterviewQuestionFeedbackUncheckedCreateNestedManyWithoutInterviewInput
   }
 
   export type InterviewCreateOrConnectWithoutTranscriptSegmentsInput = {
@@ -44440,6 +47003,7 @@ export namespace Prisma {
     sessions?: InterviewSessionUpdateManyWithoutInterviewNestedInput
     questions?: InterviewQuestionUpdateManyWithoutInterviewNestedInput
     answers?: InterviewAnswerUpdateManyWithoutInterviewNestedInput
+    questionFeedback?: InterviewQuestionFeedbackUpdateManyWithoutInterviewNestedInput
   }
 
   export type InterviewUncheckedUpdateWithoutTranscriptSegmentsInput = {
@@ -44471,6 +47035,7 @@ export namespace Prisma {
     sessions?: InterviewSessionUncheckedUpdateManyWithoutInterviewNestedInput
     questions?: InterviewQuestionUncheckedUpdateManyWithoutInterviewNestedInput
     answers?: InterviewAnswerUncheckedUpdateManyWithoutInterviewNestedInput
+    questionFeedback?: InterviewQuestionFeedbackUncheckedUpdateManyWithoutInterviewNestedInput
   }
 
   export type InterviewCreateWithoutEvaluationInput = {
@@ -44502,6 +47067,7 @@ export namespace Prisma {
     questions?: InterviewQuestionCreateNestedManyWithoutInterviewInput
     answers?: InterviewAnswerCreateNestedManyWithoutInterviewInput
     transcriptSegments?: TranscriptSegmentCreateNestedManyWithoutInterviewInput
+    questionFeedback?: InterviewQuestionFeedbackCreateNestedManyWithoutInterviewInput
   }
 
   export type InterviewUncheckedCreateWithoutEvaluationInput = {
@@ -44533,6 +47099,7 @@ export namespace Prisma {
     questions?: InterviewQuestionUncheckedCreateNestedManyWithoutInterviewInput
     answers?: InterviewAnswerUncheckedCreateNestedManyWithoutInterviewInput
     transcriptSegments?: TranscriptSegmentUncheckedCreateNestedManyWithoutInterviewInput
+    questionFeedback?: InterviewQuestionFeedbackUncheckedCreateNestedManyWithoutInterviewInput
   }
 
   export type InterviewCreateOrConnectWithoutEvaluationInput = {
@@ -44580,6 +47147,7 @@ export namespace Prisma {
     questions?: InterviewQuestionUpdateManyWithoutInterviewNestedInput
     answers?: InterviewAnswerUpdateManyWithoutInterviewNestedInput
     transcriptSegments?: TranscriptSegmentUpdateManyWithoutInterviewNestedInput
+    questionFeedback?: InterviewQuestionFeedbackUpdateManyWithoutInterviewNestedInput
   }
 
   export type InterviewUncheckedUpdateWithoutEvaluationInput = {
@@ -44611,6 +47179,7 @@ export namespace Prisma {
     questions?: InterviewQuestionUncheckedUpdateManyWithoutInterviewNestedInput
     answers?: InterviewAnswerUncheckedUpdateManyWithoutInterviewNestedInput
     transcriptSegments?: TranscriptSegmentUncheckedUpdateManyWithoutInterviewNestedInput
+    questionFeedback?: InterviewQuestionFeedbackUncheckedUpdateManyWithoutInterviewNestedInput
   }
 
   export type InterviewCreateWithoutReportInput = {
@@ -44642,6 +47211,7 @@ export namespace Prisma {
     questions?: InterviewQuestionCreateNestedManyWithoutInterviewInput
     answers?: InterviewAnswerCreateNestedManyWithoutInterviewInput
     transcriptSegments?: TranscriptSegmentCreateNestedManyWithoutInterviewInput
+    questionFeedback?: InterviewQuestionFeedbackCreateNestedManyWithoutInterviewInput
   }
 
   export type InterviewUncheckedCreateWithoutReportInput = {
@@ -44673,6 +47243,7 @@ export namespace Prisma {
     questions?: InterviewQuestionUncheckedCreateNestedManyWithoutInterviewInput
     answers?: InterviewAnswerUncheckedCreateNestedManyWithoutInterviewInput
     transcriptSegments?: TranscriptSegmentUncheckedCreateNestedManyWithoutInterviewInput
+    questionFeedback?: InterviewQuestionFeedbackUncheckedCreateNestedManyWithoutInterviewInput
   }
 
   export type InterviewCreateOrConnectWithoutReportInput = {
@@ -44720,6 +47291,7 @@ export namespace Prisma {
     questions?: InterviewQuestionUpdateManyWithoutInterviewNestedInput
     answers?: InterviewAnswerUpdateManyWithoutInterviewNestedInput
     transcriptSegments?: TranscriptSegmentUpdateManyWithoutInterviewNestedInput
+    questionFeedback?: InterviewQuestionFeedbackUpdateManyWithoutInterviewNestedInput
   }
 
   export type InterviewUncheckedUpdateWithoutReportInput = {
@@ -44751,6 +47323,7 @@ export namespace Prisma {
     questions?: InterviewQuestionUncheckedUpdateManyWithoutInterviewNestedInput
     answers?: InterviewAnswerUncheckedUpdateManyWithoutInterviewNestedInput
     transcriptSegments?: TranscriptSegmentUncheckedUpdateManyWithoutInterviewNestedInput
+    questionFeedback?: InterviewQuestionFeedbackUncheckedUpdateManyWithoutInterviewNestedInput
   }
 
   export type UserCreateWithoutAuditLogsInput = {
@@ -45515,6 +48088,7 @@ export namespace Prisma {
     questions?: InterviewQuestionUpdateManyWithoutInterviewNestedInput
     answers?: InterviewAnswerUpdateManyWithoutInterviewNestedInput
     transcriptSegments?: TranscriptSegmentUpdateManyWithoutInterviewNestedInput
+    questionFeedback?: InterviewQuestionFeedbackUpdateManyWithoutInterviewNestedInput
   }
 
   export type InterviewUncheckedUpdateWithoutOrganizationInput = {
@@ -45546,6 +48120,7 @@ export namespace Prisma {
     questions?: InterviewQuestionUncheckedUpdateManyWithoutInterviewNestedInput
     answers?: InterviewAnswerUncheckedUpdateManyWithoutInterviewNestedInput
     transcriptSegments?: TranscriptSegmentUncheckedUpdateManyWithoutInterviewNestedInput
+    questionFeedback?: InterviewQuestionFeedbackUncheckedUpdateManyWithoutInterviewNestedInput
   }
 
   export type InterviewUncheckedUpdateManyWithoutOrganizationInput = {
@@ -46145,6 +48720,7 @@ export namespace Prisma {
     questions?: InterviewQuestionUpdateManyWithoutInterviewNestedInput
     answers?: InterviewAnswerUpdateManyWithoutInterviewNestedInput
     transcriptSegments?: TranscriptSegmentUpdateManyWithoutInterviewNestedInput
+    questionFeedback?: InterviewQuestionFeedbackUpdateManyWithoutInterviewNestedInput
   }
 
   export type InterviewUncheckedUpdateWithoutJobInput = {
@@ -46176,6 +48752,7 @@ export namespace Prisma {
     questions?: InterviewQuestionUncheckedUpdateManyWithoutInterviewNestedInput
     answers?: InterviewAnswerUncheckedUpdateManyWithoutInterviewNestedInput
     transcriptSegments?: TranscriptSegmentUncheckedUpdateManyWithoutInterviewNestedInput
+    questionFeedback?: InterviewQuestionFeedbackUncheckedUpdateManyWithoutInterviewNestedInput
   }
 
   export type InterviewUncheckedUpdateManyWithoutJobInput = {
@@ -46353,6 +48930,7 @@ export namespace Prisma {
     questions?: InterviewQuestionUpdateManyWithoutInterviewNestedInput
     answers?: InterviewAnswerUpdateManyWithoutInterviewNestedInput
     transcriptSegments?: TranscriptSegmentUpdateManyWithoutInterviewNestedInput
+    questionFeedback?: InterviewQuestionFeedbackUpdateManyWithoutInterviewNestedInput
   }
 
   export type InterviewUncheckedUpdateWithoutCandidateInput = {
@@ -46384,6 +48962,7 @@ export namespace Prisma {
     questions?: InterviewQuestionUncheckedUpdateManyWithoutInterviewNestedInput
     answers?: InterviewAnswerUncheckedUpdateManyWithoutInterviewNestedInput
     transcriptSegments?: TranscriptSegmentUncheckedUpdateManyWithoutInterviewNestedInput
+    questionFeedback?: InterviewQuestionFeedbackUncheckedUpdateManyWithoutInterviewNestedInput
   }
 
   export type InterviewUncheckedUpdateManyWithoutCandidateInput = {
@@ -46452,6 +49031,24 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type InterviewQuestionFeedbackCreateManyInterviewInput = {
+    id?: string
+    questionId: string
+    answerId?: string | null
+    technicalAccuracy: number
+    communicationClarity: number
+    problemSolvingStructure: number
+    pacingAndConciseness: number
+    overallScore: number
+    strengths?: JsonNullValueInput | InputJsonValue
+    keyOmissions?: JsonNullValueInput | InputJsonValue
+    improvedAnswer?: string | null
+    actionableTips?: JsonNullValueInput | InputJsonValue
+    source?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type InterviewSessionUpdateWithoutInterviewInput = {
     id?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
@@ -46491,6 +49088,7 @@ export namespace Prisma {
     sequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     answers?: InterviewAnswerUpdateManyWithoutQuestionNestedInput
+    feedback?: InterviewQuestionFeedbackUpdateManyWithoutQuestionNestedInput
   }
 
   export type InterviewQuestionUncheckedUpdateWithoutInterviewInput = {
@@ -46505,6 +49103,7 @@ export namespace Prisma {
     sequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     answers?: InterviewAnswerUncheckedUpdateManyWithoutQuestionNestedInput
+    feedback?: InterviewQuestionFeedbackUncheckedUpdateManyWithoutQuestionNestedInput
   }
 
   export type InterviewQuestionUncheckedUpdateManyWithoutInterviewInput = {
@@ -46527,6 +49126,7 @@ export namespace Prisma {
     confidence?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     question?: InterviewQuestionUpdateOneRequiredWithoutAnswersNestedInput
+    feedback?: InterviewQuestionFeedbackUpdateManyWithoutAnswerNestedInput
   }
 
   export type InterviewAnswerUncheckedUpdateWithoutInterviewInput = {
@@ -46536,6 +49136,7 @@ export namespace Prisma {
     durationSeconds?: IntFieldUpdateOperationsInput | number
     confidence?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    feedback?: InterviewQuestionFeedbackUncheckedUpdateManyWithoutAnswerNestedInput
   }
 
   export type InterviewAnswerUncheckedUpdateManyWithoutInterviewInput = {
@@ -46577,6 +49178,60 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type InterviewQuestionFeedbackUpdateWithoutInterviewInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    technicalAccuracy?: FloatFieldUpdateOperationsInput | number
+    communicationClarity?: FloatFieldUpdateOperationsInput | number
+    problemSolvingStructure?: FloatFieldUpdateOperationsInput | number
+    pacingAndConciseness?: FloatFieldUpdateOperationsInput | number
+    overallScore?: FloatFieldUpdateOperationsInput | number
+    strengths?: JsonNullValueInput | InputJsonValue
+    keyOmissions?: JsonNullValueInput | InputJsonValue
+    improvedAnswer?: NullableStringFieldUpdateOperationsInput | string | null
+    actionableTips?: JsonNullValueInput | InputJsonValue
+    source?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    question?: InterviewQuestionUpdateOneRequiredWithoutFeedbackNestedInput
+    answer?: InterviewAnswerUpdateOneWithoutFeedbackNestedInput
+  }
+
+  export type InterviewQuestionFeedbackUncheckedUpdateWithoutInterviewInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    questionId?: StringFieldUpdateOperationsInput | string
+    answerId?: NullableStringFieldUpdateOperationsInput | string | null
+    technicalAccuracy?: FloatFieldUpdateOperationsInput | number
+    communicationClarity?: FloatFieldUpdateOperationsInput | number
+    problemSolvingStructure?: FloatFieldUpdateOperationsInput | number
+    pacingAndConciseness?: FloatFieldUpdateOperationsInput | number
+    overallScore?: FloatFieldUpdateOperationsInput | number
+    strengths?: JsonNullValueInput | InputJsonValue
+    keyOmissions?: JsonNullValueInput | InputJsonValue
+    improvedAnswer?: NullableStringFieldUpdateOperationsInput | string | null
+    actionableTips?: JsonNullValueInput | InputJsonValue
+    source?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InterviewQuestionFeedbackUncheckedUpdateManyWithoutInterviewInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    questionId?: StringFieldUpdateOperationsInput | string
+    answerId?: NullableStringFieldUpdateOperationsInput | string | null
+    technicalAccuracy?: FloatFieldUpdateOperationsInput | number
+    communicationClarity?: FloatFieldUpdateOperationsInput | number
+    problemSolvingStructure?: FloatFieldUpdateOperationsInput | number
+    pacingAndConciseness?: FloatFieldUpdateOperationsInput | number
+    overallScore?: FloatFieldUpdateOperationsInput | number
+    strengths?: JsonNullValueInput | InputJsonValue
+    keyOmissions?: JsonNullValueInput | InputJsonValue
+    improvedAnswer?: NullableStringFieldUpdateOperationsInput | string | null
+    actionableTips?: JsonNullValueInput | InputJsonValue
+    source?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type InterviewAnswerCreateManyQuestionInput = {
     id?: string
     interviewId: string
@@ -46586,6 +49241,24 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type InterviewQuestionFeedbackCreateManyQuestionInput = {
+    id?: string
+    interviewId: string
+    answerId?: string | null
+    technicalAccuracy: number
+    communicationClarity: number
+    problemSolvingStructure: number
+    pacingAndConciseness: number
+    overallScore: number
+    strengths?: JsonNullValueInput | InputJsonValue
+    keyOmissions?: JsonNullValueInput | InputJsonValue
+    improvedAnswer?: string | null
+    actionableTips?: JsonNullValueInput | InputJsonValue
+    source?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type InterviewAnswerUpdateWithoutQuestionInput = {
     id?: StringFieldUpdateOperationsInput | string
     answer?: StringFieldUpdateOperationsInput | string
@@ -46593,6 +49266,7 @@ export namespace Prisma {
     confidence?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     interview?: InterviewUpdateOneRequiredWithoutAnswersNestedInput
+    feedback?: InterviewQuestionFeedbackUpdateManyWithoutAnswerNestedInput
   }
 
   export type InterviewAnswerUncheckedUpdateWithoutQuestionInput = {
@@ -46602,6 +49276,7 @@ export namespace Prisma {
     durationSeconds?: IntFieldUpdateOperationsInput | number
     confidence?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    feedback?: InterviewQuestionFeedbackUncheckedUpdateManyWithoutAnswerNestedInput
   }
 
   export type InterviewAnswerUncheckedUpdateManyWithoutQuestionInput = {
@@ -46611,6 +49286,132 @@ export namespace Prisma {
     durationSeconds?: IntFieldUpdateOperationsInput | number
     confidence?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InterviewQuestionFeedbackUpdateWithoutQuestionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    technicalAccuracy?: FloatFieldUpdateOperationsInput | number
+    communicationClarity?: FloatFieldUpdateOperationsInput | number
+    problemSolvingStructure?: FloatFieldUpdateOperationsInput | number
+    pacingAndConciseness?: FloatFieldUpdateOperationsInput | number
+    overallScore?: FloatFieldUpdateOperationsInput | number
+    strengths?: JsonNullValueInput | InputJsonValue
+    keyOmissions?: JsonNullValueInput | InputJsonValue
+    improvedAnswer?: NullableStringFieldUpdateOperationsInput | string | null
+    actionableTips?: JsonNullValueInput | InputJsonValue
+    source?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    interview?: InterviewUpdateOneRequiredWithoutQuestionFeedbackNestedInput
+    answer?: InterviewAnswerUpdateOneWithoutFeedbackNestedInput
+  }
+
+  export type InterviewQuestionFeedbackUncheckedUpdateWithoutQuestionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    interviewId?: StringFieldUpdateOperationsInput | string
+    answerId?: NullableStringFieldUpdateOperationsInput | string | null
+    technicalAccuracy?: FloatFieldUpdateOperationsInput | number
+    communicationClarity?: FloatFieldUpdateOperationsInput | number
+    problemSolvingStructure?: FloatFieldUpdateOperationsInput | number
+    pacingAndConciseness?: FloatFieldUpdateOperationsInput | number
+    overallScore?: FloatFieldUpdateOperationsInput | number
+    strengths?: JsonNullValueInput | InputJsonValue
+    keyOmissions?: JsonNullValueInput | InputJsonValue
+    improvedAnswer?: NullableStringFieldUpdateOperationsInput | string | null
+    actionableTips?: JsonNullValueInput | InputJsonValue
+    source?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InterviewQuestionFeedbackUncheckedUpdateManyWithoutQuestionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    interviewId?: StringFieldUpdateOperationsInput | string
+    answerId?: NullableStringFieldUpdateOperationsInput | string | null
+    technicalAccuracy?: FloatFieldUpdateOperationsInput | number
+    communicationClarity?: FloatFieldUpdateOperationsInput | number
+    problemSolvingStructure?: FloatFieldUpdateOperationsInput | number
+    pacingAndConciseness?: FloatFieldUpdateOperationsInput | number
+    overallScore?: FloatFieldUpdateOperationsInput | number
+    strengths?: JsonNullValueInput | InputJsonValue
+    keyOmissions?: JsonNullValueInput | InputJsonValue
+    improvedAnswer?: NullableStringFieldUpdateOperationsInput | string | null
+    actionableTips?: JsonNullValueInput | InputJsonValue
+    source?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InterviewQuestionFeedbackCreateManyAnswerInput = {
+    id?: string
+    interviewId: string
+    questionId: string
+    technicalAccuracy: number
+    communicationClarity: number
+    problemSolvingStructure: number
+    pacingAndConciseness: number
+    overallScore: number
+    strengths?: JsonNullValueInput | InputJsonValue
+    keyOmissions?: JsonNullValueInput | InputJsonValue
+    improvedAnswer?: string | null
+    actionableTips?: JsonNullValueInput | InputJsonValue
+    source?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type InterviewQuestionFeedbackUpdateWithoutAnswerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    technicalAccuracy?: FloatFieldUpdateOperationsInput | number
+    communicationClarity?: FloatFieldUpdateOperationsInput | number
+    problemSolvingStructure?: FloatFieldUpdateOperationsInput | number
+    pacingAndConciseness?: FloatFieldUpdateOperationsInput | number
+    overallScore?: FloatFieldUpdateOperationsInput | number
+    strengths?: JsonNullValueInput | InputJsonValue
+    keyOmissions?: JsonNullValueInput | InputJsonValue
+    improvedAnswer?: NullableStringFieldUpdateOperationsInput | string | null
+    actionableTips?: JsonNullValueInput | InputJsonValue
+    source?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    interview?: InterviewUpdateOneRequiredWithoutQuestionFeedbackNestedInput
+    question?: InterviewQuestionUpdateOneRequiredWithoutFeedbackNestedInput
+  }
+
+  export type InterviewQuestionFeedbackUncheckedUpdateWithoutAnswerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    interviewId?: StringFieldUpdateOperationsInput | string
+    questionId?: StringFieldUpdateOperationsInput | string
+    technicalAccuracy?: FloatFieldUpdateOperationsInput | number
+    communicationClarity?: FloatFieldUpdateOperationsInput | number
+    problemSolvingStructure?: FloatFieldUpdateOperationsInput | number
+    pacingAndConciseness?: FloatFieldUpdateOperationsInput | number
+    overallScore?: FloatFieldUpdateOperationsInput | number
+    strengths?: JsonNullValueInput | InputJsonValue
+    keyOmissions?: JsonNullValueInput | InputJsonValue
+    improvedAnswer?: NullableStringFieldUpdateOperationsInput | string | null
+    actionableTips?: JsonNullValueInput | InputJsonValue
+    source?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InterviewQuestionFeedbackUncheckedUpdateManyWithoutAnswerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    interviewId?: StringFieldUpdateOperationsInput | string
+    questionId?: StringFieldUpdateOperationsInput | string
+    technicalAccuracy?: FloatFieldUpdateOperationsInput | number
+    communicationClarity?: FloatFieldUpdateOperationsInput | number
+    problemSolvingStructure?: FloatFieldUpdateOperationsInput | number
+    pacingAndConciseness?: FloatFieldUpdateOperationsInput | number
+    overallScore?: FloatFieldUpdateOperationsInput | number
+    strengths?: JsonNullValueInput | InputJsonValue
+    keyOmissions?: JsonNullValueInput | InputJsonValue
+    improvedAnswer?: NullableStringFieldUpdateOperationsInput | string | null
+    actionableTips?: JsonNullValueInput | InputJsonValue
+    source?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

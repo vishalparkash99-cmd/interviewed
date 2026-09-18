@@ -342,6 +342,25 @@ exports.Prisma.InterviewAnswerScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.InterviewQuestionFeedbackScalarFieldEnum = {
+  id: 'id',
+  interviewId: 'interviewId',
+  questionId: 'questionId',
+  answerId: 'answerId',
+  technicalAccuracy: 'technicalAccuracy',
+  communicationClarity: 'communicationClarity',
+  problemSolvingStructure: 'problemSolvingStructure',
+  pacingAndConciseness: 'pacingAndConciseness',
+  overallScore: 'overallScore',
+  strengths: 'strengths',
+  keyOmissions: 'keyOmissions',
+  improvedAnswer: 'improvedAnswer',
+  actionableTips: 'actionableTips',
+  source: 'source',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.TranscriptSegmentScalarFieldEnum = {
   id: 'id',
   interviewId: 'interviewId',
@@ -591,6 +610,7 @@ exports.Prisma.ModelName = {
   InterviewSession: 'InterviewSession',
   InterviewQuestion: 'InterviewQuestion',
   InterviewAnswer: 'InterviewAnswer',
+  InterviewQuestionFeedback: 'InterviewQuestionFeedback',
   TranscriptSegment: 'TranscriptSegment',
   InterviewEvaluation: 'InterviewEvaluation',
   InterviewReport: 'InterviewReport',

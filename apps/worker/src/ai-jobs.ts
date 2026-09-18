@@ -11,6 +11,9 @@ import {
   evaluationReportSchema,
   hrReportSchema,
   aiReportNarrativeSchema,
+  DiagnosticFeedbackEngine,
+  validateQuestionFeedbackList,
+  type QuestionFeedback,
 } from "@interviewed/ai";
 import type {
   AIProvider,
@@ -1041,11 +1044,116 @@ async function processAIEvaluation(job: AIJob, db: PrismaClient): Promise<Record
     },
   });
 
+  let feedbackCount = 0;
+  try {
+    feedbackCount = await persistQuestionFeedback(db, {
+      interviewId,
+      jobId: interview.jobId,
+      jobTitle: jobPosting?.title ?? "",
+      jobDescription: jobPosting?.description ?? "",
+      requiredSkills,
+      questions: interview.questions,
+      answers: interview.answers,
+    });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    logger.warn({ jobId: job.id, interviewId, error: message }, "Per-question diagnostic feedback generation failed");
+  }
+
   return {
     evaluationId: record.id,
     overallScore: record.overallScore,
     recommendation: record.recommendation,
+    feedbackCount,
   };
+}
+
+type FeedbackQuestion = {
+  id: string;
+  question: string;
+  type: string;
+  difficulty: string;
+};
+
+type FeedbackAnswer = {
+  id: string;
+  questionId: string;
+  answer: string;
+  durationSeconds?: number | null;
+};
+
+async function persistQuestionFeedback(
+  db: PrismaClient,
+  input: {
+    interviewId: string;
+    jobId: string;
+    jobTitle: string;
+    jobDescription: string;
+    requiredSkills: string[];
+    questions: FeedbackQuestion[];
+    answers: FeedbackAnswer[];
+  }
+): Promise<number> {
+  const answersByQuestion = new Map<string, FeedbackAnswer>();
+  for (const answer of input.answers) {
+    if (!answersByQuestion.has(answer.questionId)) answersByQuestion.set(answer.questionId, answer);
+  }
+
+  const engine = new DiagnosticFeedbackEngine(getAIProvider());
+  const feedbackList: QuestionFeedback[] = await engine.generateFeedback({
+    interviewId: input.interviewId,
+    jobTitle: input.jobTitle,
+    jobDescription: input.jobDescription,
+    requiredSkills: input.requiredSkills,
+    items: input.questions.map((question) => {
+      const answer = answersByQuestion.get(question.id);
+      return {
+        questionId: question.id,
+        question: cleanForPrompt(question.question, QUESTION_LIMIT),
+        questionType: question.type,
+        difficulty: question.difficulty,
+        answer: cleanForPrompt(answer?.answer || "", ANSWER_LIMIT),
+        durationSeconds: answer?.durationSeconds ?? 0,
+      };
+    }),
+  });
+
+  if (feedbackList.length === 0) return 0;
+
+  validateQuestionFeedbackList(feedbackList);
+
+  let count = 0;
+  for (const feedback of feedbackList) {
+    const answer = answersByQuestion.get(feedback.questionId);
+    const data = {
+      interviewId: input.interviewId,
+      questionId: feedback.questionId,
+      answerId: answer?.id ?? null,
+      technicalAccuracy: feedback.scores.technicalAccuracy,
+      communicationClarity: feedback.scores.communicationClarity,
+      problemSolvingStructure: feedback.scores.problemSolvingStructure,
+      pacingAndConciseness: feedback.scores.pacingAndConciseness,
+      overallScore: feedback.scores.overallScore,
+      strengths: feedback.strengths as object,
+      keyOmissions: feedback.keyOmissions as object,
+      improvedAnswer: feedback.improvedAnswer,
+      actionableTips: feedback.actionableTips as object,
+    };
+
+    await db.interviewQuestionFeedback.upsert({
+      where: {
+        interviewId_questionId: {
+          interviewId: input.interviewId,
+          questionId: feedback.questionId,
+        },
+      },
+      create: data,
+      update: data,
+    });
+    count += 1;
+  }
+
+  return count;
 }
 
 async function processReportGeneration(job: AIJob, db: PrismaClient): Promise<Record<string, unknown>> {

@@ -104,3 +104,37 @@ export const interviewPlanSchema = z.object({
 });
 
 export type InterviewPlanOutput = z.infer<typeof interviewPlanSchema>;
+
+export const diagnosticScoreSchema = z.object({
+  technicalAccuracy: z.number().min(0).max(100),
+  communicationClarity: z.number().min(0).max(100),
+  problemSolvingStructure: z.number().min(0).max(100),
+  pacingAndConciseness: z.number().min(0).max(100),
+  overallScore: z.number().min(0).max(100),
+});
+
+export type DiagnosticScore = z.infer<typeof diagnosticScoreSchema>;
+
+export const questionFeedbackSchema = z.object({
+  questionId: z.string().min(1),
+  scores: diagnosticScoreSchema,
+  strengths: z.array(z.string()).max(12),
+  keyOmissions: z.array(z.string()).max(12),
+  improvedAnswer: z.string().min(1).max(6000),
+  actionableTips: z.array(z.string()).max(12),
+});
+
+export type QuestionFeedback = z.infer<typeof questionFeedbackSchema>;
+
+export const questionFeedbackListSchema = z.array(questionFeedbackSchema);
+
+export type QuestionFeedbackList = z.infer<typeof questionFeedbackListSchema>;
+
+export const tailoredInterviewPromptInputSchema = z.object({
+  resumeText: z.string().trim().min(1).max(30000),
+  jobDescription: z.string().trim().min(1).max(30000),
+  roleTitle: z.string().trim().min(1).max(255),
+  experienceLevel: z.string().trim().min(1).max(100),
+});
+
+export type TailoredInterviewPromptInput = z.infer<typeof tailoredInterviewPromptInputSchema>;

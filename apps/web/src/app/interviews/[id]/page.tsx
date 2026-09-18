@@ -73,6 +73,27 @@ type InterviewDetail = {
 
 type TranscriptSegment = { id: string; speaker: string; timestamp: string; text: string };
 
+type FeedbackRow = {
+  id: string;
+  questionId: string;
+  question: string | null;
+  section: string | null;
+  sequence: number | null;
+  scores: {
+    technicalAccuracy: number;
+    communicationClarity: number;
+    problemSolvingStructure: number;
+    pacingAndConciseness: number;
+    overallScore: number;
+  };
+  strengths: string[];
+  keyOmissions: string[];
+  improvedAnswer: string;
+  actionableTips: string[];
+  source: string;
+  createdAt: string;
+};
+
 export default function InterviewDetailPage() {
   const params = useParams<{ id: string }>();
   const interviewId = params.id;
@@ -86,6 +107,7 @@ export default function InterviewDetailPage() {
   const [invite, setInvite] = useState<{ link: string; expiresAt?: string } | null>(null);
   const [copied, setCopied] = useState(false);
   const [transcript, setTranscript] = useState<TranscriptSegment[] | null>(null);
+  const [feedback, setFeedback] = useState<FeedbackRow[] | null>(null);
   const [rescheduleMinutes, setRescheduleMinutes] = useState("");
 
   const load = useCallback(async () => {
@@ -110,6 +132,12 @@ export default function InterviewDetailPage() {
       api
         .get<{ data: TranscriptSegment[] }>(`/api/v1/interviews/${interviewId}/transcript`)
         .then((res) => setTranscript(res.data ?? []))
+        .catch((e: Error) => setNotice({ type: "error", text: e.message }));
+    }
+    if (tab === "feedback") {
+      api
+        .get<{ data: FeedbackRow[] }>(`/api/v1/interviews/${interviewId}/feedback`)
+        .then((res) => setFeedback(res.data ?? []))
         .catch((e: Error) => setNotice({ type: "error", text: e.message }));
     }
   }, [tab, interviewId]);
@@ -318,6 +346,7 @@ export default function InterviewDetailPage() {
           { key: "plan", label: `Plan (${sections.length})` },
           { key: "questions", label: `Questions (${questions.length})` },
           { key: "transcript", label: "Transcript" },
+          { key: "feedback", label: "Feedback" },
           { key: "evaluation", label: "Evaluation" },
           { key: "report", label: "Report" },
         ]}
@@ -487,6 +516,75 @@ export default function InterviewDetailPage() {
             </div>
           )}
         </Card>
+      )}
+
+      {tab === "feedback" && (
+        <div>
+          {feedback === null && <Spinner label="Loading feedback..." />}
+          {feedback !== null && feedback.length === 0 && (
+            <EmptyState
+              title="No diagnostic feedback yet"
+              message="Per-question feedback is generated when the interview is evaluated. Use the Evaluate button once the interview is completed."
+            />
+          )}
+          {feedback !== null &&
+            feedback.length > 0 &&
+            feedback.map((fb) => (
+              <Card
+                key={fb.id}
+                title={fb.question || "Question"}
+                subtitle={
+                  fb.section
+                    ? `${labelize(fb.section)}${fb.sequence != null ? ` · Q${(fb.sequence ?? 0) + 1}` : ""}${
+                        fb.source === "deterministic" ? " · heuristic estimate" : ""
+                      }`
+                    : undefined
+                }
+                actions={
+                  <Badge variant={fb.scores.overallScore >= 70 ? "success" : fb.scores.overallScore >= 50 ? "warning" : "danger"}>
+                    {fb.scores.overallScore} / 100
+                  </Badge>
+                }
+              >
+                <div className="grid grid-2">
+                  <ProgressBar label="Technical accuracy" value={fb.scores.technicalAccuracy} />
+                  <ProgressBar label="Communication clarity" value={fb.scores.communicationClarity} />
+                  <ProgressBar label="Problem-solving structure" value={fb.scores.problemSolvingStructure} />
+                  <ProgressBar label="Pacing & conciseness" value={fb.scores.pacingAndConciseness} />
+                </div>
+
+                {fb.strengths.length > 0 && (
+                  <>
+                    <h4 className="mt-4">Strengths</h4>
+                    <ul>{fb.strengths.map((s, i) => <li key={i}>{s}</li>)}</ul>
+                  </>
+                )}
+
+                {fb.keyOmissions.length > 0 && (
+                  <>
+                    <h4 className="mt-4">Key omissions</h4>
+                    <ul>{fb.keyOmissions.map((s, i) => <li key={i}>{s}</li>)}</ul>
+                  </>
+                )}
+
+                {fb.improvedAnswer && (
+                  <>
+                    <h4 className="mt-4">Top 1% sample answer</h4>
+                    <div style={{ whiteSpace: "pre-wrap", padding: "12px 14px", background: "var(--color-bg-soft, #f7f7f8)", border: "1px solid var(--border)", borderRadius: 8 }}>
+                      {fb.improvedAnswer}
+                    </div>
+                  </>
+                )}
+
+                {fb.actionableTips.length > 0 && (
+                  <>
+                    <h4 className="mt-4">Actionable tips</h4>
+                    <ul>{fb.actionableTips.map((s, i) => <li key={i}>{s}</li>)}</ul>
+                  </>
+                )}
+              </Card>
+            ))}
+        </div>
       )}
 
       {tab === "evaluation" &&

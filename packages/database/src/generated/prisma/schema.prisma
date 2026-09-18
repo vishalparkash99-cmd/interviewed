@@ -292,38 +292,39 @@ model CandidateJobMatch {
 }
 
 model Interview {
-  id                  String               @id @default(uuid())
+  id                  String                      @id @default(uuid())
   candidateId         String
-  candidate           Candidate            @relation(fields: [candidateId], references: [id])
+  candidate           Candidate                   @relation(fields: [candidateId], references: [id])
   jobId               String
-  job                 Job                  @relation(fields: [jobId], references: [id])
-  interviewKey        String               @unique
-  secureToken         String               @unique
+  job                 Job                         @relation(fields: [jobId], references: [id])
+  interviewKey        String                      @unique
+  secureToken         String                      @unique
   inviteExpiresAt     DateTime?
-  status              InterviewStatus      @default(scheduled)
-  plan                Json                 @default("[]")
-  currentSectionIndex Int                  @default(0)
-  totalDuration       Int                  @default(45)
-  elapsedSeconds      Int                  @default(0)
+  status              InterviewStatus             @default(scheduled)
+  plan                Json                        @default("[]")
+  currentSectionIndex Int                         @default(0)
+  totalDuration       Int                         @default(45)
+  elapsedSeconds      Int                         @default(0)
   startedAt           DateTime?
   endedAt             DateTime?
   recordingUrl        String?
-  transcript          String?              @db.Text
+  transcript          String?                     @db.Text
   evaluation          InterviewEvaluation?
   report              InterviewReport?
-  candidateFeedback   Json                 @default("{}")
-  recordingConsent    Boolean              @default(false)
-  recordingDisclosed  Boolean              @default(false)
-  deviceInfo          Json                 @default("{}")
+  candidateFeedback   Json                        @default("{}")
+  recordingConsent    Boolean                     @default(false)
+  recordingDisclosed  Boolean                     @default(false)
+  deviceInfo          Json                        @default("{}")
   ipAddress           String?
   organizationId      String
-  organization        Organization         @relation(fields: [organizationId], references: [id])
+  organization        Organization                @relation(fields: [organizationId], references: [id])
   sessions            InterviewSession[]
   questions           InterviewQuestion[]
   answers             InterviewAnswer[]
   transcriptSegments  TranscriptSegment[]
-  createdAt           DateTime             @default(now())
-  updatedAt           DateTime             @updatedAt
+  questionFeedback    InterviewQuestionFeedback[]
+  createdAt           DateTime                    @default(now())
+  updatedAt           DateTime                    @updatedAt
 
   @@map("interviews")
 }
@@ -342,35 +343,62 @@ model InterviewSession {
 }
 
 model InterviewQuestion {
-  id           String            @id @default(uuid())
+  id           String                      @id @default(uuid())
   interviewId  String
-  interview    Interview         @relation(fields: [interviewId], references: [id])
+  interview    Interview                   @relation(fields: [interviewId], references: [id])
   section      String
-  question     String            @db.Text
+  question     String                      @db.Text
   type         String
   difficulty   String
-  isFollowUp   Boolean           @default(false)
+  isFollowUp   Boolean                     @default(false)
   followUpToId String?
-  context      Json              @default("{}")
+  context      Json                        @default("{}")
   sequence     Int
   answers      InterviewAnswer[]
-  createdAt    DateTime          @default(now())
+  feedback     InterviewQuestionFeedback[]
+  createdAt    DateTime                    @default(now())
 
   @@map("interview_questions")
 }
 
 model InterviewAnswer {
-  id              String            @id @default(uuid())
+  id              String                      @id @default(uuid())
   interviewId     String
-  interview       Interview         @relation(fields: [interviewId], references: [id])
+  interview       Interview                   @relation(fields: [interviewId], references: [id])
   questionId      String
-  question        InterviewQuestion @relation(fields: [questionId], references: [id])
-  answer          String            @db.Text
+  question        InterviewQuestion           @relation(fields: [questionId], references: [id])
+  answer          String                      @db.Text
   durationSeconds Int
-  confidence      Float?            @default(0)
-  createdAt       DateTime          @default(now())
+  confidence      Float?                      @default(0)
+  feedback        InterviewQuestionFeedback[]
+  createdAt       DateTime                    @default(now())
 
   @@map("interview_answers")
+}
+
+model InterviewQuestionFeedback {
+  id                      String            @id @default(uuid())
+  interviewId             String
+  interview               Interview         @relation(fields: [interviewId], references: [id])
+  questionId              String
+  question                InterviewQuestion @relation(fields: [questionId], references: [id])
+  answerId                String?
+  answer                  InterviewAnswer?  @relation(fields: [answerId], references: [id])
+  technicalAccuracy       Float
+  communicationClarity    Float
+  problemSolvingStructure Float
+  pacingAndConciseness    Float
+  overallScore            Float
+  strengths               Json              @default("[]")
+  keyOmissions            Json              @default("[]")
+  improvedAnswer          String?           @db.Text
+  actionableTips          Json              @default("[]")
+  source                  String            @default("deterministic")
+  createdAt               DateTime          @default(now())
+  updatedAt               DateTime          @updatedAt
+
+  @@unique([interviewId, questionId])
+  @@map("interview_question_feedback")
 }
 
 model TranscriptSegment {

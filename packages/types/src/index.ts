@@ -1,5 +1,29 @@
 export { UserRole, JobStatus, CandidateStatus, MatchStatus, InterviewStatus, EmailType, EmailStatus, AIJobType, AIJobStatus } from "./enums";
 
+export interface DiagnosticScore {
+  technicalAccuracy: number; // 0-100
+  communicationClarity: number; // 0-100
+  problemSolvingStructure: number; // 0-100
+  pacingAndConciseness: number; // 0-100
+  overallScore: number; // 0-100
+}
+
+export interface QuestionFeedback {
+  questionId: string;
+  scores: DiagnosticScore;
+  strengths: string[];
+  keyOmissions: string[];
+  improvedAnswer: string; // Top 1% sample response
+  actionableTips: string[];
+}
+
+export interface TailoredInterviewPromptInput {
+  resumeText: string;
+  jobDescription: string;
+  roleTitle: string;
+  experienceLevel: string;
+}
+
 export type ScoringWeights = {
   technical: number;
   experience: number;

@@ -1,5 +1,6 @@
 import type { AIProvider } from "./providers";
 import { antiPromptInjection, sanitizeInput } from "./security";
+import { tailoredInterviewPromptInputSchema, type TailoredInterviewPromptInput } from "./schemas";
 
 export type InterviewQuestionSpec = {
   text: string;
@@ -32,12 +33,19 @@ export type PlanInput = {
     skills: string[];
     experience: Array<{ title: string; company: string; summary: string }>;
   };
+  resumeText?: string;
   candidateMatchScore: number;
   interviewDurationMinutes: number;
   difficulty: string;
 };
 
 const DEFAULT_DIFFICULTIES = ["easy", "medium", "hard"] as const;
+const RESUME_TEXT_LIMIT = 6000;
+const JD_TEXT_LIMIT = 4000;
+
+export function validateTailoredPromptInput(input: unknown): TailoredInterviewPromptInput {
+  return tailoredInterviewPromptInputSchema.parse(input);
+}
 
 function normalizeDifficulty(difficulty: string): string {
   const value = String(difficulty ?? "").toLowerCase();
@@ -300,16 +308,19 @@ export class InterviewPlanner {
     kind: "technical" | "role-specific" | "system-design",
     input: PlanInput
   ): string {
+    const resumeContext = input.resumeText && input.resumeText.trim()
+      ? `\nCandidate background (from resume): ${sanitizeInput(input.resumeText).slice(0, RESUME_TEXT_LIMIT)}`
+      : "";
     switch (kind) {
       case "technical":
-        return `Role: ${input.jobTitle}\nRequired skills: ${input.requiredSkills.slice(0, 6).join(", ") || "none"}`;
+        return `Role: ${input.jobTitle}\nRequired skills: ${input.requiredSkills.slice(0, 6).join(", ") || "none"}\nJob description: ${sanitizeInput(input.jobDescription || "").slice(0, JD_TEXT_LIMIT)}${resumeContext}`;
       case "role-specific":
         return input.rolesResponsibilities
           .slice(0, 3)
           .map((r) => `- ${r.title}: ${sanitizeInput(r.description || "").slice(0, 150)}`)
-          .join("\n");
+          .join("\n") + resumeContext;
       case "system-design":
-        return `Role: ${input.jobTitle}\nDomain: ${sanitizeInput(input.jobDescription || "").slice(0, 200)}`;
+        return `Role: ${input.jobTitle}\nDomain: ${sanitizeInput(input.jobDescription || "").slice(0, 200)}${resumeContext}`;
       default:
         return input.jobTitle;
     }
@@ -362,6 +373,9 @@ export class InterviewPlanner {
     const topic = this.buildTopic(kind, input);
     const system =
       "You are an expert technical interviewer. Generate interview questions for the given role. " +
+      "Tailor each question to BOTH the job description and the candidate's resume background so that " +
+      "questions probe real depth rather than generic trivia — reference specific skills, responsibilities, " +
+      "technologies, or resume claims where relevant. " +
       "Respond with ONLY a JSON array and nothing else. Each element must be an object with exactly " +
       '"text" (string), "type" (string), "difficulty" ("easy"|"medium"|"hard"), "durationMinutes" (number).';
 
@@ -446,5 +460,93 @@ export class InterviewPlanner {
     } catch {
       return fallback;
     }
+  }
+
+  async generateTailoredQuestions(
+    input: TailoredInterviewPromptInput,
+    count = 5
+  ): Promise<InterviewQuestionSpec[]> {
+    const validated = validateTailoredPromptInput(input);
+    const difficulty = "medium";
+    const fallback = this.fallbackQuestions("technical", {
+      jobTitle: validated.roleTitle,
+      jobDescription: validated.jobDescription,
+      requiredSkills: [],
+      rolesResponsibilities: [],
+      candidateResume: {
+        name: "",
+        yearsOfExperience: 0,
+        skills: [],
+        experience: [],
+      },
+      candidateMatchScore: 0,
+      interviewDurationMinutes: 45,
+      difficulty,
+    }, count, 8, difficulty);
+
+    if (!this.hasAI || !this.provider) {
+      return fallback;
+    }
+
+    const resumeText = sanitizeInput(validated.resumeText).slice(0, RESUME_TEXT_LIMIT);
+    const jobText = sanitizeInput(validated.jobDescription).slice(0, JD_TEXT_LIMIT);
+
+    if (antiPromptInjection(resumeText) || antiPromptInjection(jobText)) {
+      return fallback;
+    }
+
+    const system =
+      "You are an expert interviewer crafting tailored interview questions. " +
+      "Generate precisely the requested number of questions grounded in BOTH the candidate's resume and the " +
+      "job description, so that questions surface genuine depth and role-relevant experience. " +
+      "Respond with ONLY a JSON array and nothing else. Each element must be an object with exactly " +
+      '"text" (string), "type" (string), "difficulty" ("easy"|"medium"|"hard"), "durationMinutes" (number).';
+
+    const user = [
+      `ROLE TITLE: ${validated.roleTitle}`,
+      `EXPERIENCE LEVEL: ${validated.experienceLevel}`,
+      `REQUESTED QUESTION COUNT: ${count}`,
+      `\nJOB DESCRIPTION:\n${jobText}`,
+      `\nCANDIDATE RESUME:\n${resumeText}`,
+    ].join("\n");
+
+    let content = "";
+    try {
+      const response = await this.provider.complete({
+        model: "gpt-4o",
+        messages: [
+          { role: "system", content: system },
+          { role: "user", content: user },
+        ],
+        maxTokens: 1200,
+        temperature: 0.6,
+      });
+      content = response.content || "";
+    } catch {
+      return fallback;
+    }
+
+    const items = extractJsonArray(content);
+    const questions: InterviewQuestionSpec[] = [];
+    for (const item of items.slice(0, count)) {
+      const rawText = typeof item.text === "string" ? item.text : "";
+      if (!rawText.trim()) continue;
+      const text = sanitizeInput(rawText).trim();
+      if (!text || antiPromptInjection(text)) continue;
+      if (questions.length >= count) break;
+      questions.push({
+        text,
+        type: typeof item.type === "string" && item.type.trim() ? item.type : "technical",
+        difficulty: normalizeDifficulty(typeof item.difficulty === "string" ? item.difficulty : difficulty),
+        durationMinutes: clampDuration(item.durationMinutes) || 8,
+      });
+    }
+
+    for (const fallbackQuestion of fallback) {
+      if (questions.length >= count) break;
+      questions.push(fallbackQuestion);
+    }
+
+    return questions;
   }
 }
