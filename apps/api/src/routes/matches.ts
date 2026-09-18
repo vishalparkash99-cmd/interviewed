@@ -5,7 +5,7 @@ import { UserRole, MatchStatus, CandidateStatus } from "@interviewed/types";
 import { createQueueConnection } from "@interviewed/queue";
 import { config } from "@interviewed/config";
 import { logAuditEvent } from "../services/audit";
-import { getUser, isSuperAdmin, getPagination, paginate, getClientIp, getClientUserAgent } from "./utils";
+import { getUser, isSuperAdmin, getPagination, paginate, getClientIp, getClientUserAgent, rateLimitSocketKeyGenerator } from "./utils";
 
 const db = createPrismaClient();
 
@@ -25,7 +25,7 @@ const decideMatchSchema = z.object({
 });
 
 export async function registerMatchRoutes(server: FastifyInstance): Promise<void> {
-  server.post("/api/v1/matches/generate", { onRequest: [(server as any).requireRole(UserRole.OrgAdmin, UserRole.Recruiter)] }, async (request: FastifyRequest, reply: FastifyReply) => {
+  server.post("/api/v1/matches/generate", { onRequest: [(server as any).requireRole(UserRole.OrgAdmin, UserRole.Recruiter)], config: { rateLimit: { max: 20, timeWindow: "1 minute", keyGenerator: rateLimitSocketKeyGenerator } } }, async (request: FastifyRequest, reply: FastifyReply) => {
     const user = getUser(request);
     if (!isSuperAdmin(user) && !user.organizationId) {
       reply.code(403);
@@ -141,6 +141,7 @@ export async function registerMatchRoutes(server: FastifyInstance): Promise<void
 
     const where = {
       ...(jobId ? { jobId } : {}),
+      job: { is: orgClause(user) },
       status: typeof query.status === "string" && query.status.length > 0 ? (query.status as MatchStatus) : undefined,
     };
 

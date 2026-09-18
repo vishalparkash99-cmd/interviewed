@@ -22,6 +22,10 @@ export const config = {
     return getEnv().JWT_SECRET;
   },
 
+  getRefreshJwtSecret: (): string => {
+    return getEnv().JWT_REFRESH_SECRET;
+  },
+
   getRateLimit: (): { windowMs: number; max: number } => {
     return {
       windowMs: getEnv().RATE_LIMIT_WINDOW_MS,

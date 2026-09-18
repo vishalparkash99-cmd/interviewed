@@ -288,6 +288,7 @@ exports.Prisma.InterviewScalarFieldEnum = {
   jobId: 'jobId',
   interviewKey: 'interviewKey',
   secureToken: 'secureToken',
+  inviteExpiresAt: 'inviteExpiresAt',
   status: 'status',
   plan: 'plan',
   currentSectionIndex: 'currentSectionIndex',
@@ -548,7 +549,10 @@ exports.EmailType = exports.$Enums.EmailType = {
   reminder: 'reminder',
   result: 'result',
   welcome: 'welcome',
-  password_reset: 'password_reset'
+  password_reset: 'password_reset',
+  reschedule: 'reschedule',
+  cancellation: 'cancellation',
+  completion: 'completion'
 };
 
 exports.EmailStatus = exports.$Enums.EmailStatus = {

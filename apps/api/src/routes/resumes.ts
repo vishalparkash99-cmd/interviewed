@@ -29,6 +29,24 @@ function getFileNameWithoutExtension(name: string): string {
   return name.replace(/\.[^/.]+$/, "").trim();
 }
 
+function isLocalStorage(): boolean {
+  return process.env.STORAGE_PROVIDER !== "s3";
+}
+
+function resumeFileUrl(request: FastifyRequest, resumeId: string): string {
+  const apiUrl = process.env.API_URL;
+  if (apiUrl) return `${apiUrl.replace(/\/$/, "")}/api/v1/resumes/${resumeId}/file`;
+  return `${request.protocol}://${request.host}/api/v1/resumes/${resumeId}/file`;
+}
+
+async function resolveSignedUrl(request: FastifyRequest, resume: { id: string; filePath: string }): Promise<string> {
+  const storage = createStorageAdapter();
+  if (isLocalStorage()) return resumeFileUrl(request, resume.id);
+  return storage.getSignedUrl(resume.filePath);
+}
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export async function registerResumeRoutes(server: FastifyInstance): Promise<void> {
   server.post("/api/v1/resumes/upload", { onRequest: [(server as any).requireRole(UserRole.OrgAdmin, UserRole.Recruiter)] }, async (request: FastifyRequest, reply: FastifyReply) => {
     const user = getUser(request);
@@ -39,9 +57,22 @@ export async function registerResumeRoutes(server: FastifyInstance): Promise<voi
       return { error: "No file uploaded" };
     }
 
-    const organizationId = isSuperAdmin(user)
-      ? (getMultipartField(uploaded.fields, "organizationId") ?? (request.query as Record<string, unknown>)?.organizationId as string | undefined)
-      : (user.organizationId ?? undefined);
+    let organizationId: string | undefined;
+    if (isSuperAdmin(user)) {
+      const candidateOrgId =
+        getMultipartField(uploaded.fields, "organizationId") ??
+        ((request.query as Record<string, unknown>)?.organizationId as string | undefined);
+      if (candidateOrgId) {
+        if (!UUID_RE.test(candidateOrgId)) {
+          reply.code(400);
+          return { error: "Invalid organizationId" };
+        }
+        const org = await db.organization.findUnique({ where: { id: candidateOrgId }, select: { id: true } });
+        organizationId = org?.id ?? undefined;
+      }
+    } else {
+      organizationId = user.organizationId ?? undefined;
+    }
 
     if (!organizationId) {
       reply.code(403);
@@ -216,10 +247,35 @@ export async function registerResumeRoutes(server: FastifyInstance): Promise<voi
       return { error: "Resume not found" };
     }
 
-    const storage = createStorageAdapter();
     return {
       ...resume,
-      signedUrl: await storage.getSignedUrl(resume.filePath),
+      signedUrl: await resolveSignedUrl(request, { id: resume.id, filePath: resume.filePath }),
     };
+  });
+
+  server.get("/api/v1/resumes/:id/file", { onRequest: [(server as any).requireRole(UserRole.OrgAdmin, UserRole.Recruiter)] }, async (request: FastifyRequest, reply: FastifyReply) => {
+    const { id } = request.params as { id: string };
+    const user = getUser(request);
+    if (!isSuperAdmin(user) && !user.organizationId) {
+      reply.code(403);
+      return { error: "Organization required" };
+    }
+
+    const resume = await db.resume.findFirst({
+      where: { id, deletedAt: null, ...orgClause(user) },
+    });
+    if (!resume) {
+      reply.code(404);
+      return { error: "Resume not found" };
+    }
+
+    const storage = createStorageAdapter();
+    const buffer = await storage.download(resume.filePath);
+    reply.header("Content-Type", "application/octet-stream");
+    reply.header("Content-Disposition", `attachment; filename="${resume.fileName.replace(/[^a-zA-Z0-9._-]/g, "_")}"`);
+    reply.header("Content-Length", String(buffer.length));
+    reply.header("X-Content-Type-Options", "nosniff");
+    reply.header("Cache-Control", "private, no-store");
+    return reply.send(buffer);
   });
 }

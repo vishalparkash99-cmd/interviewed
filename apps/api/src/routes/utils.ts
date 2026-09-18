@@ -59,6 +59,10 @@ export function sanitizeFilename(filename: string): string {
   return base.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 128);
 }
 
+export function rateLimitSocketKeyGenerator(request: FastifyRequest): string {
+  return request.raw.socket.remoteAddress?.replace(/^::ffff:/, "") || "unknown";
+}
+
 export function requireOrganization(user: AuthedUser, reply: FastifyReply): string | null {
   if (isSuperAdmin(user)) return null;
   if (!user.organizationId) {

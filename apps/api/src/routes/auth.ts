@@ -4,6 +4,7 @@ import crypto from "crypto";
 import { createPrismaClient } from "@interviewed/database";
 import { UserRole, EmailType } from "@interviewed/types";
 import { loginSchema, registerSchema, verifyEmailSchema, forgotPasswordSchema, resetPasswordSchema, resendVerificationSchema } from "../validation";
+import { rateLimitSocketKeyGenerator } from "./utils";
 import { createLogger } from "@interviewed/config/logger";
 
 const logger = createLogger("auth-routes");
@@ -11,6 +12,13 @@ const db = createPrismaClient();
 
 const VERIFICATION_EMAIL_TTL_MS = 24 * 60 * 60 * 1000;
 const RESET_EMAIL_TTL_MS = 60 * 60 * 1000;
+const REFRESH_TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+
+const DUMMY_PASSWORD_HASH = bcrypt.hashSync("interviewed-dummy-password", 12);
+
+function sha256(value: string): string {
+  return crypto.createHash("sha256").update(value).digest("hex");
+}
 
 function makeSlug(name: string): string {
   return name
@@ -44,8 +52,15 @@ function buildEmailBody(title: string, message: string, url: string): string {
 }
 
 async function setAuthCookies(reply: FastifyReply, server: FastifyInstance, payload: { id: string; email: string; role: string }): Promise<string> {
+  const refreshCookieName = (server as any).getRefreshCookieName();
   const token = (server as any).jwt.sign(payload, { expiresIn: "15m" });
-  const refreshToken = (server as any).jwt.sign(payload, { expiresIn: "7d" });
+  const refreshToken = (server as any).jwt.refresh.sign(payload, { expiresIn: "7d" });
+
+  const tokenHash = sha256(refreshToken);
+  await db.refreshToken.deleteMany({ where: { userId: payload.id } });
+  await db.refreshToken.create({
+    data: { userId: payload.id, token: tokenHash, expiresAt: new Date(Date.now() + REFRESH_TOKEN_TTL_MS) },
+  });
 
   reply.setCookie("interviewed-token", token, {
     httpOnly: true,
@@ -54,7 +69,7 @@ async function setAuthCookies(reply: FastifyReply, server: FastifyInstance, payl
     path: "/",
     sameSite: "lax",
   });
-  reply.setCookie("interviewed-refresh-token", refreshToken, {
+  reply.setCookie(refreshCookieName, refreshToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     maxAge: 7 * 24 * 60 * 60 * 1000,
@@ -66,7 +81,7 @@ async function setAuthCookies(reply: FastifyReply, server: FastifyInstance, payl
 }
 
 export async function registerAuthRoutes(server: FastifyInstance): Promise<void> {
-  server.post("/api/v1/auth/login", async (request: FastifyRequest, reply: FastifyReply) => {
+  server.post("/api/v1/auth/login", { config: { rateLimit: { max: 10, timeWindow: "1 minute", keyGenerator: rateLimitSocketKeyGenerator } } }, async (request: FastifyRequest, reply: FastifyReply) => {
     const parseResult = loginSchema.safeParse(request.body);
     if (!parseResult.success) {
       reply.code(400);
@@ -76,6 +91,7 @@ export async function registerAuthRoutes(server: FastifyInstance): Promise<void>
 
     const user = await db.user.findUnique({ where: { email } });
     if (!user || !user.passwordHash || user.deletedAt) {
+      await bcrypt.compare(password, DUMMY_PASSWORD_HASH);
       reply.code(401);
       return { error: "Invalid credentials" };
     }
@@ -91,10 +107,9 @@ export async function registerAuthRoutes(server: FastifyInstance): Promise<void>
       return { error: "Please verify your email before signing in.", code: "EMAIL_NOT_VERIFIED" };
     }
 
-    const token = await setAuthCookies(reply, server, { id: user.id, email: user.email, role: user.role });
+    await setAuthCookies(reply, server, { id: user.id, email: user.email, role: user.role });
 
     return {
-      token,
       user: {
         id: user.id,
         email: user.email,
@@ -105,7 +120,7 @@ export async function registerAuthRoutes(server: FastifyInstance): Promise<void>
     };
   });
 
-  server.post("/api/v1/auth/register", async (request: FastifyRequest, reply: FastifyReply) => {
+  server.post("/api/v1/auth/register", { config: { rateLimit: { max: 5, timeWindow: "1 minute", keyGenerator: rateLimitSocketKeyGenerator } } }, async (request: FastifyRequest, reply: FastifyReply) => {
     const parseResult = registerSchema.safeParse(request.body);
     if (!parseResult.success) {
       reply.code(400);
@@ -115,8 +130,11 @@ export async function registerAuthRoutes(server: FastifyInstance): Promise<void>
 
     const existing = await db.user.findUnique({ where: { email } });
     if (existing) {
-      reply.code(409);
-      return { error: "User already exists" };
+      reply.code(200);
+      return {
+        message: "Registration successful. Please verify your email to activate your account.",
+        requiresEmailVerification: true,
+      };
     }
 
     const passwordHash = await bcrypt.hash(password, 12);
@@ -183,7 +201,7 @@ export async function registerAuthRoutes(server: FastifyInstance): Promise<void>
     };
   });
 
-  server.post("/api/v1/auth/verify-email", async (request: FastifyRequest, reply: FastifyReply) => {
+  server.post("/api/v1/auth/verify-email", { config: { rateLimit: { max: 10, timeWindow: "1 minute", keyGenerator: rateLimitSocketKeyGenerator } } }, async (request: FastifyRequest, reply: FastifyReply) => {
     const parseResult = verifyEmailSchema.safeParse(request.body);
     if (!parseResult.success) {
       reply.code(400);
@@ -211,7 +229,7 @@ export async function registerAuthRoutes(server: FastifyInstance): Promise<void>
     return { message: "Email verified successfully. You can now sign in." };
   });
 
-  server.post("/api/v1/auth/resend-verification", async (request: FastifyRequest, reply: FastifyReply) => {
+  server.post("/api/v1/auth/resend-verification", { config: { rateLimit: { max: 5, timeWindow: "1 minute", keyGenerator: rateLimitSocketKeyGenerator } } }, async (request: FastifyRequest, reply: FastifyReply) => {
     const parseResult = resendVerificationSchema.safeParse(request.body);
     if (!parseResult.success) {
       reply.code(400);
@@ -248,7 +266,7 @@ export async function registerAuthRoutes(server: FastifyInstance): Promise<void>
     return { message: "If that email exists, a verification link has been sent." };
   });
 
-  server.post("/api/v1/auth/forgot-password", async (request: FastifyRequest, reply: FastifyReply) => {
+  server.post("/api/v1/auth/forgot-password", { config: { rateLimit: { max: 5, timeWindow: "1 minute", keyGenerator: rateLimitSocketKeyGenerator } } }, async (request: FastifyRequest, reply: FastifyReply) => {
     const parseResult = forgotPasswordSchema.safeParse(request.body);
     if (!parseResult.success) {
       reply.code(400);
@@ -285,7 +303,7 @@ export async function registerAuthRoutes(server: FastifyInstance): Promise<void>
     return { message: "If that email exists, a password reset link has been sent." };
   });
 
-  server.post("/api/v1/auth/reset-password", async (request: FastifyRequest, reply: FastifyReply) => {
+  server.post("/api/v1/auth/reset-password", { config: { rateLimit: { max: 10, timeWindow: "10 minutes", keyGenerator: rateLimitSocketKeyGenerator } } }, async (request: FastifyRequest, reply: FastifyReply) => {
     const parseResult = resetPasswordSchema.safeParse(request.body);
     if (!parseResult.success) {
       reply.code(400);
@@ -333,28 +351,44 @@ export async function registerAuthRoutes(server: FastifyInstance): Promise<void>
     return fullUser;
   });
 
-  server.post("/api/v1/auth/logout", async (_request: FastifyRequest, reply: FastifyReply) => {
+  server.post("/api/v1/auth/logout", async (request: FastifyRequest, reply: FastifyReply) => {
+    const refreshCookieName = (server as any).getRefreshCookieName();
+    const refreshToken = request.cookies?.[refreshCookieName as string];
+    if (refreshToken) {
+      await db.refreshToken.deleteMany({ where: { token: sha256(refreshToken) } }).catch(() => {});
+    }
     reply.clearCookie("interviewed-token", { path: "/" });
-    reply.clearCookie("interviewed-refresh-token", { path: "/" });
+    reply.clearCookie(refreshCookieName, { path: "/" });
     return { ok: true };
   });
 
-  server.post("/api/v1/auth/refresh", async (request: FastifyRequest, reply: FastifyReply) => {
+  server.post("/api/v1/auth/refresh", { config: { rateLimit: { max: 30, timeWindow: "1 minute", keyGenerator: rateLimitSocketKeyGenerator } } }, async (request: FastifyRequest, reply: FastifyReply) => {
+    const refreshCookieName = (server as any).getRefreshCookieName();
+    const refreshToken = request.cookies?.[refreshCookieName as string];
+    if (!refreshToken) {
+      reply.code(401);
+      return { error: "Invalid refresh token" };
+    }
+
     try {
-      await (request as any).jwtVerify({ onlyCookie: true });
+      await (request as any).refreshJwtVerify({ onlyCookie: true });
       const user = (request as any).user as { id: string; email: string; role: string };
-      const newToken = (server as any).jwt.sign(
-        { id: user.id, email: user.email, role: user.role },
-        { expiresIn: "15m" }
-      );
-      reply.setCookie("interviewed-token", newToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        maxAge: 15 * 60 * 1000,
-        path: "/",
-        sameSite: "lax",
+
+      const stored = await db.refreshToken.findFirst({
+        where: { userId: user.id, token: sha256(refreshToken), expiresAt: { gt: new Date() } },
       });
-      return { token: newToken };
+
+      if (!stored) {
+        await db.refreshToken.deleteMany({ where: { userId: user.id } }).catch(() => {});
+        reply.clearCookie("interviewed-token", { path: "/" });
+        reply.clearCookie(refreshCookieName, { path: "/" });
+        reply.code(401);
+        return { error: "Invalid refresh token" };
+      }
+
+      await setAuthCookies(reply, server, { id: user.id, email: user.email, role: user.role });
+
+      return { ok: true };
     } catch {
       reply.code(401);
       return { error: "Invalid refresh token" };

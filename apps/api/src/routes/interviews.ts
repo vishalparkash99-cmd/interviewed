@@ -1,14 +1,14 @@
 import type { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
-import { z } from "zod";
 import crypto from "crypto";
 import { createPrismaClient } from "@interviewed/database";
-import { UserRole, InterviewStatus, EmailType, EmailStatus, CandidateStatus } from "@interviewed/types";
-import { createInterviewSchema } from "../validation";
-import { createAIProvider, InterviewPlanner, antiPromptInjection } from "@interviewed/ai";
+import { UserRole, InterviewStatus, EmailType, CandidateStatus } from "@interviewed/types";
+import { createInterviewSchema, createQuestionSchema, submitAnswerSchema, joinInterviewSchema, rescheduleInterviewSchema, completeInterviewSchema } from "../validation";
+import { createAIProvider, InterviewPlanner, antiPromptInjection, sanitizeInput } from "@interviewed/ai";
 import { config } from "@interviewed/config";
 import { createQueueConnection } from "@interviewed/queue";
 import { logAuditEvent } from "../services/audit";
-import { getUser, isSuperAdmin, getPagination, paginate, getClientIp, getClientUserAgent } from "./utils";
+import { enqueueEmail } from "../services/email-dispatch";
+import { getUser, isSuperAdmin, getPagination, paginate, getClientIp, getClientUserAgent, rateLimitSocketKeyGenerator } from "./utils";
 
 const db = createPrismaClient();
 
@@ -28,6 +28,40 @@ function getAIProvider() {
 
 function getAppUrl(): string {
   return process.env.APP_URL || `http://localhost:${process.env.WEB_PORT || "3000"}`;
+}
+
+function interviewLinkFor(token: string): string {
+  return `${getAppUrl()}/portal?token=${token}`;
+}
+
+async function dispatchInterviewEmail(opts: {
+  interview: {
+    id: string;
+    jobId: string;
+    candidateId: string;
+    organizationId: string;
+    candidate: { name: string; email: string };
+    job: { title: string };
+  };
+  type: EmailType;
+  subject: string;
+  body: string;
+  template: string;
+  templateData: Record<string, unknown>;
+}): Promise<void> {
+  await enqueueEmail({
+    type: opts.type,
+    recipient: opts.interview.candidate.email,
+    recipientName: opts.interview.candidate.name,
+    subject: opts.subject,
+    body: opts.body,
+    template: opts.template,
+    templateData: opts.templateData,
+    jobId: opts.interview.jobId,
+    candidateId: opts.interview.candidateId,
+    interviewId: opts.interview.id,
+    organizationId: opts.interview.organizationId,
+  });
 }
 
 async function getInterviewContext(interviewId: string) {
@@ -106,27 +140,7 @@ async function buildInterviewPlan(interviewId: string): Promise<never[] | object
   }
 }
 
-const createQuestionSchema = z.object({
-  section: z.string().min(1).max(100),
-  question: z.string().min(1),
-  type: z.string().min(1).max(50),
-  difficulty: z.enum(["easy", "medium", "hard"]).default("medium"),
-  isFollowUp: z.boolean().optional(),
-  context: z.record(z.unknown()).optional(),
-  followUpToId: z.string().optional(),
-});
-
-const submitAnswerSchema = z.object({
-  interviewToken: z.string().min(1),
-  questionId: z.string().min(1),
-  answer: z.string().min(1).max(12000),
-  durationSeconds: z.number().min(0).max(3600).default(0),
-  confidence: z.number().min(0).max(100).default(50),
-});
-
-const joinInterviewSchema = z.object({
-  interviewToken: z.string().min(1),
-});
+const MAX_FOLLOW_UP_QUESTIONS_PER_INTERVIEW = 5;
 
 export async function registerInterviewRoutes(server: FastifyInstance): Promise<void> {
   server.get("/api/v1/interviews", { onRequest: [(server as any).requireRole(UserRole.OrgAdmin, UserRole.Recruiter)] }, async (request: FastifyRequest, reply: FastifyReply) => {
@@ -189,7 +203,7 @@ export async function registerInterviewRoutes(server: FastifyInstance): Promise<
     return interview;
   });
 
-  server.post("/api/v1/interviews", { onRequest: [(server as any).requireRole(UserRole.OrgAdmin, UserRole.Recruiter)] }, async (request: FastifyRequest, reply: FastifyReply) => {
+  server.post("/api/v1/interviews", { onRequest: [(server as any).requireRole(UserRole.OrgAdmin, UserRole.Recruiter)], config: { rateLimit: { max: 20, timeWindow: "1 minute", keyGenerator: rateLimitSocketKeyGenerator } } }, async (request: FastifyRequest, reply: FastifyReply) => {
     const user = getUser(request);
 
     const parsed = createInterviewSchema.safeParse(request.body);
@@ -206,6 +220,11 @@ export async function registerInterviewRoutes(server: FastifyInstance): Promise<
     if (!organizationId) {
       reply.code(403);
       return { error: "Organization required" };
+    }
+
+    if (isSuperAdmin(user) && !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(organizationId)) {
+      reply.code(400);
+      return { error: "Invalid organizationId" };
     }
 
     const [candidate, job] = await Promise.all([
@@ -302,7 +321,7 @@ export async function registerInterviewRoutes(server: FastifyInstance): Promise<
     const { id } = request.params as { id: string };
     const user = getUser(request);
 
-    const existing = await db.interview.findFirst({ where: { id, ...orgClause(user) } });
+    const existing = await db.interview.findFirst({ where: { id, ...orgClause(user) }, include: { candidate: true, job: true } });
     if (!existing) {
       reply.code(404);
       return { error: "Interview not found" };
@@ -315,6 +334,15 @@ export async function registerInterviewRoutes(server: FastifyInstance): Promise<
     const interview = await db.interview.update({
       where: { id },
       data: { status: InterviewStatus.Completed, endedAt: new Date() },
+    });
+
+    await dispatchInterviewEmail({
+      interview: existing,
+      type: EmailType.Completion,
+      subject: `Interview completed - ${existing.job.title}`,
+      body: `<p>Hi ${existing.candidate.name},</p><p>Thank you for completing the interview for the role of <strong>${existing.job.title}</strong>. We will be in touch with the outcome shortly.</p>`,
+      template: "interview_completion",
+      templateData: { candidateName: existing.candidate.name, jobTitle: existing.job.title },
     });
 
     await logAuditEvent({
@@ -335,7 +363,7 @@ export async function registerInterviewRoutes(server: FastifyInstance): Promise<
     const { id } = request.params as { id: string };
     const user = getUser(request);
 
-    const existing = await db.interview.findFirst({ where: { id, ...orgClause(user) } });
+    const existing = await db.interview.findFirst({ where: { id, ...orgClause(user) }, include: { candidate: true, job: true } });
     if (!existing) {
       reply.code(404);
       return { error: "Interview not found" };
@@ -348,6 +376,15 @@ export async function registerInterviewRoutes(server: FastifyInstance): Promise<
     const interview = await db.interview.update({
       where: { id },
       data: { status: InterviewStatus.Cancelled, endedAt: existing.endedAt ?? new Date() },
+    });
+
+    await dispatchInterviewEmail({
+      interview: existing,
+      type: EmailType.Cancellation,
+      subject: `Interview cancelled - ${existing.job.title}`,
+      body: `<p>Hi ${existing.candidate.name},</p><p>Your interview for the role of <strong>${existing.job.title}</strong> has been cancelled. We apologise for any inconvenience.</p>`,
+      template: "interview_cancellation",
+      templateData: { candidateName: existing.candidate.name, jobTitle: existing.job.title },
     });
 
     await logAuditEvent({
@@ -381,27 +418,19 @@ export async function registerInterviewRoutes(server: FastifyInstance): Promise<
     const linkExpiryHours = config.getInterviewConfig().linkExpiryHours;
     const expiresAt = new Date(Date.now() + linkExpiryHours * 60 * 60 * 1000);
 
-    await db.interview.update({ where: { id }, data: { secureToken } });
+    await db.interview.update({ where: { id }, data: { secureToken, inviteExpiresAt: expiresAt } });
 
-    const interviewLink = `${getAppUrl()}/portal?token=${secureToken}`;
+    const interviewLink = interviewLinkFor(secureToken);
     const subject = `Interview invitation - ${interview.job.title}`;
-    const body = `<p>Hi ${interview.candidate.name},</p><p>You have been invited to an interview for the role of <strong>${interview.job.title}</strong>. Please use the link below to join:</p><p><a href="${interviewLink}">${interviewLink}</a></p>`;
+    const body = `<p>Hi ${interview.candidate.name},</p><p>You have been invited to an interview for the role of <strong>${interview.job.title}</strong>. Please use the link below to join:</p><p><a href="${interviewLink}">${interviewLink}</a></p><p>This link expires on ${expiresAt.toUTCString()}.</p>`;
 
-    await db.email.create({
-      data: {
-        type: EmailType.Invitation,
-        recipient: interview.candidate.email,
-        recipientName: interview.candidate.name,
-        subject,
-        body,
-        template: "interview_invitation",
-        templateData: { interviewLink, candidateName: interview.candidate.name, jobTitle: interview.job.title, expiresAt: expiresAt.toISOString() },
-        status: EmailStatus.Pending,
-        jobId: interview.jobId,
-        candidateId: interview.candidateId,
-        interviewId: interview.id,
-        organizationId: interview.organizationId,
-      },
+    await dispatchInterviewEmail({
+      interview,
+      type: EmailType.Invitation,
+      subject,
+      body,
+      template: "interview_invitation",
+      templateData: { interviewLink, candidateName: interview.candidate.name, jobTitle: interview.job.title, expiresAt: expiresAt.toISOString() },
     });
 
     await logAuditEvent({
@@ -417,6 +446,119 @@ export async function registerInterviewRoutes(server: FastifyInstance): Promise<
     });
 
     return { link: interviewLink, token: secureToken, expiresAt };
+  });
+
+  server.post("/api/v1/interviews/:id/remind", { onRequest: [(server as any).requireRole(UserRole.OrgAdmin, UserRole.Recruiter)] }, async (request: FastifyRequest, reply: FastifyReply) => {
+    const { id } = request.params as { id: string };
+    const user = getUser(request);
+
+    const interview = await db.interview.findFirst({
+      where: { id, ...orgClause(user) },
+      include: { candidate: true, job: true },
+    });
+    if (!interview) {
+      reply.code(404);
+      return { error: "Interview not found" };
+    }
+    if (interview.status === InterviewStatus.Completed || interview.status === InterviewStatus.Cancelled) {
+      reply.code(409);
+      return { error: "Interview is not open for reminders" };
+    }
+
+    const secureToken = crypto.randomUUID();
+    const linkExpiryHours = config.getInterviewConfig().linkExpiryHours;
+    const expiresAt = new Date(Date.now() + linkExpiryHours * 60 * 60 * 1000);
+
+    await db.interview.update({ where: { id }, data: { secureToken, inviteExpiresAt: expiresAt } });
+
+    const interviewLink = interviewLinkFor(secureToken);
+    const subject = `Reminder: Interview for ${interview.job.title}`;
+    const body = `<p>Hi ${interview.candidate.name},</p><p>This is a reminder about your upcoming interview for the role of <strong>${interview.job.title}</strong>. Please use the link below to join:</p><p><a href="${interviewLink}">${interviewLink}</a></p><p>This link expires on ${expiresAt.toUTCString()}.</p>`;
+
+    await dispatchInterviewEmail({
+      interview,
+      type: EmailType.Reminder,
+      subject,
+      body,
+      template: "interview_reminder",
+      templateData: { interviewLink, candidateName: interview.candidate.name, jobTitle: interview.job.title, expiresAt: expiresAt.toISOString() },
+    });
+
+    await logAuditEvent({
+      action: "interview.remind",
+      entityType: "interview",
+      entityId: id,
+      actorId: user.id,
+      actorEmail: user.email,
+      organizationId: interview.organizationId,
+      metadata: { expiresAt: expiresAt.toISOString() },
+      ipAddress: getClientIp(request),
+      userAgent: getClientUserAgent(request),
+    });
+
+    return { link: interviewLink, token: secureToken, expiresAt };
+  });
+
+  server.post("/api/v1/interviews/:id/reschedule", { onRequest: [(server as any).requireRole(UserRole.OrgAdmin, UserRole.Recruiter)] }, async (request: FastifyRequest, reply: FastifyReply) => {
+    const { id } = request.params as { id: string };
+    const user = getUser(request);
+
+    const parsed = rescheduleInterviewSchema.safeParse(request.body ?? {});
+    if (!parsed.success) {
+      reply.code(400);
+      return { error: "Invalid input", details: parsed.error.flatten() };
+    }
+    const duration = parsed.data.duration;
+
+    const interview = await db.interview.findFirst({
+      where: { id, ...orgClause(user) },
+      include: { candidate: true, job: true },
+    });
+    if (!interview) {
+      reply.code(404);
+      return { error: "Interview not found" };
+    }
+    if (interview.status === InterviewStatus.Completed || interview.status === InterviewStatus.Cancelled) {
+      reply.code(409);
+      return { error: "Cannot reschedule a completed or cancelled interview" };
+    }
+
+    const secureToken = crypto.randomUUID();
+    const linkExpiryHours = config.getInterviewConfig().linkExpiryHours;
+    const expiresAt = new Date(Date.now() + linkExpiryHours * 60 * 60 * 1000);
+    const totalDuration = duration ?? interview.totalDuration;
+
+    await db.interview.update({
+      where: { id },
+      data: { secureToken, inviteExpiresAt: expiresAt, totalDuration },
+    });
+
+    const interviewLink = interviewLinkFor(secureToken);
+    const subject = `Interview rescheduled - ${interview.job.title}`;
+    const body = `<p>Hi ${interview.candidate.name},</p><p>Your interview for the role of <strong>${interview.job.title}</strong> has been rescheduled${duration ? ` with a new duration of ${duration} minutes` : ""}. Please use the link below to join:</p><p><a href="${interviewLink}">${interviewLink}</a></p><p>This link expires on ${expiresAt.toUTCString()}.</p>`;
+
+    await dispatchInterviewEmail({
+      interview,
+      type: EmailType.Reschedule,
+      subject,
+      body,
+      template: "interview_reschedule",
+      templateData: { interviewLink, candidateName: interview.candidate.name, jobTitle: interview.job.title, duration: totalDuration, expiresAt: expiresAt.toISOString() },
+    });
+
+    await logAuditEvent({
+      action: "interview.reschedule",
+      entityType: "interview",
+      entityId: id,
+      actorId: user.id,
+      actorEmail: user.email,
+      organizationId: interview.organizationId,
+      metadata: { totalDuration, expiresAt: expiresAt.toISOString() },
+      ipAddress: getClientIp(request),
+      userAgent: getClientUserAgent(request),
+    });
+
+    return { link: interviewLink, token: secureToken, expiresAt, totalDuration };
   });
 
   server.post("/api/v1/interviews/:id/questions", { onRequest: [(server as any).requireRole(UserRole.OrgAdmin, UserRole.Recruiter)] }, async (request: FastifyRequest, reply: FastifyReply) => {
@@ -489,7 +631,7 @@ export async function registerInterviewRoutes(server: FastifyInstance): Promise<
     return { data: segments };
   });
 
-  server.post("/api/v1/interviews/candidate/join", async (request: FastifyRequest, reply: FastifyReply) => {
+  server.post("/api/v1/interviews/candidate/join", { config: { rateLimit: { max: 20, timeWindow: "1 minute" } } }, async (request: FastifyRequest, reply: FastifyReply) => {
     const parsed = joinInterviewSchema.safeParse(request.body);
     if (!parsed.success) {
       reply.code(400);
@@ -498,7 +640,7 @@ export async function registerInterviewRoutes(server: FastifyInstance): Promise<
 
     const interview = await db.interview.findUnique({
       where: { secureToken: parsed.data.interviewToken },
-      include: { candidate: true, job: { include: { organization: true } }, questions: { orderBy: { sequence: "asc" } } },
+      include: { candidate: true, job: { include: { organization: true } }, questions: { orderBy: { sequence: "asc" } }, answers: true },
     });
     if (!interview) {
       reply.code(404);
@@ -512,9 +654,13 @@ export async function registerInterviewRoutes(server: FastifyInstance): Promise<
       reply.code(403);
       return { error: "This interview has already been completed" };
     }
+    if (interview.inviteExpiresAt && new Date(interview.inviteExpiresAt).getTime() < Date.now()) {
+      reply.code(403);
+      return { error: "This interview invitation has expired. Please contact the interviewer." };
+    }
 
-    const firstName = interview.candidate.name.split(" ")[0] || "Candidate";
-    const currentQuestion = interview.questions.find((q) => !q.isFollowUp && q.sequence === Math.min(...interview.questions.filter((x) => !x.isFollowUp).map((x) => x.sequence), 0)) || interview.questions[0] || null;
+    const answeredIds = new Set(interview.answers.map((item) => item.questionId));
+    const currentQuestion = interview.questions.find((q) => !answeredIds.has(q.id)) || null;
 
     return {
       interviewId: interview.id,
@@ -537,7 +683,7 @@ export async function registerInterviewRoutes(server: FastifyInstance): Promise<
         id: interview.candidate.id,
         name: interview.candidate.name,
         email: interview.candidate.email,
-        firstName,
+        firstName: interview.candidate.name.split(" ")[0] || "Candidate",
       },
       job: {
         id: interview.job.id,
@@ -562,7 +708,7 @@ export async function registerInterviewRoutes(server: FastifyInstance): Promise<
     return { valid: true, ...interview };
   });
 
-  server.post("/api/v1/interviews/candidate/:id/answer", async (request: FastifyRequest, reply: FastifyReply) => {
+  server.post("/api/v1/interviews/candidate/:id/answer", { config: { rateLimit: { max: 30, timeWindow: "1 minute" } } }, async (request: FastifyRequest, reply: FastifyReply) => {
     const { id } = request.params as { id: string };
 
     const parsed = submitAnswerSchema.safeParse(request.body);
@@ -584,6 +730,10 @@ export async function registerInterviewRoutes(server: FastifyInstance): Promise<
       reply.code(403);
       return { error: "This interview is no longer accepting answers" };
     }
+    if (interview.inviteExpiresAt && new Date(interview.inviteExpiresAt).getTime() < Date.now()) {
+      reply.code(403);
+      return { error: "This interview invitation has expired. Please contact the interviewer." };
+    }
 
     const question = await db.interviewQuestion.findFirst({ where: { id: data.questionId, interviewId: id } });
     if (!question) {
@@ -591,7 +741,19 @@ export async function registerInterviewRoutes(server: FastifyInstance): Promise<
       return { error: "Question not found for this interview" };
     }
 
-    const securedAnswer = antiPromptInjection(data.answer) ? data.answer.slice(0, 4000) : data.answer;
+    const existingAnswer = await db.interviewAnswer.findFirst({
+      where: { interviewId: id, questionId: question.id },
+    });
+    if (existingAnswer) {
+      reply.code(409);
+      return { error: "This question has already been answered" };
+    }
+
+    if (antiPromptInjection(data.answer)) {
+      reply.code(400);
+      return { error: "Answer contains prohibited content" };
+    }
+    const securedAnswer = sanitizeInput(data.answer);
 
     const answer = await db.interviewAnswer.create({
       data: {
@@ -603,24 +765,27 @@ export async function registerInterviewRoutes(server: FastifyInstance): Promise<
       },
     });
 
+    const totalSeconds = interview.totalDuration > 0 ? interview.totalDuration * 60 : 0;
+    const newElapsed = (interview.elapsedSeconds ?? 0) + data.durationSeconds;
+    const isComplete = totalSeconds > 0 && newElapsed >= totalSeconds;
+
     await db.interview.update({
       where: { id },
       data: {
         elapsedSeconds: { increment: data.durationSeconds },
-        ...(interview.totalDuration > 0 && interview.elapsedSeconds + data.durationSeconds > interview.totalDuration
-          ? { status: InterviewStatus.Completed, endedAt: new Date() }
-          : {}),
+        ...(isComplete ? { status: InterviewStatus.Completed, endedAt: new Date() } : {}),
       },
     });
 
     let nextQuestion = null;
-    const isComplete = interview.totalDuration > 0 && (interview.elapsedSeconds ?? 0) + data.durationSeconds >= interview.totalDuration;
-
-    if (!isComplete) {
-      const topic = [interview.job.title, question.section, question.type].filter(Boolean).join(" ");
-      if (antiPromptInjection(topic) === false) {
+    if (!isComplete && !question.isFollowUp) {
+      const followUpCount = await db.interviewQuestion.count({
+        where: { interviewId: id, isFollowUp: true },
+      });
+      if (followUpCount < MAX_FOLLOW_UP_QUESTIONS_PER_INTERVIEW) {
         try {
           const planner = new InterviewPlanner(getAIProvider());
+          const topic = [interview.job.title, question.section, question.type].filter(Boolean).join(" ");
           const text = await planner.generateQuestion(topic, question.difficulty || "medium", {
             previousQuestion: question.question,
             section: question.section,
@@ -666,6 +831,40 @@ export async function registerInterviewRoutes(server: FastifyInstance): Promise<
       interviewComplete: isComplete,
       completed: isComplete,
     };
+  });
+
+  server.post("/api/v1/interviews/candidate/:id/complete", { config: { rateLimit: { max: 20, timeWindow: "1 minute" } } }, async (request: FastifyRequest, reply: FastifyReply) => {
+    const { id } = request.params as { id: string };
+
+    const parsed = completeInterviewSchema.safeParse(request.body);
+    if (!parsed.success) {
+      reply.code(400);
+      return { error: "interviewToken is required" };
+    }
+
+    const interview = await db.interview.findUnique({ where: { secureToken: parsed.data.interviewToken } });
+    if (!interview || interview.id !== id) {
+      reply.code(404);
+      return { error: "Interview not found" };
+    }
+    if (interview.status === InterviewStatus.Cancelled) {
+      reply.code(403);
+      return { error: "This interview has been cancelled" };
+    }
+    if (interview.inviteExpiresAt && new Date(interview.inviteExpiresAt).getTime() < Date.now()) {
+      reply.code(403);
+      return { error: "This interview invitation has expired. Please contact the interviewer." };
+    }
+    if (interview.status === InterviewStatus.Completed) {
+      return { completed: true, interviewId: interview.id };
+    }
+
+    const updated = await db.interview.update({
+      where: { id },
+      data: { status: InterviewStatus.Completed, endedAt: new Date() },
+    });
+
+    return { completed: true, interviewId: updated.id, status: updated.status };
   });
 
   // Trigger AI evaluation for a completed interview

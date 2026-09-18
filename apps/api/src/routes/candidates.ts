@@ -90,6 +90,16 @@ export async function registerCandidateRoutes(server: FastifyInstance): Promise<
       return { error: "Organization required" };
     }
 
+    if (data.resumeId) {
+      const resume = await db.resume.findFirst({
+        where: { id: data.resumeId, deletedAt: null, organizationId },
+      });
+      if (!resume) {
+        reply.code(400);
+        return { error: "Resume not found in this organization" };
+      }
+    }
+
     const candidate = await db.candidate.create({
       data: {
         name: data.name,

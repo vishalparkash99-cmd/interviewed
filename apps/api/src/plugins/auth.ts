@@ -24,10 +24,20 @@ async function attachOrgId(user: { id: string; email: string; role: string }): P
 const authPlugin = fp(async (fastify: FastifyInstance): Promise<void> => {
   await fastify.register(cookie);
 
+  const REFRESH_COOKIE_NAME = "interviewed-refresh-token";
+
   await fastify.register(jwt, {
     secret: config.getJwtSecret(),
     cookie: { cookieName: "interviewed-token", signed: false },
   });
+
+  await fastify.register(jwt, {
+    secret: config.getRefreshJwtSecret(),
+    namespace: "refresh",
+    cookie: { cookieName: REFRESH_COOKIE_NAME, signed: false },
+  });
+
+  fastify.decorate("getRefreshCookieName", () => REFRESH_COOKIE_NAME);
 
   fastify.decorate("verifyAuth", async (request: FastifyRequest) => {
     try {

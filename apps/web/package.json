@@ -1,1 +1,29 @@
-{"name":"@interviewed/web","private":true,"version":"1.0.0","scripts":{"dev":"next dev","build":"next build","start":"next start","lint":"next lint","test":"jest"},"dependencies":{"next":"14.2.3","react":"^18.3.1","react-dom":"^18.3.1","@interviewed/types": "*","@interviewed/config": "*"},"devDependencies":{"@types/react":"^18.3.5","@types/react-dom":"^18.3.0","typescript":"^5.5.4","@interviewed/types": "*","@interviewed/config": "*","jest":"^29.7.0","@types/jest":"^29.5.12","ts-jest":"^29.2.5"}}
+{
+  "name": "@interviewed/web",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "jest"
+  },
+  "dependencies": {
+    "next": "14.2.35",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "@interviewed/types": "*",
+    "@interviewed/config": "*"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.5",
+    "@types/react-dom": "^18.3.0",
+    "typescript": "^5.5.4",
+    "@interviewed/types": "*",
+    "@interviewed/config": "*",
+    "jest": "^29.7.0",
+    "@types/jest": "^29.5.12",
+    "ts-jest": "^29.2.5"
+  }
+}

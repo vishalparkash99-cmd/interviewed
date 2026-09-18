@@ -86,6 +86,7 @@ export default function InterviewDetailPage() {
   const [invite, setInvite] = useState<{ link: string; expiresAt?: string } | null>(null);
   const [copied, setCopied] = useState(false);
   const [transcript, setTranscript] = useState<TranscriptSegment[] | null>(null);
+  const [rescheduleMinutes, setRescheduleMinutes] = useState("");
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -153,6 +154,41 @@ export default function InterviewDetailPage() {
     }
   };
 
+  const sendReminder = async () => {
+    setBusy(true);
+    setNotice(null);
+    try {
+      const res = await api.post<{ link: string; expiresAt?: string }>(`/api/v1/interviews/${interviewId}/remind`);
+      setInvite(res);
+      setCopied(false);
+      setNotice({ type: "success", text: "Reminder sent. New invitation link generated." });
+    } catch (e) {
+      setNotice({ type: "error", text: (e as Error).message });
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const reschedule = async () => {
+    const minutes = Number(rescheduleMinutes);
+    if (!Number.isFinite(minutes) || minutes < 5 || minutes > 180) {
+      setNotice({ type: "error", text: "Enter a duration between 5 and 180 minutes." });
+      return;
+    }
+    setBusy(true);
+    setNotice(null);
+    try {
+      const res = await api.post<{ link: string; expiresAt?: string }>(`/api/v1/interviews/${interviewId}/reschedule`, { duration: minutes });
+      setInvite(res);
+      setCopied(false);
+      setNotice({ type: "success", text: "Interview rescheduled. New invitation link sent." });
+    } catch (e) {
+      setNotice({ type: "error", text: (e as Error).message });
+    } finally {
+      setBusy(false);
+    }
+  };
+
   if (loading) {
     return (
       <AppShell title="Interview">
@@ -210,6 +246,28 @@ export default function InterviewDetailPage() {
             <Button variant="secondary" disabled={busy} onClick={() => doAction("End", `/api/v1/interviews/${interviewId}/end`, "Interview ended.")}>
               End
             </Button>
+          )}
+          {(status === "scheduled" || status === "in_progress") && (
+            <Button variant="secondary" disabled={busy} onClick={sendReminder}>
+              Send Reminder
+            </Button>
+          )}
+          {status === "scheduled" && (
+            <span className="flex items-center gap-2">
+              <input
+                type="number"
+                min={5}
+                max={180}
+                value={rescheduleMinutes}
+                onChange={(e) => setRescheduleMinutes(e.target.value)}
+                placeholder="Duration (min)"
+                className="input"
+                style={{ width: 140 }}
+              />
+              <Button variant="secondary" disabled={busy} onClick={reschedule}>
+                Reschedule
+              </Button>
+            </span>
           )}
           {(status === "scheduled" || status === "in_progress") && (
             <Button variant="danger" disabled={busy} onClick={() => doAction("Cancel", `/api/v1/interviews/${interviewId}/cancel`, "Interview cancelled.")}>

@@ -189,7 +189,10 @@ export const EmailType: {
   reminder: 'reminder',
   result: 'result',
   welcome: 'welcome',
-  password_reset: 'password_reset'
+  password_reset: 'password_reset',
+  reschedule: 'reschedule',
+  cancellation: 'cancellation',
+  completion: 'completion'
 };
 
 export type EmailType = (typeof EmailType)[keyof typeof EmailType]
@@ -15722,6 +15725,7 @@ export namespace Prisma {
     jobId: string | null
     interviewKey: string | null
     secureToken: string | null
+    inviteExpiresAt: Date | null
     status: $Enums.InterviewStatus | null
     currentSectionIndex: number | null
     totalDuration: number | null
@@ -15744,6 +15748,7 @@ export namespace Prisma {
     jobId: string | null
     interviewKey: string | null
     secureToken: string | null
+    inviteExpiresAt: Date | null
     status: $Enums.InterviewStatus | null
     currentSectionIndex: number | null
     totalDuration: number | null
@@ -15766,6 +15771,7 @@ export namespace Prisma {
     jobId: number
     interviewKey: number
     secureToken: number
+    inviteExpiresAt: number
     status: number
     plan: number
     currentSectionIndex: number
@@ -15805,6 +15811,7 @@ export namespace Prisma {
     jobId?: true
     interviewKey?: true
     secureToken?: true
+    inviteExpiresAt?: true
     status?: true
     currentSectionIndex?: true
     totalDuration?: true
@@ -15827,6 +15834,7 @@ export namespace Prisma {
     jobId?: true
     interviewKey?: true
     secureToken?: true
+    inviteExpiresAt?: true
     status?: true
     currentSectionIndex?: true
     totalDuration?: true
@@ -15849,6 +15857,7 @@ export namespace Prisma {
     jobId?: true
     interviewKey?: true
     secureToken?: true
+    inviteExpiresAt?: true
     status?: true
     plan?: true
     currentSectionIndex?: true
@@ -15961,6 +15970,7 @@ export namespace Prisma {
     jobId: string
     interviewKey: string
     secureToken: string
+    inviteExpiresAt: Date | null
     status: $Enums.InterviewStatus
     plan: JsonValue
     currentSectionIndex: number
@@ -16005,6 +16015,7 @@ export namespace Prisma {
     jobId?: boolean
     interviewKey?: boolean
     secureToken?: boolean
+    inviteExpiresAt?: boolean
     status?: boolean
     plan?: boolean
     currentSectionIndex?: boolean
@@ -16040,6 +16051,7 @@ export namespace Prisma {
     jobId?: boolean
     interviewKey?: boolean
     secureToken?: boolean
+    inviteExpiresAt?: boolean
     status?: boolean
     plan?: boolean
     currentSectionIndex?: boolean
@@ -16068,6 +16080,7 @@ export namespace Prisma {
     jobId?: boolean
     interviewKey?: boolean
     secureToken?: boolean
+    inviteExpiresAt?: boolean
     status?: boolean
     plan?: boolean
     currentSectionIndex?: boolean
@@ -16096,6 +16109,7 @@ export namespace Prisma {
     jobId?: boolean
     interviewKey?: boolean
     secureToken?: boolean
+    inviteExpiresAt?: boolean
     status?: boolean
     plan?: boolean
     currentSectionIndex?: boolean
@@ -16115,7 +16129,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type InterviewOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "candidateId" | "jobId" | "interviewKey" | "secureToken" | "status" | "plan" | "currentSectionIndex" | "totalDuration" | "elapsedSeconds" | "startedAt" | "endedAt" | "recordingUrl" | "transcript" | "candidateFeedback" | "recordingConsent" | "recordingDisclosed" | "deviceInfo" | "ipAddress" | "organizationId" | "createdAt" | "updatedAt", ExtArgs["result"]["interview"]>
+  export type InterviewOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "candidateId" | "jobId" | "interviewKey" | "secureToken" | "inviteExpiresAt" | "status" | "plan" | "currentSectionIndex" | "totalDuration" | "elapsedSeconds" | "startedAt" | "endedAt" | "recordingUrl" | "transcript" | "candidateFeedback" | "recordingConsent" | "recordingDisclosed" | "deviceInfo" | "ipAddress" | "organizationId" | "createdAt" | "updatedAt", ExtArgs["result"]["interview"]>
   export type InterviewInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     candidate?: boolean | CandidateDefaultArgs<ExtArgs>
     job?: boolean | JobDefaultArgs<ExtArgs>
@@ -16158,6 +16172,7 @@ export namespace Prisma {
       jobId: string
       interviewKey: string
       secureToken: string
+      inviteExpiresAt: Date | null
       status: $Enums.InterviewStatus
       plan: Prisma.JsonValue
       currentSectionIndex: number
@@ -16612,6 +16627,7 @@ export namespace Prisma {
     readonly jobId: FieldRef<"Interview", 'String'>
     readonly interviewKey: FieldRef<"Interview", 'String'>
     readonly secureToken: FieldRef<"Interview", 'String'>
+    readonly inviteExpiresAt: FieldRef<"Interview", 'DateTime'>
     readonly status: FieldRef<"Interview", 'InterviewStatus'>
     readonly plan: FieldRef<"Interview", 'Json'>
     readonly currentSectionIndex: FieldRef<"Interview", 'Int'>
@@ -31043,6 +31059,7 @@ export namespace Prisma {
     jobId: 'jobId',
     interviewKey: 'interviewKey',
     secureToken: 'secureToken',
+    inviteExpiresAt: 'inviteExpiresAt',
     status: 'status',
     plan: 'plan',
     currentSectionIndex: 'currentSectionIndex',
@@ -32570,6 +32587,7 @@ export namespace Prisma {
     jobId?: StringFilter<"Interview"> | string
     interviewKey?: StringFilter<"Interview"> | string
     secureToken?: StringFilter<"Interview"> | string
+    inviteExpiresAt?: DateTimeNullableFilter<"Interview"> | Date | string | null
     status?: EnumInterviewStatusFilter<"Interview"> | $Enums.InterviewStatus
     plan?: JsonFilter<"Interview">
     currentSectionIndex?: IntFilter<"Interview"> | number
@@ -32604,6 +32622,7 @@ export namespace Prisma {
     jobId?: SortOrder
     interviewKey?: SortOrder
     secureToken?: SortOrder
+    inviteExpiresAt?: SortOrderInput | SortOrder
     status?: SortOrder
     plan?: SortOrder
     currentSectionIndex?: SortOrder
@@ -32641,6 +32660,7 @@ export namespace Prisma {
     NOT?: InterviewWhereInput | InterviewWhereInput[]
     candidateId?: StringFilter<"Interview"> | string
     jobId?: StringFilter<"Interview"> | string
+    inviteExpiresAt?: DateTimeNullableFilter<"Interview"> | Date | string | null
     status?: EnumInterviewStatusFilter<"Interview"> | $Enums.InterviewStatus
     plan?: JsonFilter<"Interview">
     currentSectionIndex?: IntFilter<"Interview"> | number
@@ -32675,6 +32695,7 @@ export namespace Prisma {
     jobId?: SortOrder
     interviewKey?: SortOrder
     secureToken?: SortOrder
+    inviteExpiresAt?: SortOrderInput | SortOrder
     status?: SortOrder
     plan?: SortOrder
     currentSectionIndex?: SortOrder
@@ -32708,6 +32729,7 @@ export namespace Prisma {
     jobId?: StringWithAggregatesFilter<"Interview"> | string
     interviewKey?: StringWithAggregatesFilter<"Interview"> | string
     secureToken?: StringWithAggregatesFilter<"Interview"> | string
+    inviteExpiresAt?: DateTimeNullableWithAggregatesFilter<"Interview"> | Date | string | null
     status?: EnumInterviewStatusWithAggregatesFilter<"Interview"> | $Enums.InterviewStatus
     plan?: JsonWithAggregatesFilter<"Interview">
     currentSectionIndex?: IntWithAggregatesFilter<"Interview"> | number
@@ -34966,6 +34988,7 @@ export namespace Prisma {
     id?: string
     interviewKey: string
     secureToken: string
+    inviteExpiresAt?: Date | string | null
     status?: $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: number
@@ -34999,6 +35022,7 @@ export namespace Prisma {
     jobId: string
     interviewKey: string
     secureToken: string
+    inviteExpiresAt?: Date | string | null
     status?: $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: number
@@ -35028,6 +35052,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     interviewKey?: StringFieldUpdateOperationsInput | string
     secureToken?: StringFieldUpdateOperationsInput | string
+    inviteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: IntFieldUpdateOperationsInput | number
@@ -35061,6 +35086,7 @@ export namespace Prisma {
     jobId?: StringFieldUpdateOperationsInput | string
     interviewKey?: StringFieldUpdateOperationsInput | string
     secureToken?: StringFieldUpdateOperationsInput | string
+    inviteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: IntFieldUpdateOperationsInput | number
@@ -35092,6 +35118,7 @@ export namespace Prisma {
     jobId: string
     interviewKey: string
     secureToken: string
+    inviteExpiresAt?: Date | string | null
     status?: $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: number
@@ -35115,6 +35142,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     interviewKey?: StringFieldUpdateOperationsInput | string
     secureToken?: StringFieldUpdateOperationsInput | string
+    inviteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: IntFieldUpdateOperationsInput | number
@@ -35139,6 +35167,7 @@ export namespace Prisma {
     jobId?: StringFieldUpdateOperationsInput | string
     interviewKey?: StringFieldUpdateOperationsInput | string
     secureToken?: StringFieldUpdateOperationsInput | string
+    inviteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: IntFieldUpdateOperationsInput | number
@@ -37379,6 +37408,7 @@ export namespace Prisma {
     jobId?: SortOrder
     interviewKey?: SortOrder
     secureToken?: SortOrder
+    inviteExpiresAt?: SortOrder
     status?: SortOrder
     plan?: SortOrder
     currentSectionIndex?: SortOrder
@@ -37410,6 +37440,7 @@ export namespace Prisma {
     jobId?: SortOrder
     interviewKey?: SortOrder
     secureToken?: SortOrder
+    inviteExpiresAt?: SortOrder
     status?: SortOrder
     currentSectionIndex?: SortOrder
     totalDuration?: SortOrder
@@ -37432,6 +37463,7 @@ export namespace Prisma {
     jobId?: SortOrder
     interviewKey?: SortOrder
     secureToken?: SortOrder
+    inviteExpiresAt?: SortOrder
     status?: SortOrder
     currentSectionIndex?: SortOrder
     totalDuration?: SortOrder
@@ -40352,6 +40384,7 @@ export namespace Prisma {
     id?: string
     interviewKey: string
     secureToken: string
+    inviteExpiresAt?: Date | string | null
     status?: $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: number
@@ -40384,6 +40417,7 @@ export namespace Prisma {
     jobId: string
     interviewKey: string
     secureToken: string
+    inviteExpiresAt?: Date | string | null
     status?: $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: number
@@ -40699,6 +40733,7 @@ export namespace Prisma {
     jobId?: StringFilter<"Interview"> | string
     interviewKey?: StringFilter<"Interview"> | string
     secureToken?: StringFilter<"Interview"> | string
+    inviteExpiresAt?: DateTimeNullableFilter<"Interview"> | Date | string | null
     status?: EnumInterviewStatusFilter<"Interview"> | $Enums.InterviewStatus
     plan?: JsonFilter<"Interview">
     currentSectionIndex?: IntFilter<"Interview"> | number
@@ -41813,6 +41848,7 @@ export namespace Prisma {
     id?: string
     interviewKey: string
     secureToken: string
+    inviteExpiresAt?: Date | string | null
     status?: $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: number
@@ -41844,6 +41880,7 @@ export namespace Prisma {
     candidateId: string
     interviewKey: string
     secureToken: string
+    inviteExpiresAt?: Date | string | null
     status?: $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: number
@@ -42244,6 +42281,7 @@ export namespace Prisma {
     id?: string
     interviewKey: string
     secureToken: string
+    inviteExpiresAt?: Date | string | null
     status?: $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: number
@@ -42275,6 +42313,7 @@ export namespace Prisma {
     jobId: string
     interviewKey: string
     secureToken: string
+    inviteExpiresAt?: Date | string | null
     status?: $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: number
@@ -43762,6 +43801,7 @@ export namespace Prisma {
     id?: string
     interviewKey: string
     secureToken: string
+    inviteExpiresAt?: Date | string | null
     status?: $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: number
@@ -43794,6 +43834,7 @@ export namespace Prisma {
     jobId: string
     interviewKey: string
     secureToken: string
+    inviteExpiresAt?: Date | string | null
     status?: $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: number
@@ -43838,6 +43879,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     interviewKey?: StringFieldUpdateOperationsInput | string
     secureToken?: StringFieldUpdateOperationsInput | string
+    inviteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: IntFieldUpdateOperationsInput | number
@@ -43870,6 +43912,7 @@ export namespace Prisma {
     jobId?: StringFieldUpdateOperationsInput | string
     interviewKey?: StringFieldUpdateOperationsInput | string
     secureToken?: StringFieldUpdateOperationsInput | string
+    inviteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: IntFieldUpdateOperationsInput | number
@@ -43898,6 +43941,7 @@ export namespace Prisma {
     id?: string
     interviewKey: string
     secureToken: string
+    inviteExpiresAt?: Date | string | null
     status?: $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: number
@@ -43930,6 +43974,7 @@ export namespace Prisma {
     jobId: string
     interviewKey: string
     secureToken: string
+    inviteExpiresAt?: Date | string | null
     status?: $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: number
@@ -44002,6 +44047,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     interviewKey?: StringFieldUpdateOperationsInput | string
     secureToken?: StringFieldUpdateOperationsInput | string
+    inviteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: IntFieldUpdateOperationsInput | number
@@ -44034,6 +44080,7 @@ export namespace Prisma {
     jobId?: StringFieldUpdateOperationsInput | string
     interviewKey?: StringFieldUpdateOperationsInput | string
     secureToken?: StringFieldUpdateOperationsInput | string
+    inviteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: IntFieldUpdateOperationsInput | number
@@ -44078,6 +44125,7 @@ export namespace Prisma {
     id?: string
     interviewKey: string
     secureToken: string
+    inviteExpiresAt?: Date | string | null
     status?: $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: number
@@ -44110,6 +44158,7 @@ export namespace Prisma {
     jobId: string
     interviewKey: string
     secureToken: string
+    inviteExpiresAt?: Date | string | null
     status?: $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: number
@@ -44187,6 +44236,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     interviewKey?: StringFieldUpdateOperationsInput | string
     secureToken?: StringFieldUpdateOperationsInput | string
+    inviteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: IntFieldUpdateOperationsInput | number
@@ -44219,6 +44269,7 @@ export namespace Prisma {
     jobId?: StringFieldUpdateOperationsInput | string
     interviewKey?: StringFieldUpdateOperationsInput | string
     secureToken?: StringFieldUpdateOperationsInput | string
+    inviteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: IntFieldUpdateOperationsInput | number
@@ -44286,6 +44337,7 @@ export namespace Prisma {
     id?: string
     interviewKey: string
     secureToken: string
+    inviteExpiresAt?: Date | string | null
     status?: $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: number
@@ -44318,6 +44370,7 @@ export namespace Prisma {
     jobId: string
     interviewKey: string
     secureToken: string
+    inviteExpiresAt?: Date | string | null
     status?: $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: number
@@ -44362,6 +44415,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     interviewKey?: StringFieldUpdateOperationsInput | string
     secureToken?: StringFieldUpdateOperationsInput | string
+    inviteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: IntFieldUpdateOperationsInput | number
@@ -44394,6 +44448,7 @@ export namespace Prisma {
     jobId?: StringFieldUpdateOperationsInput | string
     interviewKey?: StringFieldUpdateOperationsInput | string
     secureToken?: StringFieldUpdateOperationsInput | string
+    inviteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: IntFieldUpdateOperationsInput | number
@@ -44422,6 +44477,7 @@ export namespace Prisma {
     id?: string
     interviewKey: string
     secureToken: string
+    inviteExpiresAt?: Date | string | null
     status?: $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: number
@@ -44454,6 +44510,7 @@ export namespace Prisma {
     jobId: string
     interviewKey: string
     secureToken: string
+    inviteExpiresAt?: Date | string | null
     status?: $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: number
@@ -44498,6 +44555,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     interviewKey?: StringFieldUpdateOperationsInput | string
     secureToken?: StringFieldUpdateOperationsInput | string
+    inviteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: IntFieldUpdateOperationsInput | number
@@ -44530,6 +44588,7 @@ export namespace Prisma {
     jobId?: StringFieldUpdateOperationsInput | string
     interviewKey?: StringFieldUpdateOperationsInput | string
     secureToken?: StringFieldUpdateOperationsInput | string
+    inviteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: IntFieldUpdateOperationsInput | number
@@ -44558,6 +44617,7 @@ export namespace Prisma {
     id?: string
     interviewKey: string
     secureToken: string
+    inviteExpiresAt?: Date | string | null
     status?: $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: number
@@ -44590,6 +44650,7 @@ export namespace Prisma {
     jobId: string
     interviewKey: string
     secureToken: string
+    inviteExpiresAt?: Date | string | null
     status?: $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: number
@@ -44634,6 +44695,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     interviewKey?: StringFieldUpdateOperationsInput | string
     secureToken?: StringFieldUpdateOperationsInput | string
+    inviteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: IntFieldUpdateOperationsInput | number
@@ -44666,6 +44728,7 @@ export namespace Prisma {
     jobId?: StringFieldUpdateOperationsInput | string
     interviewKey?: StringFieldUpdateOperationsInput | string
     secureToken?: StringFieldUpdateOperationsInput | string
+    inviteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: IntFieldUpdateOperationsInput | number
@@ -45084,6 +45147,7 @@ export namespace Prisma {
     jobId: string
     interviewKey: string
     secureToken: string
+    inviteExpiresAt?: Date | string | null
     status?: $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: number
@@ -45426,6 +45490,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     interviewKey?: StringFieldUpdateOperationsInput | string
     secureToken?: StringFieldUpdateOperationsInput | string
+    inviteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: IntFieldUpdateOperationsInput | number
@@ -45458,6 +45523,7 @@ export namespace Prisma {
     jobId?: StringFieldUpdateOperationsInput | string
     interviewKey?: StringFieldUpdateOperationsInput | string
     secureToken?: StringFieldUpdateOperationsInput | string
+    inviteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: IntFieldUpdateOperationsInput | number
@@ -45488,6 +45554,7 @@ export namespace Prisma {
     jobId?: StringFieldUpdateOperationsInput | string
     interviewKey?: StringFieldUpdateOperationsInput | string
     secureToken?: StringFieldUpdateOperationsInput | string
+    inviteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: IntFieldUpdateOperationsInput | number
@@ -45957,6 +46024,7 @@ export namespace Prisma {
     candidateId: string
     interviewKey: string
     secureToken: string
+    inviteExpiresAt?: Date | string | null
     status?: $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: number
@@ -46052,6 +46120,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     interviewKey?: StringFieldUpdateOperationsInput | string
     secureToken?: StringFieldUpdateOperationsInput | string
+    inviteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: IntFieldUpdateOperationsInput | number
@@ -46083,6 +46152,7 @@ export namespace Prisma {
     candidateId?: StringFieldUpdateOperationsInput | string
     interviewKey?: StringFieldUpdateOperationsInput | string
     secureToken?: StringFieldUpdateOperationsInput | string
+    inviteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: IntFieldUpdateOperationsInput | number
@@ -46113,6 +46183,7 @@ export namespace Prisma {
     candidateId?: StringFieldUpdateOperationsInput | string
     interviewKey?: StringFieldUpdateOperationsInput | string
     secureToken?: StringFieldUpdateOperationsInput | string
+    inviteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: IntFieldUpdateOperationsInput | number
@@ -46161,6 +46232,7 @@ export namespace Prisma {
     jobId: string
     interviewKey: string
     secureToken: string
+    inviteExpiresAt?: Date | string | null
     status?: $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: number
@@ -46256,6 +46328,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     interviewKey?: StringFieldUpdateOperationsInput | string
     secureToken?: StringFieldUpdateOperationsInput | string
+    inviteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: IntFieldUpdateOperationsInput | number
@@ -46287,6 +46360,7 @@ export namespace Prisma {
     jobId?: StringFieldUpdateOperationsInput | string
     interviewKey?: StringFieldUpdateOperationsInput | string
     secureToken?: StringFieldUpdateOperationsInput | string
+    inviteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: IntFieldUpdateOperationsInput | number
@@ -46317,6 +46391,7 @@ export namespace Prisma {
     jobId?: StringFieldUpdateOperationsInput | string
     interviewKey?: StringFieldUpdateOperationsInput | string
     secureToken?: StringFieldUpdateOperationsInput | string
+    inviteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
     plan?: JsonNullValueInput | InputJsonValue
     currentSectionIndex?: IntFieldUpdateOperationsInput | number

@@ -4,9 +4,19 @@ import Link from "next/link";
 
 export default function DevCheckPage() {
   const [consentChecked, setConsentChecked] = useState(false);
-  const returnLink = typeof window !== "undefined"
-    ? new URLSearchParams(window.location.search).get("returnTo") || "/portal/interview"
-    : "/portal/interview";
+  const defaultReturn = "/portal/interview";
+  const returnLink =
+    typeof window !== "undefined"
+      ? (() => {
+          const candidate = new URLSearchParams(window.location.search).get("returnTo") || "";
+          const safe =
+            candidate.startsWith("/") &&
+            !candidate.startsWith("//") &&
+            !/[:\\]/.test(candidate) &&
+            !candidate.includes("\0");
+          return safe ? candidate : defaultReturn;
+        })()
+      : defaultReturn;
 
   return (
     <div className="portal-layout">

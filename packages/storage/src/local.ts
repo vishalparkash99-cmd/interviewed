@@ -26,9 +26,21 @@ function createLocalAdapter(): StorageAdapter {
     fs.mkdirSync(uploadDir, { recursive: true });
   }
 
+  function resolveSafePath(filePath: string): string {
+    if (typeof filePath !== "string" || filePath.length === 0 || filePath.includes("\0")) {
+      throw new Error("Invalid storage path");
+    }
+    const resolved = path.resolve(uploadDir, filePath);
+    const relative = path.relative(uploadDir, resolved);
+    if (relative.startsWith("..") || path.isAbsolute(relative)) {
+      throw new Error("Invalid storage path");
+    }
+    return resolved;
+  }
+
   return {
     upload: async (filePath: string, buffer: Buffer): Promise<string> => {
-      const fullPath = path.join(uploadDir, filePath);
+      const fullPath = resolveSafePath(filePath);
       const dir = path.dirname(fullPath);
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
@@ -37,11 +49,11 @@ function createLocalAdapter(): StorageAdapter {
       return filePath;
     },
     download: async (filePath: string): Promise<Buffer> => {
-      const fullPath = path.join(uploadDir, filePath);
+      const fullPath = resolveSafePath(filePath);
       return fs.readFileSync(fullPath);
     },
     delete: async (filePath: string): Promise<void> => {
-      const fullPath = path.join(uploadDir, filePath);
+      const fullPath = resolveSafePath(filePath);
       if (fs.existsSync(fullPath)) {
         fs.unlinkSync(fullPath);
       }
@@ -50,7 +62,7 @@ function createLocalAdapter(): StorageAdapter {
       return `/storage/${filePath}`;
     },
     exists: async (filePath: string): Promise<boolean> => {
-      const fullPath = path.join(uploadDir, filePath);
+      const fullPath = resolveSafePath(filePath);
       return fs.existsSync(fullPath);
     },
   };

@@ -51,6 +51,9 @@ enum EmailType {
   result
   welcome
   password_reset
+  reschedule
+  cancellation
+  completion
 }
 
 enum EmailStatus {
@@ -296,6 +299,7 @@ model Interview {
   job                 Job                  @relation(fields: [jobId], references: [id])
   interviewKey        String               @unique
   secureToken         String               @unique
+  inviteExpiresAt     DateTime?
   status              InterviewStatus      @default(scheduled)
   plan                Json                 @default("[]")
   currentSectionIndex Int                  @default(0)

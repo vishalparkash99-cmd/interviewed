@@ -57,4 +57,22 @@ describe("LocalStorageAdapter", () => {
     expect(await adapter.exists("deep/nested/dir/file.txt")).toBe(true);
     await adapter.delete("deep/nested/dir/file.txt");
   });
+
+  it("rejects paths that escape the upload directory (traversal)", async () => {
+    await expect(adapter.upload("../escape.txt", Buffer.from("x"), "text/plain")).rejects.toThrow(/Invalid storage path/);
+    await expect(adapter.upload("../../../../etc/passwd", Buffer.from("x"), "text/plain")).rejects.toThrow(/Invalid storage path/);
+    await expect(adapter.download("../etc/passwd")).rejects.toThrow(/Invalid storage path/);
+    await expect(adapter.exists("..")).rejects.toThrow(/Invalid storage path/);
+    await expect(adapter.delete("../nope.txt")).rejects.toThrow(/Invalid storage path/);
+  });
+
+  it("rejects absolute and null-byte paths", async () => {
+    await expect(adapter.upload("/etc/passwd", Buffer.from("x"), "text/plain")).rejects.toThrow(/Invalid storage path/);
+    await expect(adapter.upload("file\u0000.txt", Buffer.from("x"), "text/plain")).rejects.toThrow(/Invalid storage path/);
+  });
+
+  it("rejects empty or non-string paths", async () => {
+    await expect(adapter.upload("", Buffer.from("x"), "text/plain")).rejects.toThrow(/Invalid storage path/);
+    await expect(adapter.upload(null as any, Buffer.from("x"), "text/plain")).rejects.toThrow(/Invalid storage path/);
+  });
 });

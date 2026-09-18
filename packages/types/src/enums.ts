@@ -40,6 +40,9 @@ export enum EmailType {
   Result = "result",
   Welcome = "welcome",
   PasswordReset = "password_reset",
+  Reschedule = "reschedule",
+  Cancellation = "cancellation",
+  Completion = "completion",
 }
 
 export enum EmailStatus {

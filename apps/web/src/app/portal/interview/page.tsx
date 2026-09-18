@@ -59,6 +59,20 @@ function InterviewContent() {
     return `msg-${msgIdRef.current}-${Date.now()}`;
   }, []);
 
+  // Best-effort mark the interview complete on the server once the candidate ends
+  const completeInterview = useCallback(async () => {
+    if (!interviewId || !token) return;
+    try {
+      await fetch(`/api/v1/interviews/candidate/${interviewId}/complete`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ interviewToken: token }),
+      });
+    } catch {
+      // Best effort - the interview may already be marked complete server-side.
+    }
+  }, [interviewId, token]);
+
   // Auto-scroll
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -104,8 +118,9 @@ function InterviewContent() {
         setInterviewId(data.interviewId);
         setJobTitle(data.jobTitle);
         setCandidateName(data.candidateName);
-        setTotalDuration(data.duration || 1800);
-        setTimeRemaining(data.duration || 1800);
+        const durationSeconds = Math.round((data.duration || 45) * 60);
+        setTotalDuration(durationSeconds);
+        setTimeRemaining(durationSeconds);
 
         if (data.currentQuestion) {
           setCurrentQuestion(data.currentQuestion);
@@ -154,8 +169,9 @@ function InterviewContent() {
   useEffect(() => {
     if (timeRemaining === 0 && interviewId && (phase === "ready" || phase === "in_progress")) {
       setPhase("completed");
+      void completeInterview();
     }
-  }, [timeRemaining, phase, interviewId]);
+  }, [timeRemaining, phase, interviewId, completeInterview]);
 
   // Answer timer (counts up per answer)
   useEffect(() => {
@@ -242,6 +258,7 @@ function InterviewContent() {
   const handleEndInterview = () => {
     if (window.confirm("Are you sure you want to end the interview early?")) {
       setPhase("completed");
+      void completeInterview();
     }
   };
 

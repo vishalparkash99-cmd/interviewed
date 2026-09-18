@@ -3,7 +3,8 @@ import { createPrismaClient } from "@interviewed/database";
 import { UserRole, EmailType, EmailStatus } from "@interviewed/types";
 import { createEmailSchema } from "../validation";
 import { logAuditEvent } from "../services/audit";
-import { getUser, isSuperAdmin, getPagination, paginate, getClientIp, getClientUserAgent } from "./utils";
+import { publishEmailNow } from "../services/email-dispatch";
+import { getUser, isSuperAdmin, getPagination, paginate, getClientIp, getClientUserAgent, rateLimitSocketKeyGenerator } from "./utils";
 
 const db = createPrismaClient();
 
@@ -40,7 +41,7 @@ export async function registerEmailRoutes(server: FastifyInstance): Promise<void
     return paginate(emails, total, page, limit);
   });
 
-  server.post("/api/v1/emails", { onRequest: [(server as any).requireRole(UserRole.OrgAdmin, UserRole.Recruiter)] }, async (request: FastifyRequest, reply: FastifyReply) => {
+  server.post("/api/v1/emails", { onRequest: [(server as any).requireRole(UserRole.OrgAdmin, UserRole.Recruiter)], config: { rateLimit: { max: 20, timeWindow: "1 minute", keyGenerator: rateLimitSocketKeyGenerator } } }, async (request: FastifyRequest, reply: FastifyReply) => {
     const user = getUser(request);
     if (!isSuperAdmin(user) && !user.organizationId) {
       reply.code(403);
@@ -70,19 +71,34 @@ export async function registerEmailRoutes(server: FastifyInstance): Promise<void
         return { error: "Job not found in this organization" };
       }
     }
-    if (data.candidateId) {
-      const candidate = await db.candidate.findFirst({ where: { id: data.candidateId, deletedAt: null, organizationId } });
-      if (!candidate) {
-        reply.code(400);
-        return { error: "Candidate not found in this organization" };
-      }
-    }
     if (data.interviewId) {
       const interview = await db.interview.findFirst({ where: { id: data.interviewId, organizationId } });
       if (!interview) {
         reply.code(400);
         return { error: "Interview not found in this organization" };
       }
+    }
+
+    if (data.candidateId) {
+      const candidate = await db.candidate.findFirst({ where: { id: data.candidateId, deletedAt: null, organizationId } });
+      if (!candidate) {
+        reply.code(400);
+        return { error: "Candidate not found in this organization" };
+      }
+      if (candidate.email.toLowerCase() !== data.recipient.toLowerCase()) {
+        reply.code(400);
+        return { error: "Recipient must match the candidate's email address" };
+      }
+    } else {
+      const candidate = await db.candidate.findFirst({
+        where: { email: data.recipient.toLowerCase(), deletedAt: null, organizationId },
+        select: { id: true },
+      });
+      if (!candidate) {
+        reply.code(400);
+        return { error: "Recipient is not a candidate in this organization" };
+      }
+      data.candidateId = candidate.id;
     }
 
     const email = await db.email.create({
@@ -101,6 +117,8 @@ export async function registerEmailRoutes(server: FastifyInstance): Promise<void
         organizationId,
       },
     });
+
+    await publishEmailNow(email.id, email.recipient, email.subject, email.body, organizationId);
 
     await logAuditEvent({
       action: "email.create",

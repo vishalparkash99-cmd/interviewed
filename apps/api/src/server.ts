@@ -42,6 +42,9 @@ export async function createApiServer(): Promise<FastifyInstance> {
   await server.register(rateLimit, {
     timeWindow: config.getRateLimit().windowMs,
     max: config.getRateLimit().max,
+    keyGenerator: (request: FastifyRequest) => {
+      return request.raw.socket.remoteAddress?.replace(/^::ffff:/, "") || "unknown";
+    },
   });
 
   await server.register(authPlugin);
@@ -75,10 +78,19 @@ export async function createApiServer(): Promise<FastifyInstance> {
 
   server.setErrorHandler((error: unknown, _request, reply) => {
     const err = error as { message?: string; statusCode?: number; code?: string };
-    logger.error({ err: err.message }, "Request error");
     const status = err.statusCode ?? 500;
+
+    if (status >= 500) {
+      logger.error({ err: err.message, stack: (error as Error)?.stack }, "Request error");
+      reply.code(status).send({
+        error: { message: "Internal server error", code: "INTERNAL_ERROR" },
+      });
+      return;
+    }
+
+    logger.warn({ err: err.message }, "Request error");
     reply.code(status).send({
-      error: { message: err.message, code: err.code ?? "INTERNAL_ERROR" },
+      error: { message: err.message, code: err.code ?? "REQUEST_ERROR" },
     });
   });
 

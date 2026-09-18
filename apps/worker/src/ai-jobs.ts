@@ -234,6 +234,159 @@ function normalizeEvidence(value: unknown): Array<{ text: string; score: number 
     .filter((item) => item.text.length > 0);
 }
 
+const COMMON_SKILLS = [
+  "node.js", "nodejs", "typescript", "javascript", "python", "java", "golang", "go", "rust",
+  "c++", "c#", ".net", "php", "ruby", "kotlin", "swift", "scala",
+  "react", "react native", "angular", "vue", "next.js", "nestjs", "nest", "express", "fastify",
+  "graphql", "rest", "grpc", "rest api", "raml", "openapi",
+  "postgresql", "postgres", "mysql", "mariadb", "mongodb", "redis", "elasticsearch", "kafka",
+  "rabbitmq", "amazon s3", "s3", "aws", "azure", "gcp", "google cloud", "docker", "kubernetes",
+  "terraform", "ci/cd", "jenkins", "github actions", "gitlab ci", "ansible", "pulumi",
+  "html", "css", "sass", "tailwind", "redux", "webpack", "vite", "jest", "cypress", "playwright",
+  "selenium", "pytest", "junit", "mocha", "chai", "go testing",
+  "microservices", "serverless", "api", "oauth", "jwt", "webhooks", "websockets", "linux", "bash",
+  "git", "sql", "nosql", "dynamodb", "cassandra", "oracle", "sql server",
+  "distributed systems", "system design", "machine learning", "ai", "llm", "nlp", "openai",
+  "data pipelines", "etl", "spark", "hadoop", "airflow", "snowflake", "bigquery",
+  "tableau", "looker", "power bi", "excel", "pandas", "numpy", "scikit-learn", "tensorflow",
+  "pytorch", "saas", "b2b", "payments", "fintech", "oauth2"
+];
+
+function extractEmail(text: string): string {
+  const match = text.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+  return match ? match[0] : "";
+}
+
+function extractPhone(text: string): string {
+  const match = text.match(/(?:\+?\d{1,3}[\s\-().]*)?\(?\d{2,4}\)?[\s\-().]?\d{3,4}[\s\-().]?\d{3,4}/);
+  return match ? match[0].trim() : "";
+}
+
+function extractYears(text: string): number {
+  const patterns = [
+    /\b(\d{1,2})\s*(?:\+)?\s*(?:years?|yrs?)\s+of\s+experience\b/i,
+    /\b(?:with|over|about|of)\s+(\d{1,2})(?:\.\d)?\s*(?:\+)?\s*(?:years?|yrs?)\b/i,
+    /\b(\d{1,2})(?:\+)?\s*(?:years?|yrs?)\b/i,
+  ];
+  for (const pattern of patterns) {
+    const match = text.match(pattern);
+    if (!match) continue;
+    const value = parseInt(match[1], 10);
+    if (value >= 1 && value <= 50) return value;
+  }
+  return 0;
+}
+
+function extractName(text: string): string {
+  const lines = text.split(/\r?\n/).map((l) => l.trim()).filter((l) => l.length > 0 && l.length <= 80);
+  for (const line of lines) {
+    if (/^(email|phone|address|senior|junior|lead|principal|software|engineer|developer|http|linkedin|github|summary|profile|objective|contact|skills?)/i.test(line)) continue;
+    if (/@|\bhttp\b|^\d/.test(line)) continue;
+    if (line.split(/\s+/).length >= 2 && line.split(/\s+/).length <= 6 && /^[A-Z][A-Za-z.'`\-\s]+$/.test(line)) {
+      return line;
+    }
+  }
+  return "";
+}
+
+function extractSkills(text: string): string[] {
+  const lower = text.toLowerCase();
+  const skills: string[] = [];
+  for (const skill of COMMON_SKILLS) {
+    const escaped = skill.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const regex = new RegExp(`(?:^|[^a-z0-9+#.])${escaped}(?:[^a-z0-9+#.]|$)`, "i");
+    if (regex.test(lower)) skills.push(skill);
+  }
+  const sectionLines = text.split(/\r?\n/).filter((l) => /\b(skills?|technolog(?:y|ies)|tech stack|expertise)\b/i.test(l));
+  for (const line of sectionLines) {
+    const section = line.replace(/\b(skills?|technolog(?:y|ies)|tech stack|expertise)\b[:\-]?/gi, "");
+    const tokens = section.split(/[,|•;]+/).map((t) => t.replace(/^[\s*·\-]+|[\s*·\-]+$/g, "").trim()).filter((t) => t.length >= 2 && t.length <= 40);
+    for (const token of tokens) {
+      if (/^[a-zA-Z0-9+#.()\s\-/]+$/.test(token) && !/\byear/i.test(token)) {
+        skills.push(token.toLowerCase());
+      }
+    }
+  }
+  return Array.from(new Set(skills.map((s) => s.toLowerCase()))).map((s) => s.trim()).filter(Boolean).slice(0, 60);
+}
+
+function extractExperience(text: string): ResumeData["experience"] {
+  const lines = text.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+  const entries: Array<{ title: string; company: string; summary: string }> = [];
+  const roleKeyword = /\b(engineer|developer|lead|manager|analyst|architect|intern|scientist|consultant|designer|specialist|director|founder|cto|ceo|vp|head\s+of|software|full[-\s]stack|front[-\s]end|backend|devops|sdet|qa|associate|executive|coordinator|product|data|platform|cloud|dev)\b/i;
+  const companyPattern = /\b(at|@)\s+([A-Z][A-Za-z0-9 .&'-]{2,50})/;
+  const titleLine = (line: string) => line.length > 3 && line.length < 140 && !/^(email|phone|address|summary|objective|profile|contact|education|projects?|certifications?|skills?|technolog)/i.test(line);
+
+  let current: { title: string; company: string; summary: string } | null = null;
+  let buffer: string[] = [];
+  for (const line of lines) {
+    const subject = line.toLowerCase();
+    if (/^(experience|employment|work|professional|career)\b/.test(subject) && !/\b(education|project|skill)\b/.test(subject)) continue;
+    if (titleLine(line) && (roleKeyword.test(line) || companyPattern.test(line))) {
+      if (current) {
+        current.summary = buffer.join(" ").slice(0, 400);
+        entries.push(current);
+      }
+      const companyMatch = line.match(companyPattern);
+      current = {
+        title: line.split(/[,|\u2013\u2014]+/)[0].trim().slice(0, 140),
+        company: companyMatch ? companyMatch[2].trim() : "",
+        summary: "",
+      };
+      buffer = [];
+      continue;
+    }
+    if (current) buffer.push(line);
+  }
+  if (current) {
+    current.summary = buffer.join(" ").slice(0, 400);
+    entries.push(current);
+  }
+  return entries.slice(0, 25);
+}
+
+function extractEducation(text: string): Array<{ degree: string; institution: string; field: string }> {
+  const entries: Array<{ degree: string; institution: string; field: string }> = [];
+  const patterns = /\b(b\.?\s?tech|b\.?\s?sc|m\.?\s?tech|m\.?\s?sc|b\.?\s?a|m\.?\s?a|ph\.?\s?d|master'?s?|bachelor'?s?|diploma|degree)\b/i;
+  const lines = text.split(/\r?\n/).filter((l) => patterns.test(l) && l.length < 160);
+  for (const line of lines.slice(0, 10)) {
+    const segments = line.split(/[,|\u2013\u2014-]+/).map((s) => s.trim());
+    entries.push({
+      degree: segments[0]?.slice(0, 100) || "",
+      institution: segments[1]?.slice(0, 100) || "",
+      field: segments[2]?.slice(0, 100) || "",
+    });
+  }
+  return entries;
+}
+
+function fallbackParseResume(text: string): ParsedResume {
+  const safeText = sanitizeInput(text) || "";
+  return {
+    name: extractName(safeText),
+    email: extractEmail(safeText),
+    phone: extractPhone(safeText),
+    yearsOfExperience: extractYears(safeText),
+    skills: extractSkills(safeText),
+    experience: extractExperience(safeText),
+    education: extractEducation(safeText),
+    certifications: [],
+  };
+}
+
+function mergeParsed(llm: ParsedResume, fallback: ParsedResume): ParsedResume {
+  return {
+    name: typeof llm.name === "string" && llm.name.trim() ? llm.name.trim() : fallback.name,
+    email: typeof llm.email === "string" && llm.email.trim() ? llm.email.trim() : fallback.email,
+    phone: typeof llm.phone === "string" && llm.phone.trim() ? llm.phone.trim() : fallback.phone,
+    yearsOfExperience: typeof llm.yearsOfExperience === "number" ? llm.yearsOfExperience : fallback.yearsOfExperience,
+    skills: asStringArray(llm.skills).length ? asStringArray(llm.skills) : fallback.skills,
+    experience: asExperienceArray(llm.experience).length ? asExperienceArray(llm.experience) : fallback.experience,
+    education: Array.isArray(llm.education) && llm.education.length ? llm.education : fallback.education,
+    certifications: asStringArray(llm.certifications).length ? asStringArray(llm.certifications) : fallback.certifications,
+  };
+}
+
 async function completeAI(
   provider: AIProvider,
   system: string,
@@ -354,9 +507,21 @@ async function processResumeParsing(job: AIJob, db: PrismaClient): Promise<Recor
   } else if (resume?.extractedText) {
     resumeText = resume.extractedText;
   } else if (resume) {
-    resumeText = await extractResumeText(resume.filePath, resume.fileMimeType);
+    try {
+      resumeText = await extractResumeText(resume.filePath, resume.fileMimeType);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      logger.error({ err: message, resumeId: resume?.id, filePath: resume?.filePath }, "Failed to extract resume text");
+      if (resumeId) {
+        await db.resume.update({
+          where: { id: resumeId },
+          data: { status: "failed", error: `Text extraction failed: ${message}` },
+        });
+      }
+      throw new Error(`Failed to extract resume text: ${message}`);
+    }
   }
-  resumeText = trimText(resumeText, RESUME_TEXT_LIMIT);
+  resumeText = cleanForPrompt(resumeText, RESUME_TEXT_LIMIT);
 
   if (!resumeText.trim()) {
     if (resumeId) {
@@ -368,21 +533,24 @@ async function processResumeParsing(job: AIJob, db: PrismaClient): Promise<Recor
     throw new Error("No resume text available to parse");
   }
 
-  const system =
-    "Extract structured candidate information from the resume text. " +
-    'Return ONLY valid JSON, no markdown, no commentary. Fields: name (string), email (string), ' +
-    "phone (string), yearsOfExperience (number), skills (array of strings), " +
-    "experience (array of {title, company, summary}), " +
-    "education (array of {degree, institution, field}), certifications (array of strings). " +
-    "Use empty strings and empty arrays when a field is unknown.";
+  const fallback = fallbackParseResume(resumeText);
 
-  const content = await completeAI(provider, system, `RESUME TEXT:\n${resumeText}`, 700);
-  const raw = extractJSON<Record<string, unknown>>(content, {});
+  let parsed: ParsedResume;
+  try {
+    const system =
+      "Extract structured candidate information from the resume text. " +
+      'Return ONLY valid JSON, no markdown, no commentary. Fields: name (string), email (string), ' +
+      "phone (string), yearsOfExperience (number), skills (array of strings), " +
+      "experience (array of {title, company, summary}), " +
+      "education (array of {degree, institution, field}), certifications (array of strings). " +
+      "Use empty strings and empty arrays when a field is unknown.";
 
-  let parsed: ParsedResume = raw;
-  const validation = parsedResumeSchema.safeParse(raw);
-  if (validation.success) {
-    parsed = validation.data;
+    const content = await completeAI(provider, system, `RESUME TEXT:\n${resumeText}`, 700);
+    const raw = extractJSON<Record<string, unknown>>(content, {});
+    const validated = parsedResumeSchema.safeParse(raw);
+    parsed = mergeParsed(validated.success ? validated.data : raw, fallback);
+  } catch {
+    parsed = fallback;
   }
 
   const name = parsed.name || candidate.name;
@@ -434,7 +602,7 @@ async function processCandidateMatching(job: AIJob, db: PrismaClient): Promise<R
 
   const [jobPosting, candidate] = await Promise.all([
     db.job.findUnique({ where: { id: jobId } }),
-    db.candidate.findUnique({ where: { id: candidateId } }),
+    db.candidate.findUnique({ where: { id: candidateId }, include: { resume: true } }),
   ]);
 
   if (!jobPosting || !candidate) {
@@ -449,12 +617,32 @@ async function processCandidateMatching(job: AIJob, db: PrismaClient): Promise<R
   const domain = jobPosting.domain || "";
 
   const normalized = (candidate.normalizedData ?? {}) as Record<string, unknown>;
-  const candidateSkills = [...asStringArray(normalized.skills)];
-  const candidateExperience = asExperienceArray(normalized.experience);
+  let candidateSkills = [...asStringArray(normalized.skills)];
+  let candidateExperience = asExperienceArray(normalized.experience);
+  let candidateYears = candidate.yearsOfExperience || 0;
+
+  if (candidateSkills.length === 0 && candidate.resume?.extractedText) {
+    const derived = fallbackParseResume(candidate.resume.extractedText);
+    candidateSkills = derived.skills ?? [];
+    candidateExperience = asExperienceArray(derived.experience);
+    candidateYears = derived.yearsOfExperience ?? candidateYears;
+    await db.candidate.update({
+      where: { id: candidateId },
+      data: {
+        normalizedData: {
+          ...(normalized as object),
+          skills: candidateSkills,
+          experience: candidateExperience as object,
+          yearsOfExperience: candidateYears,
+        },
+        updatedAt: new Date(),
+      },
+    });
+  }
 
   const resume: ResumeData = {
     name: candidate.name,
-    yearsOfExperience: candidate.yearsOfExperience || 0,
+    yearsOfExperience: candidateYears,
     skills: candidateSkills,
     experience: candidateExperience,
   };
@@ -501,8 +689,8 @@ async function processCandidateMatching(job: AIJob, db: PrismaClient): Promise<R
   if (matchedSkills.length > 0) {
     strengths.push(`Skills matched: ${matchedSkills.join(", ")}`);
   }
-  if (candidate.yearsOfExperience > 0) {
-    strengths.push(`${candidate.yearsOfExperience} years of total experience`);
+  if (candidateYears > 0) {
+    strengths.push(`${candidateYears} years of total experience`);
   }
 
   const gaps = [...result.gaps];
@@ -513,7 +701,7 @@ async function processCandidateMatching(job: AIJob, db: PrismaClient): Promise<R
   const evidence = [
     ...normalizeEvidence(result.evidence),
     { text: `Required skills met: ${matchedSkills.length}/${requiredSkills.length || 0}`, score: result.skillScore },
-    { text: `Relevant experience: ${candidate.yearsOfExperience} years`, score: result.experienceScore },
+    { text: `Relevant experience: ${candidateYears} years`, score: result.experienceScore },
   ];
 
   const aiDecision = {
@@ -574,6 +762,137 @@ async function processCandidateMatching(job: AIJob, db: PrismaClient): Promise<R
     recommendation: result.recommendation,
     matchedSkills,
     missingSkills,
+  };
+}
+
+function buildDeterministicEvaluation(input: {
+  interviewId: string;
+  questionCount: number;
+  answers: Array<{ answer?: string | null }>;
+  transcript: string;
+  requiredSkills: string[];
+}): EvaluationReport {
+  const answerTexts = input.answers
+    .map((a) => (a.answer || "").trim())
+    .filter((t) => t.length > 0);
+  const allText = answerTexts.join(" ").toLowerCase();
+  const answeredCount = answerTexts.length;
+  const questionCount = Math.max(input.questionCount, 0);
+
+  if (answeredCount === 0) {
+    return {
+      interviewId: input.interviewId,
+      overallScore: 10,
+      technicalScore: 10,
+      roleCompetency: 10,
+      problemSolving: 10,
+      practicalExp: 10,
+      communication: 10,
+      systemDesign: 10,
+      resumeValidation: 25,
+      strengths: [],
+      weaknesses: ["No answers were recorded"],
+      skillGaps: input.requiredSkills,
+      evidence: normalizeEvidence([{ text: "No answers recorded for any question", score: 0 }]),
+      concerns: ["Candidate did not provide any answers"],
+      recommendation: "reject",
+      aiSummary: "Deterministic evaluation: the candidate provided no answers.",
+    };
+  }
+
+  const requiredSkills = input.requiredSkills;
+  const matched = requiredSkills.filter((s) => s && allText.includes(s.toLowerCase()));
+  const missing = requiredSkills.filter((s) => s && !allText.includes(s.toLowerCase()));
+  const coverage = requiredSkills.length ? matched.length / requiredSkills.length : 0.5;
+  const avgLen = answerTexts.reduce((sum, t) => sum + t.length, 0) / answeredCount;
+
+  const skillScore = Math.min(100, Math.round(35 + coverage * 65));
+  const roleCompetency = Math.round(skillScore * 0.95);
+  const problemSolving = Math.min(100, skillScore + (coverage >= 0.5 ? 5 : -8));
+  const practicalExp = Math.round(skillScore * 0.9);
+  const communication = Math.min(100, Math.round(35 + (Math.min(avgLen, 800) / 800) * 65));
+  const systemDesign = Math.round(skillScore * 0.85);
+  const resumeValidation = Math.round(skillScore * 0.95);
+  const overallScore = Math.round(
+    (skillScore + roleCompetency + problemSolving + practicalExp + communication + systemDesign + resumeValidation) / 7
+  );
+
+  const strengths: string[] = [];
+  const weaknesses: string[] = [];
+  const concerns: string[] = [];
+
+  if (answeredCount >= Math.max(2, Math.round(questionCount / 2))) {
+    strengths.push(`Answered ${answeredCount}/${questionCount} questions`);
+  } else {
+    strengths.push(`Answered ${answeredCount} question${answeredCount === 1 ? "" : "s"}`);
+  }
+  if (matched.length) {
+    strengths.push(`Demonstrated knowledge of key skills: ${matched.slice(0, 6).join(", ")}`);
+  }
+  if (overallScore >= 70) {
+    strengths.push("Consistently strong, detailed responses");
+  }
+  if (missing.length) {
+    weaknesses.push(`Did not demonstrate: ${missing.slice(0, 6).join(", ")}`);
+    concerns.push(`${missing.slice(0, 6).join(", ")} not evidenced in answers`);
+  }
+  if (avgLen < 80) {
+    weaknesses.push("Answers were brief and lacked technical depth");
+  }
+
+  const evidence = normalizeEvidence([
+    { text: `${answeredCount}/${questionCount} questions answered`, score: overallScore },
+    ...matched.map((s) => ({ text: `Referenced skill: ${s}`, score: skillScore })),
+  ]);
+
+  const recommendation = overallScore >= 70 ? "hire" : overallScore >= 50 ? "review" : "reject";
+  const aiSummary = `Deterministic evaluation based on ${answeredCount} answered question(s); ${matched.length}/${requiredSkills.length || 0} required skills evidenced in responses.`;
+
+  return {
+    interviewId: input.interviewId,
+    overallScore,
+    technicalScore: skillScore,
+    roleCompetency,
+    problemSolving,
+    practicalExp,
+    communication,
+    systemDesign,
+    resumeValidation,
+    strengths,
+    weaknesses,
+    skillGaps: missing,
+    evidence,
+    concerns,
+    recommendation,
+    aiSummary,
+  };
+}
+
+function buildDeterministicNarrative(input: {
+  interviewId: string;
+  candidate?: { name: string | null; email: string | null } | null;
+  jobTitle?: string;
+  resumeMatchScore: number;
+  interviewScore: number;
+  competencyScores: Record<string, number>;
+  strengthsList: string[];
+  gapsList: string[];
+  concernsList: string[];
+}): AIReportNarrative {
+  const candidateName = input.candidate?.name || input.candidate?.email || "The candidate";
+  const interviewSummary =
+    `Interview review complete. ${candidateName} was interviewed for ${input.jobTitle || "the role"}. ` +
+    `Resume match scored ${input.resumeMatchScore}/100 and interview performance scored ${input.interviewScore}/100. ` +
+    (input.strengthsList.length ? `Notable strengths: ${input.strengthsList.slice(0, 4).join("; ")}. ` : "") +
+    (input.gapsList.length ? `Skill gaps observed: ${input.gapsList.slice(0, 4).join(", ")}. ` : "") +
+    (input.concernsList.length ? `Key concerns: ${input.concernsList.slice(0, 4).join("; ")}.` : "No major concerns were recorded.");
+  return {
+    interviewSummary,
+    strengths: input.strengthsList.slice(0, 6),
+    weaknesses: input.concernsList.slice(0, 6),
+    skillGaps: input.gapsList,
+    concerns: input.concernsList,
+    aiRecommendation: input.interviewScore >= 70 ? "hire" : input.interviewScore >= 50 ? "review" : "reject",
   };
 }
 
@@ -638,47 +957,41 @@ async function processAIEvaluation(job: AIJob, db: PrismaClient): Promise<Record
     `\nTRANSCRIPT EXCERPT:\n${trimText(transcript, 4000) || "No transcript available"}`,
   ].join("\n");
 
-  const content = await completeAI(provider, system, user, 1000);
-  const raw = extractJSON<Record<string, unknown>>(content, {});
-
-  const defaults: EvaluationReport = {
+  const deterministicBase = buildDeterministicEvaluation({
     interviewId,
-    overallScore: 65,
-    technicalScore: 65,
-    roleCompetency: 65,
-    problemSolving: 65,
-    practicalExp: 65,
-    communication: 65,
-    systemDesign: 65,
-    resumeValidation: 65,
-    strengths: [],
-    weaknesses: [],
-    skillGaps: [],
-    evidence: [],
-    concerns: [],
-    recommendation: "review",
-    aiSummary: "Evaluation completed.",
-  };
+    questionCount: interview.questions.length,
+    answers: interview.answers,
+    transcript,
+    requiredSkills,
+  });
+
+  let raw: Record<string, unknown> = {};
+  try {
+    const content = await completeAI(provider, system, user, 1000);
+    raw = extractJSON<Record<string, unknown>>(content, {});
+  } catch {
+    raw = {};
+  }
 
   const merged = {
-    ...defaults,
+    ...deterministicBase,
     ...raw,
     interviewId,
-    overallScore: normalizeScore(raw.overallScore, defaults.overallScore),
-    technicalScore: normalizeScore(raw.technicalScore, defaults.technicalScore),
-    roleCompetency: normalizeScore(raw.roleCompetency, defaults.roleCompetency),
-    problemSolving: normalizeScore(raw.problemSolving, defaults.problemSolving),
-    practicalExp: normalizeScore(raw.practicalExp, defaults.practicalExp),
-    communication: normalizeScore(raw.communication, defaults.communication),
-    systemDesign: normalizeScore(raw.systemDesign, defaults.systemDesign),
-    resumeValidation: normalizeScore(raw.resumeValidation, defaults.resumeValidation),
-    strengths: asStringArray(raw.strengths),
-    weaknesses: asStringArray(raw.weaknesses),
-    skillGaps: asStringArray(raw.skillGaps),
-    concerns: asStringArray(raw.concerns),
-    evidence: normalizeEvidence(raw.evidence),
-    recommendation: normalizeRecommendation(typeof raw.recommendation === "string" ? raw.recommendation : "review"),
-    aiSummary: typeof raw.aiSummary === "string" ? raw.aiSummary : defaults.aiSummary,
+    overallScore: normalizeScore(raw.overallScore, deterministicBase.overallScore),
+    technicalScore: normalizeScore(raw.technicalScore, deterministicBase.technicalScore),
+    roleCompetency: normalizeScore(raw.roleCompetency, deterministicBase.roleCompetency),
+    problemSolving: normalizeScore(raw.problemSolving, deterministicBase.problemSolving),
+    practicalExp: normalizeScore(raw.practicalExp, deterministicBase.practicalExp),
+    communication: normalizeScore(raw.communication, deterministicBase.communication),
+    systemDesign: normalizeScore(raw.systemDesign, deterministicBase.systemDesign),
+    resumeValidation: normalizeScore(raw.resumeValidation, deterministicBase.resumeValidation),
+    strengths: asStringArray(raw.strengths).length ? asStringArray(raw.strengths) : deterministicBase.strengths,
+    weaknesses: asStringArray(raw.weaknesses).length ? asStringArray(raw.weaknesses) : deterministicBase.weaknesses,
+    skillGaps: asStringArray(raw.skillGaps).length ? asStringArray(raw.skillGaps) : deterministicBase.skillGaps,
+    concerns: asStringArray(raw.concerns).length ? asStringArray(raw.concerns) : deterministicBase.concerns,
+    evidence: normalizeEvidence(raw.evidence).length ? normalizeEvidence(raw.evidence) : deterministicBase.evidence,
+    recommendation: normalizeRecommendation(typeof raw.recommendation === "string" ? raw.recommendation : deterministicBase.recommendation),
+    aiSummary: typeof raw.aiSummary === "string" ? raw.aiSummary : deterministicBase.aiSummary,
   };
   const evaluation = validateAIOutput(evaluationReportSchema, merged);
 
@@ -800,24 +1113,31 @@ async function processReportGeneration(job: AIJob, db: PrismaClient): Promise<Re
     `KEY Q&A:\n${keyQa.map((item) => `Q: ${item.question}\nA: ${item.answer}`).join("\n") || "No Q&A available"}`,
   ].join("\n");
 
-  const content = await completeAI(provider, system, user, 1000);
-  const raw = extractJSON<Record<string, unknown>>(content, {});
-
-  const narrativeDefaults: AIReportNarrative = {
-    interviewSummary: "Report generated from interview data.",
-    strengths: [],
-    weaknesses: [],
-    skillGaps: [],
-    concerns: [],
-    aiRecommendation: "review",
-  };
+  const narrativeDefaults = buildDeterministicNarrative({
+    interviewId,
+    candidate,
+    jobTitle: jobPosting?.title || undefined,
+    resumeMatchScore,
+    interviewScore,
+    competencyScores,
+    strengthsList: asStringArray(evaluation?.strengths),
+    gapsList: asStringArray(evaluation?.skillGaps),
+    concernsList: asStringArray(evaluation?.concerns).length ? asStringArray(evaluation?.concerns) : asStringArray(evaluation?.weaknesses),
+  });
+  let narrativeRaw: Record<string, unknown> = {};
+  try {
+    const content = await completeAI(provider, system, user, 1000);
+    narrativeRaw = extractJSON<Record<string, unknown>>(content, {});
+  } catch {
+    narrativeRaw = {};
+  }
   const narrativeValidation = aiReportNarrativeSchema.safeParse({
-    interviewSummary: typeof raw.interviewSummary === "string" ? raw.interviewSummary : narrativeDefaults.interviewSummary,
-    strengths: asStringArray(raw.strengths),
-    weaknesses: asStringArray(raw.weaknesses),
-    skillGaps: asStringArray(raw.skillGaps),
-    concerns: asStringArray(raw.concerns),
-    aiRecommendation: normalizeRecommendation(typeof raw.aiRecommendation === "string" ? raw.aiRecommendation : "review"),
+    interviewSummary: typeof narrativeRaw.interviewSummary === "string" ? narrativeRaw.interviewSummary : narrativeDefaults.interviewSummary,
+    strengths: asStringArray(narrativeRaw.strengths).length ? asStringArray(narrativeRaw.strengths) : narrativeDefaults.strengths,
+    weaknesses: asStringArray(narrativeRaw.weaknesses).length ? asStringArray(narrativeRaw.weaknesses) : narrativeDefaults.weaknesses,
+    skillGaps: asStringArray(narrativeRaw.skillGaps).length ? asStringArray(narrativeRaw.skillGaps) : narrativeDefaults.skillGaps,
+    concerns: asStringArray(narrativeRaw.concerns).length ? asStringArray(narrativeRaw.concerns) : narrativeDefaults.concerns,
+    aiRecommendation: normalizeRecommendation(typeof narrativeRaw.aiRecommendation === "string" ? narrativeRaw.aiRecommendation : narrativeDefaults.aiRecommendation),
   });
   const narrative = narrativeValidation.success ? narrativeValidation.data : narrativeDefaults;
 
@@ -916,7 +1236,7 @@ async function processEmailSending(job: AIJob, db: PrismaClient): Promise<Record
   }
 
   const emailConfig = config.getEmailConfig();
-  const fromEmail = (payload.from as string) || emailConfig.fromEmail;
+  const fromEmail = emailConfig.fromEmail;
 
   const smtpConfigured = Boolean(emailConfig.smtpHost);
 

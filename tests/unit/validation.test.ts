@@ -6,6 +6,9 @@ import {
   createEmailSchema,
   loginSchema,
   registerSchema,
+  submitAnswerSchema,
+  completeInterviewSchema,
+  createQuestionSchema,
 } from "../../apps/api/src/validation";
 
 describe("Validation Schemas", () => {
@@ -180,6 +183,110 @@ describe("Validation Schemas", () => {
         companyName: "ACME Corp",
       });
       expect(result.success).toBe(false);
+    });
+
+    it("rejects passwords shorter than 8 characters", () => {
+      const result = registerSchema.safeParse({
+        email: "user@test.com",
+        password: "sevench",
+        firstName: "John",
+        lastName: "Doe",
+        companyName: "ACME Corp",
+      });
+      expect(result.success).toBe(false);
+    });
+
+    it("rejects fields that exceed maximum lengths", () => {
+      const oversized = registerSchema.safeParse({
+        email: "user@test.com",
+        password: "securepass123",
+        firstName: "J",
+        lastName: "D".repeat(101),
+        companyName: "ACME Corp",
+      });
+      expect(oversized.success).toBe(false);
+
+      const longLogin = loginSchema.safeParse({
+        email: "user@test.com",
+        password: "x".repeat(257),
+      });
+      expect(longLogin.success).toBe(false);
+
+      const longSubject = createEmailSchema.safeParse({
+        recipient: "test@example.com",
+        subject: "s".repeat(501),
+        body: "Hello",
+      });
+      expect(longSubject.success).toBe(false);
+    });
+
+    it("rejects payloads that exceed job schema limits", () => {
+      const result = createJobSchema.safeParse({
+        title: "E".repeat(256),
+        description: "Build stuff",
+      });
+      expect(result.success).toBe(false);
+    });
+  });
+
+  describe("submitAnswerSchema", () => {
+    it("accepts a valid answer", () => {
+      const result = submitAnswerSchema.safeParse({
+        interviewToken: "tok",
+        questionId: "q1",
+        answer: "My answer",
+        durationSeconds: 30,
+        confidence: 60,
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it("rejects oversized token and duration", () => {
+      expect(
+        submitAnswerSchema.safeParse({
+          interviewToken: "t".repeat(513),
+          questionId: "q1",
+          answer: "a",
+        }).success
+      ).toBe(false);
+      expect(
+        submitAnswerSchema.safeParse({
+          interviewToken: "tok",
+          questionId: "q1",
+          answer: "a",
+          durationSeconds: 3601,
+        }).success
+      ).toBe(false);
+    });
+
+    it("rejects empty answers", () => {
+      expect(
+        submitAnswerSchema.safeParse({
+          interviewToken: "tok",
+          questionId: "q1",
+          answer: "",
+        }).success
+      ).toBe(false);
+    });
+  });
+
+  describe("completeInterviewSchema", () => {
+    it("rejects oversized tokens", () => {
+      expect(
+        completeInterviewSchema.safeParse({ interviewToken: "t".repeat(513) }).success
+      ).toBe(false);
+    });
+  });
+
+  describe("createQuestionSchema", () => {
+    it("rejects oversized question text", () => {
+      expect(
+        createQuestionSchema.safeParse({
+          section: "s",
+          question: "q".repeat(4001),
+          type: "open",
+        }).success
+      ).toBe(false);
     });
   });
 });

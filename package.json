@@ -37,30 +37,33 @@
     "typescript": "^5.5.4"
   },
   "dependencies": {
-    "dotenv": "^16.4.5",
     "@ai-sdk/anthropic": "^1.0.0",
     "@ai-sdk/openai": "^1.0.0",
     "@fastify/cookie": "^11.0.2",
     "@fastify/cors": "^10.0.0",
     "@fastify/helmet": "^12.0.0",
-    "@fastify/jwt": "^9.0.0",
+    "@fastify/jwt": "^10.2.2",
     "@fastify/multipart": "^8.3.0",
     "@fastify/rate-limit": "^10.3.0",
     "@prisma/client": "^6.9.0",
     "ai": "^4.0.0",
     "amqplib": "^0.10.5",
-    "bcrypt": "^5.1.1",
+    "bcrypt": "^6.0.0",
+    "dotenv": "^16.4.5",
     "fastify": "^5.2.2",
     "fastify-plugin": "^5.1.0",
     "ioredis": "^5.4.0",
-    "next": "14.2.3",
+    "next": "14.2.35",
     "openai": "^6.49.0",
     "pino": "^9.3.5",
     "pino-pretty": "^11.2.2",
     "prisma": "^6.9.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "uuid": "^10.0.0",
+    "uuid": "^11.1.1",
     "zod": "^3.23.8"
+  },
+  "overrides": {
+    "postcss": "^8.5.23"
   }
 }
