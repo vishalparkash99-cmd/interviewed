@@ -19,6 +19,7 @@ import {
   formatDuration,
 } from "@/components/ui";
 import { api } from "@/lib/api";
+import { useToast } from "@/lib/toast";
 
 type Evaluation = {
   id: string;
@@ -97,13 +98,13 @@ type FeedbackRow = {
 export default function InterviewDetailPage() {
   const params = useParams<{ id: string }>();
   const interviewId = params.id;
+  const toast = useToast();
 
   const [tab, setTab] = useState("overview");
   const [interview, setInterview] = useState<InterviewDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
-  const [notice, setNotice] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [invite, setInvite] = useState<{ link: string; expiresAt?: string } | null>(null);
   const [copied, setCopied] = useState(false);
   const [transcript, setTranscript] = useState<TranscriptSegment[] | null>(null);
@@ -132,25 +133,24 @@ export default function InterviewDetailPage() {
       api
         .get<{ data: TranscriptSegment[] }>(`/api/v1/interviews/${interviewId}/transcript`)
         .then((res) => setTranscript(res.data ?? []))
-        .catch((e: Error) => setNotice({ type: "error", text: e.message }));
+        .catch((e: Error) => toast.error(e.message));
     }
     if (tab === "feedback") {
       api
         .get<{ data: FeedbackRow[] }>(`/api/v1/interviews/${interviewId}/feedback`)
         .then((res) => setFeedback(res.data ?? []))
-        .catch((e: Error) => setNotice({ type: "error", text: e.message }));
+        .catch((e: Error) => toast.error(e.message));
     }
   }, [tab, interviewId]);
 
   const doAction = async (action: string, path: string, successText: string, body?: unknown) => {
     setBusy(true);
-    setNotice(null);
     try {
       await api.post(path, body ?? {});
-      setNotice({ type: "success", text: successText });
+      toast.success(successText);
       load();
     } catch (e) {
-      setNotice({ type: "error", text: `${action}: ${(e as Error).message}` });
+      toast.error(`${action}: ${(e as Error).message}`);
     } finally {
       setBusy(false);
     }
@@ -158,14 +158,13 @@ export default function InterviewDetailPage() {
 
   const inviteCandidate = async () => {
     setBusy(true);
-    setNotice(null);
     try {
       const res = await api.post<{ link: string; expiresAt?: string }>(`/api/v1/interviews/${interviewId}/invite`);
       setInvite(res);
       setCopied(false);
-      setNotice({ type: "success", text: "Invitation link generated." });
+      toast.success("Invitation link generated.");
     } catch (e) {
-      setNotice({ type: "error", text: (e as Error).message });
+      toast.error((e as Error).message);
     } finally {
       setBusy(false);
     }
@@ -184,14 +183,13 @@ export default function InterviewDetailPage() {
 
   const sendReminder = async () => {
     setBusy(true);
-    setNotice(null);
     try {
       const res = await api.post<{ link: string; expiresAt?: string }>(`/api/v1/interviews/${interviewId}/remind`);
       setInvite(res);
       setCopied(false);
-      setNotice({ type: "success", text: "Reminder sent. New invitation link generated." });
+      toast.success("Reminder sent. New invitation link generated.");
     } catch (e) {
-      setNotice({ type: "error", text: (e as Error).message });
+      toast.error((e as Error).message);
     } finally {
       setBusy(false);
     }
@@ -200,18 +198,17 @@ export default function InterviewDetailPage() {
   const reschedule = async () => {
     const minutes = Number(rescheduleMinutes);
     if (!Number.isFinite(minutes) || minutes < 5 || minutes > 180) {
-      setNotice({ type: "error", text: "Enter a duration between 5 and 180 minutes." });
+      toast.error("Enter a duration between 5 and 180 minutes.");
       return;
     }
     setBusy(true);
-    setNotice(null);
     try {
       const res = await api.post<{ link: string; expiresAt?: string }>(`/api/v1/interviews/${interviewId}/reschedule`, { duration: minutes });
       setInvite(res);
       setCopied(false);
-      setNotice({ type: "success", text: "Interview rescheduled. New invitation link sent." });
+      toast.success("Interview rescheduled. New invitation link sent.");
     } catch (e) {
-      setNotice({ type: "error", text: (e as Error).message });
+      toast.error((e as Error).message);
     } finally {
       setBusy(false);
     }
@@ -256,10 +253,6 @@ export default function InterviewDetailPage() {
         </>
       }
     >
-      {notice && (
-        <div className={notice.type === "success" ? "success-box" : "error-box"}>{notice.text}</div>
-      )}
-
       <Card title="Actions" subtitle="Manage this interview lifecycle">
         <div className="flex flex-wrap">
           <Button variant="secondary" onClick={inviteCandidate} loading={busy}>

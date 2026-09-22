@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { AppShell } from "@/components/layout";
+import { useToast } from "@/lib/toast";
 import {
   Card,
   Button,
@@ -90,6 +91,7 @@ function responsibilityText(item: unknown): string {
 export default function JobDetailPage() {
   const params = useParams<{ id: string }>();
   const jobId = params.id;
+  const toast = useToast();
 
   const [tab, setTab] = useState("overview");
   const [job, setJob] = useState<JobDetail | null>(null);
@@ -98,7 +100,6 @@ export default function JobDetailPage() {
   const [loading, setLoading] = useState(true);
   const [loadingRanking, setLoadingRanking] = useState(false);
   const [error, setError] = useState("");
-  const [notice, setNotice] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   const [selectedCandidate, setSelectedCandidate] = useState("");
   const [generating, setGenerating] = useState(false);
@@ -135,36 +136,31 @@ export default function JobDetailPage() {
   }, [tab, loadRanking]);
 
   const decide = async (matchId: string, decision: "approved" | "rejected") => {
-    setNotice(null);
     try {
       await api.post(`/api/v1/matches/${matchId}/decide`, { decision });
-      setNotice({ type: "success", text: `Match ${decision}.` });
+      toast.success(`Match ${decision}.`);
       loadRanking();
     } catch (e) {
-      setNotice({ type: "error", text: (e as Error).message });
+      toast.error((e as Error).message);
     }
   };
 
   const generate = async () => {
     if (!selectedCandidate) {
-      setNotice({ type: "error", text: "Select a candidate first." });
+      toast.error("Select a candidate first.");
       return;
     }
     setGenerating(true);
-    setNotice(null);
     try {
       const res = await api.post<{ status: string }>("/api/v1/matches/generate", {
         candidateId: selectedCandidate,
         jobId,
       });
-      setNotice({
-        type: "success",
-        text: `Matching job queued for candidate (${res.status}). Scores will appear once processed.`,
-      });
+      toast.success(`Matching job queued for candidate (${res.status}). Scores will appear once processed.`);
       setSelectedCandidate("");
       setTimeout(() => loadRanking(), 3000);
     } catch (e) {
-      setNotice({ type: "error", text: (e as Error).message });
+      toast.error((e as Error).message);
     } finally {
       setGenerating(false);
     }
@@ -358,10 +354,6 @@ export default function JobDetailPage() {
               The job must have at least one uploaded candidate to match. Processing happens in the background.
             </div>
           </Card>
-
-          {notice && (
-            <div className={notice.type === "success" ? "success-box" : "error-box"}>{notice.text}</div>
-          )}
 
           {loadingRanking && <Spinner label="Refreshing rankings..." />}
 

@@ -48,6 +48,13 @@ export function Navbar() {
                 </Link>
               );
             })}
+            {user.role === "super_admin" && (
+              <>
+                <Link href="/admin" className={pathname.startsWith("/admin") ? "active" : ""}>
+                  Admin
+                </Link>
+              </>
+            )}
           </div>
         )}
 
@@ -85,6 +92,7 @@ export function AppShell({
   children: ReactNode;
 }) {
   const pathname = usePathname();
+  const { user } = useAuth();
 
   return (
     <div className="shell">
@@ -103,6 +111,14 @@ export function AppShell({
               </Link>
             );
           })}
+          {user?.role === "super_admin" && (
+            <Link href="/admin" className={`side-link ${pathname.startsWith("/admin") ? "active" : ""}`.trim()}>
+              <span className="side-icon">
+                <Icon name="settings" />
+              </span>
+              Admin
+            </Link>
+          )}
         </nav>
       </aside>
       <main className="shell-main">

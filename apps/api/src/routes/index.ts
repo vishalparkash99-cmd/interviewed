@@ -10,6 +10,8 @@ import { registerDashboardRoutes } from "./dashboard";
 import { registerResumeRoutes } from "./resumes";
 import { registerMatchRoutes } from "./matches";
 import { registerReportRoutes } from "./reports";
+import { registerAdminRoutes } from "./admin";
+import { registerBillingRoutes } from "./billing";
 
 export async function registerAllRoutes(server: FastifyInstance): Promise<void> {
   await registerAuthRoutes(server);
@@ -23,4 +25,6 @@ export async function registerAllRoutes(server: FastifyInstance): Promise<void> 
   await registerResumeRoutes(server);
   await registerMatchRoutes(server);
   await registerReportRoutes(server);
+  await registerAdminRoutes(server);
+  await registerBillingRoutes(server);
 }

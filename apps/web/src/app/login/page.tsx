@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import { useToast } from "@/lib/toast";
 
 type LoginResponse = {
   error?: string;
@@ -8,6 +9,7 @@ type LoginResponse = {
 };
 
 export default function LoginPage() {
+  const toast = useToast();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -28,15 +30,21 @@ export default function LoginPage() {
       });
       const data = (await res.json()) as LoginResponse;
       if (res.ok) {
-        window.location.href = "/dashboard";
+        toast.success("Welcome back!");
+        setTimeout(() => {
+          window.location.href = "/dashboard";
+        }, 300);
       } else {
-        setError(data.error || "Login failed");
+        const message = data.error || "Login failed";
+        setError(message);
+        toast.error(message);
         if (data.code === "EMAIL_NOT_VERIFIED") {
           setShowResend(true);
         }
       }
     } catch {
       setError("Network error");
+      toast.error("Network error");
     }
     setLoading(false);
   };
@@ -51,9 +59,12 @@ export default function LoginPage() {
         body: JSON.stringify({ email }),
       });
       const data = (await res.json()) as { message?: string; error?: string };
-      setResendMsg(data.message || data.error || "Check your email for the verification link.");
+      const msg = data.message || data.error || "Check your email for the verification link.";
+      setResendMsg(msg);
+      toast.info(msg);
     } catch {
       setResendMsg("Network error while resending verification.");
+      toast.error("Network error while resending verification.");
     }
     setLoading(false);
   };
@@ -131,7 +142,12 @@ export default function LoginPage() {
 
         <div className="consent-box" style={{ marginTop: 16 }}>
           <p className="text-muted text-center" style={{ fontSize: 12 }}>
-            Demo: <strong>admin@acme.com</strong> / <strong>admin123</strong>
+            <strong>Shared demo:</strong> <strong>admin@acme.com</strong> / <strong>admin123</strong>
+          </p>
+          <p className="text-muted text-center" style={{ fontSize: 12, marginTop: 6 }}>
+            This workspace is shared — do not upload real candidate data.{" "}
+            <Link href="/register" className="link">Create a free account</Link>{" "}
+            for your own private workspace.
           </p>
         </div>
       </div>

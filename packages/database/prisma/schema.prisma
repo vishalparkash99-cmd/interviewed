@@ -77,27 +77,43 @@ enum AIJobStatus {
   failed
 }
 
+enum Plan {
+  trial
+  unlimited
+}
+
 model Organization {
-  id           String        @id @default(uuid())
-  name         String
-  slug         String        @unique
-  logoUrl      String?
-  industry     String?
-  timezone     String        @default("UTC")
-  settings     Json          @default("{}")
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  deletedAt    DateTime?
-  users        User[]
-  jobs         Job[]
-  roles        Role[]
-  candidates   Candidate[]
-  resumes      Resume[]
-  interviews   Interview[]
-  auditLogs    AuditLog[]
-  emailConfigs EmailConfig[]
+  id                 String        @id @default(uuid())
+  name               String
+  slug               String        @unique
+  logoUrl            String?
+  industry           String?
+  timezone           String        @default("UTC")
+  settings           Json          @default("{}")
+  plan               Plan          @default(trial)
+  trialInterviewLimit Int          @default(5)
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  deletedAt          DateTime?
+  users              User[]
+  jobs               Job[]
+  roles              Role[]
+  candidates         Candidate[]
+  resumes            Resume[]
+  interviews         Interview[]
+  auditLogs          AuditLog[]
+  emailConfigs       EmailConfig[]
 
   @@map("organizations")
+}
+
+model PlatformSetting {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt
+
+  @@map("platform_settings")
 }
 
 model User {

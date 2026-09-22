@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import { useToast } from "@/lib/toast";
 
 type RegisterResponse = {
   message?: string;
@@ -10,6 +11,7 @@ type RegisterResponse = {
 };
 
 export default function RegisterPage() {
+  const toast = useToast();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -26,6 +28,7 @@ export default function RegisterPage() {
 
     if (password !== confirmPassword) {
       setError("Passwords do not match");
+      toast.error("Passwords do not match");
       return;
     }
 
@@ -44,11 +47,14 @@ export default function RegisterPage() {
           // ignore storage errors
         }
         setDone(data);
+        toast.success(data.message || "Registration successful. Please verify your email.");
       } else {
         setError(data.error || "Registration failed");
+        toast.error(data.error || "Registration failed");
       }
     } catch {
       setError("Network error");
+      toast.error("Network error");
     }
     setLoading(false);
   };

@@ -444,6 +444,12 @@ export function Icon({ name }: { name: string }) {
         <rect x="16" y="9" width="3" height="8" rx="1" fill="currentColor" opacity="0.55" />
       </>
     ),
+    settings: (
+      <>
+        <circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" strokeWidth="1.8" />
+        <path d="M12 2.8v2.5M12 18.7v2.5M2.8 12h2.5M18.7 12h2.5M5.5 5.5l1.8 1.8M16.7 16.7l1.8 1.8M18.5 5.5l-1.8 1.8M7.3 16.7l-1.8 1.8" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      </>
+    ),
   };
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden data-icon={name}>

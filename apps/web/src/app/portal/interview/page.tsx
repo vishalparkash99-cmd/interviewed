@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
+import { useToast } from "@/lib/toast";
 
 type Message = {
   id: string;
@@ -60,6 +61,7 @@ function formatTime(seconds: number): string {
 function InterviewContent() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token") || "";
+  const toast = useToast();
 
   const [phase, setPhase] = useState<Phase>("connecting");
   const [error, setError] = useState("");
@@ -373,17 +375,20 @@ function InterviewContent() {
 
       if (!res.ok) {
         setError(data.error || "Failed to submit answer. Please try again.");
+        toast.error(data.error || "Failed to submit answer. Please try again.");
         setSending(false);
         return;
       }
 
       if (data.completed) {
         setPhase("completed");
+        toast.success("Interview complete. Thank you!");
         setSending(false);
         return;
       }
 
       if (data.nextQuestion) {
+        toast.success("Answer submitted.");
         setCurrentQuestion(data.nextQuestion);
         setMessages((prev) => [
           ...prev,
@@ -397,6 +402,7 @@ function InterviewContent() {
       }
     } catch {
       setError("Network error. Your answer may not have been saved.");
+      toast.error("Network error. Your answer may not have been saved.");
     }
     setSending(false);
   };

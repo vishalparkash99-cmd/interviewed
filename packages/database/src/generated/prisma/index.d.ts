@@ -19,6 +19,11 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  */
 export type Organization = $Result.DefaultSelection<Prisma.$OrganizationPayload>
 /**
+ * Model PlatformSetting
+ * 
+ */
+export type PlatformSetting = $Result.DefaultSelection<Prisma.$PlatformSettingPayload>
+/**
  * Model User
  * 
  */
@@ -232,6 +237,14 @@ export const AIJobStatus: {
 
 export type AIJobStatus = (typeof AIJobStatus)[keyof typeof AIJobStatus]
 
+
+export const Plan: {
+  trial: 'trial',
+  unlimited: 'unlimited'
+};
+
+export type Plan = (typeof Plan)[keyof typeof Plan]
+
 }
 
 export type UserRole = $Enums.UserRole
@@ -269,6 +282,10 @@ export const AIJobType: typeof $Enums.AIJobType
 export type AIJobStatus = $Enums.AIJobStatus
 
 export const AIJobStatus: typeof $Enums.AIJobStatus
+
+export type Plan = $Enums.Plan
+
+export const Plan: typeof $Enums.Plan
 
 /**
  * ##  Prisma Client ʲˢ
@@ -397,6 +414,16 @@ export class PrismaClient<
     * ```
     */
   get organization(): Prisma.OrganizationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.platformSetting`: Exposes CRUD operations for the **PlatformSetting** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PlatformSettings
+    * const platformSettings = await prisma.platformSetting.findMany()
+    * ```
+    */
+  get platformSetting(): Prisma.PlatformSettingDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.user`: Exposes CRUD operations for the **User** model.
@@ -1069,6 +1096,7 @@ export namespace Prisma {
 
   export const ModelName: {
     Organization: 'Organization',
+    PlatformSetting: 'PlatformSetting',
     User: 'User',
     RefreshToken: 'RefreshToken',
     EmailVerificationToken: 'EmailVerificationToken',
@@ -1110,7 +1138,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "organization" | "user" | "refreshToken" | "emailVerificationToken" | "passwordResetToken" | "role" | "job" | "candidate" | "resume" | "candidateJobMatch" | "interview" | "interviewSession" | "interviewQuestion" | "interviewAnswer" | "interviewQuestionFeedback" | "transcriptSegment" | "interviewEvaluation" | "interviewReport" | "email" | "auditLog" | "aIProcessingJob" | "emailConfig" | "rateLimit" | "cachedEmbedding"
+      modelProps: "organization" | "platformSetting" | "user" | "refreshToken" | "emailVerificationToken" | "passwordResetToken" | "role" | "job" | "candidate" | "resume" | "candidateJobMatch" | "interview" | "interviewSession" | "interviewQuestion" | "interviewAnswer" | "interviewQuestionFeedback" | "transcriptSegment" | "interviewEvaluation" | "interviewReport" | "email" | "auditLog" | "aIProcessingJob" | "emailConfig" | "rateLimit" | "cachedEmbedding"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1185,6 +1213,80 @@ export namespace Prisma {
           count: {
             args: Prisma.OrganizationCountArgs<ExtArgs>
             result: $Utils.Optional<OrganizationCountAggregateOutputType> | number
+          }
+        }
+      }
+      PlatformSetting: {
+        payload: Prisma.$PlatformSettingPayload<ExtArgs>
+        fields: Prisma.PlatformSettingFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PlatformSettingFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlatformSettingPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PlatformSettingFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlatformSettingPayload>
+          }
+          findFirst: {
+            args: Prisma.PlatformSettingFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlatformSettingPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PlatformSettingFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlatformSettingPayload>
+          }
+          findMany: {
+            args: Prisma.PlatformSettingFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlatformSettingPayload>[]
+          }
+          create: {
+            args: Prisma.PlatformSettingCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlatformSettingPayload>
+          }
+          createMany: {
+            args: Prisma.PlatformSettingCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PlatformSettingCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlatformSettingPayload>[]
+          }
+          delete: {
+            args: Prisma.PlatformSettingDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlatformSettingPayload>
+          }
+          update: {
+            args: Prisma.PlatformSettingUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlatformSettingPayload>
+          }
+          deleteMany: {
+            args: Prisma.PlatformSettingDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PlatformSettingUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PlatformSettingUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlatformSettingPayload>[]
+          }
+          upsert: {
+            args: Prisma.PlatformSettingUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlatformSettingPayload>
+          }
+          aggregate: {
+            args: Prisma.PlatformSettingAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePlatformSetting>
+          }
+          groupBy: {
+            args: Prisma.PlatformSettingGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PlatformSettingGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PlatformSettingCountArgs<ExtArgs>
+            result: $Utils.Optional<PlatformSettingCountAggregateOutputType> | number
           }
         }
       }
@@ -2987,6 +3089,7 @@ export namespace Prisma {
   }
   export type GlobalOmitConfig = {
     organization?: OrganizationOmit
+    platformSetting?: PlatformSettingOmit
     user?: UserOmit
     refreshToken?: RefreshTokenOmit
     emailVerificationToken?: EmailVerificationTokenOmit
@@ -3483,8 +3586,18 @@ export namespace Prisma {
 
   export type AggregateOrganization = {
     _count: OrganizationCountAggregateOutputType | null
+    _avg: OrganizationAvgAggregateOutputType | null
+    _sum: OrganizationSumAggregateOutputType | null
     _min: OrganizationMinAggregateOutputType | null
     _max: OrganizationMaxAggregateOutputType | null
+  }
+
+  export type OrganizationAvgAggregateOutputType = {
+    trialInterviewLimit: number | null
+  }
+
+  export type OrganizationSumAggregateOutputType = {
+    trialInterviewLimit: number | null
   }
 
   export type OrganizationMinAggregateOutputType = {
@@ -3494,6 +3607,8 @@ export namespace Prisma {
     logoUrl: string | null
     industry: string | null
     timezone: string | null
+    plan: $Enums.Plan | null
+    trialInterviewLimit: number | null
     createdAt: Date | null
     updatedAt: Date | null
     deletedAt: Date | null
@@ -3506,6 +3621,8 @@ export namespace Prisma {
     logoUrl: string | null
     industry: string | null
     timezone: string | null
+    plan: $Enums.Plan | null
+    trialInterviewLimit: number | null
     createdAt: Date | null
     updatedAt: Date | null
     deletedAt: Date | null
@@ -3519,12 +3636,22 @@ export namespace Prisma {
     industry: number
     timezone: number
     settings: number
+    plan: number
+    trialInterviewLimit: number
     createdAt: number
     updatedAt: number
     deletedAt: number
     _all: number
   }
 
+
+  export type OrganizationAvgAggregateInputType = {
+    trialInterviewLimit?: true
+  }
+
+  export type OrganizationSumAggregateInputType = {
+    trialInterviewLimit?: true
+  }
 
   export type OrganizationMinAggregateInputType = {
     id?: true
@@ -3533,6 +3660,8 @@ export namespace Prisma {
     logoUrl?: true
     industry?: true
     timezone?: true
+    plan?: true
+    trialInterviewLimit?: true
     createdAt?: true
     updatedAt?: true
     deletedAt?: true
@@ -3545,6 +3674,8 @@ export namespace Prisma {
     logoUrl?: true
     industry?: true
     timezone?: true
+    plan?: true
+    trialInterviewLimit?: true
     createdAt?: true
     updatedAt?: true
     deletedAt?: true
@@ -3558,6 +3689,8 @@ export namespace Prisma {
     industry?: true
     timezone?: true
     settings?: true
+    plan?: true
+    trialInterviewLimit?: true
     createdAt?: true
     updatedAt?: true
     deletedAt?: true
@@ -3602,6 +3735,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: OrganizationAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: OrganizationSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: OrganizationMinAggregateInputType
@@ -3632,6 +3777,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: OrganizationCountAggregateInputType | true
+    _avg?: OrganizationAvgAggregateInputType
+    _sum?: OrganizationSumAggregateInputType
     _min?: OrganizationMinAggregateInputType
     _max?: OrganizationMaxAggregateInputType
   }
@@ -3644,10 +3791,14 @@ export namespace Prisma {
     industry: string | null
     timezone: string
     settings: JsonValue
+    plan: $Enums.Plan
+    trialInterviewLimit: number
     createdAt: Date
     updatedAt: Date
     deletedAt: Date | null
     _count: OrganizationCountAggregateOutputType | null
+    _avg: OrganizationAvgAggregateOutputType | null
+    _sum: OrganizationSumAggregateOutputType | null
     _min: OrganizationMinAggregateOutputType | null
     _max: OrganizationMaxAggregateOutputType | null
   }
@@ -3674,6 +3825,8 @@ export namespace Prisma {
     industry?: boolean
     timezone?: boolean
     settings?: boolean
+    plan?: boolean
+    trialInterviewLimit?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
@@ -3696,6 +3849,8 @@ export namespace Prisma {
     industry?: boolean
     timezone?: boolean
     settings?: boolean
+    plan?: boolean
+    trialInterviewLimit?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
@@ -3709,6 +3864,8 @@ export namespace Prisma {
     industry?: boolean
     timezone?: boolean
     settings?: boolean
+    plan?: boolean
+    trialInterviewLimit?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
@@ -3722,12 +3879,14 @@ export namespace Prisma {
     industry?: boolean
     timezone?: boolean
     settings?: boolean
+    plan?: boolean
+    trialInterviewLimit?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
   }
 
-  export type OrganizationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "logoUrl" | "industry" | "timezone" | "settings" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["organization"]>
+  export type OrganizationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "logoUrl" | "industry" | "timezone" | "settings" | "plan" | "trialInterviewLimit" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["organization"]>
   export type OrganizationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     users?: boolean | Organization$usersArgs<ExtArgs>
     jobs?: boolean | Organization$jobsArgs<ExtArgs>
@@ -3762,6 +3921,8 @@ export namespace Prisma {
       industry: string | null
       timezone: string
       settings: Prisma.JsonValue
+      plan: $Enums.Plan
+      trialInterviewLimit: number
       createdAt: Date
       updatedAt: Date
       deletedAt: Date | null
@@ -4203,6 +4364,8 @@ export namespace Prisma {
     readonly industry: FieldRef<"Organization", 'String'>
     readonly timezone: FieldRef<"Organization", 'String'>
     readonly settings: FieldRef<"Organization", 'Json'>
+    readonly plan: FieldRef<"Organization", 'Plan'>
+    readonly trialInterviewLimit: FieldRef<"Organization", 'Int'>
     readonly createdAt: FieldRef<"Organization", 'DateTime'>
     readonly updatedAt: FieldRef<"Organization", 'DateTime'>
     readonly deletedAt: FieldRef<"Organization", 'DateTime'>
@@ -4801,6 +4964,988 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: OrganizationInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model PlatformSetting
+   */
+
+  export type AggregatePlatformSetting = {
+    _count: PlatformSettingCountAggregateOutputType | null
+    _min: PlatformSettingMinAggregateOutputType | null
+    _max: PlatformSettingMaxAggregateOutputType | null
+  }
+
+  export type PlatformSettingMinAggregateOutputType = {
+    id: string | null
+    key: string | null
+    value: string | null
+    updatedAt: Date | null
+  }
+
+  export type PlatformSettingMaxAggregateOutputType = {
+    id: string | null
+    key: string | null
+    value: string | null
+    updatedAt: Date | null
+  }
+
+  export type PlatformSettingCountAggregateOutputType = {
+    id: number
+    key: number
+    value: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type PlatformSettingMinAggregateInputType = {
+    id?: true
+    key?: true
+    value?: true
+    updatedAt?: true
+  }
+
+  export type PlatformSettingMaxAggregateInputType = {
+    id?: true
+    key?: true
+    value?: true
+    updatedAt?: true
+  }
+
+  export type PlatformSettingCountAggregateInputType = {
+    id?: true
+    key?: true
+    value?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type PlatformSettingAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PlatformSetting to aggregate.
+     */
+    where?: PlatformSettingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PlatformSettings to fetch.
+     */
+    orderBy?: PlatformSettingOrderByWithRelationInput | PlatformSettingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PlatformSettingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PlatformSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PlatformSettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PlatformSettings
+    **/
+    _count?: true | PlatformSettingCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PlatformSettingMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PlatformSettingMaxAggregateInputType
+  }
+
+  export type GetPlatformSettingAggregateType<T extends PlatformSettingAggregateArgs> = {
+        [P in keyof T & keyof AggregatePlatformSetting]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePlatformSetting[P]>
+      : GetScalarType<T[P], AggregatePlatformSetting[P]>
+  }
+
+
+
+
+  export type PlatformSettingGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PlatformSettingWhereInput
+    orderBy?: PlatformSettingOrderByWithAggregationInput | PlatformSettingOrderByWithAggregationInput[]
+    by: PlatformSettingScalarFieldEnum[] | PlatformSettingScalarFieldEnum
+    having?: PlatformSettingScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PlatformSettingCountAggregateInputType | true
+    _min?: PlatformSettingMinAggregateInputType
+    _max?: PlatformSettingMaxAggregateInputType
+  }
+
+  export type PlatformSettingGroupByOutputType = {
+    id: string
+    key: string
+    value: string
+    updatedAt: Date
+    _count: PlatformSettingCountAggregateOutputType | null
+    _min: PlatformSettingMinAggregateOutputType | null
+    _max: PlatformSettingMaxAggregateOutputType | null
+  }
+
+  type GetPlatformSettingGroupByPayload<T extends PlatformSettingGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PlatformSettingGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PlatformSettingGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PlatformSettingGroupByOutputType[P]>
+            : GetScalarType<T[P], PlatformSettingGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PlatformSettingSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    key?: boolean
+    value?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["platformSetting"]>
+
+  export type PlatformSettingSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    key?: boolean
+    value?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["platformSetting"]>
+
+  export type PlatformSettingSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    key?: boolean
+    value?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["platformSetting"]>
+
+  export type PlatformSettingSelectScalar = {
+    id?: boolean
+    key?: boolean
+    value?: boolean
+    updatedAt?: boolean
+  }
+
+  export type PlatformSettingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "key" | "value" | "updatedAt", ExtArgs["result"]["platformSetting"]>
+
+  export type $PlatformSettingPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PlatformSetting"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      key: string
+      value: string
+      updatedAt: Date
+    }, ExtArgs["result"]["platformSetting"]>
+    composites: {}
+  }
+
+  type PlatformSettingGetPayload<S extends boolean | null | undefined | PlatformSettingDefaultArgs> = $Result.GetResult<Prisma.$PlatformSettingPayload, S>
+
+  type PlatformSettingCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PlatformSettingFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PlatformSettingCountAggregateInputType | true
+    }
+
+  export interface PlatformSettingDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PlatformSetting'], meta: { name: 'PlatformSetting' } }
+    /**
+     * Find zero or one PlatformSetting that matches the filter.
+     * @param {PlatformSettingFindUniqueArgs} args - Arguments to find a PlatformSetting
+     * @example
+     * // Get one PlatformSetting
+     * const platformSetting = await prisma.platformSetting.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PlatformSettingFindUniqueArgs>(args: SelectSubset<T, PlatformSettingFindUniqueArgs<ExtArgs>>): Prisma__PlatformSettingClient<$Result.GetResult<Prisma.$PlatformSettingPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one PlatformSetting that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PlatformSettingFindUniqueOrThrowArgs} args - Arguments to find a PlatformSetting
+     * @example
+     * // Get one PlatformSetting
+     * const platformSetting = await prisma.platformSetting.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PlatformSettingFindUniqueOrThrowArgs>(args: SelectSubset<T, PlatformSettingFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PlatformSettingClient<$Result.GetResult<Prisma.$PlatformSettingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PlatformSetting that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlatformSettingFindFirstArgs} args - Arguments to find a PlatformSetting
+     * @example
+     * // Get one PlatformSetting
+     * const platformSetting = await prisma.platformSetting.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PlatformSettingFindFirstArgs>(args?: SelectSubset<T, PlatformSettingFindFirstArgs<ExtArgs>>): Prisma__PlatformSettingClient<$Result.GetResult<Prisma.$PlatformSettingPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PlatformSetting that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlatformSettingFindFirstOrThrowArgs} args - Arguments to find a PlatformSetting
+     * @example
+     * // Get one PlatformSetting
+     * const platformSetting = await prisma.platformSetting.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PlatformSettingFindFirstOrThrowArgs>(args?: SelectSubset<T, PlatformSettingFindFirstOrThrowArgs<ExtArgs>>): Prisma__PlatformSettingClient<$Result.GetResult<Prisma.$PlatformSettingPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more PlatformSettings that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlatformSettingFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PlatformSettings
+     * const platformSettings = await prisma.platformSetting.findMany()
+     * 
+     * // Get first 10 PlatformSettings
+     * const platformSettings = await prisma.platformSetting.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const platformSettingWithIdOnly = await prisma.platformSetting.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PlatformSettingFindManyArgs>(args?: SelectSubset<T, PlatformSettingFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PlatformSettingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a PlatformSetting.
+     * @param {PlatformSettingCreateArgs} args - Arguments to create a PlatformSetting.
+     * @example
+     * // Create one PlatformSetting
+     * const PlatformSetting = await prisma.platformSetting.create({
+     *   data: {
+     *     // ... data to create a PlatformSetting
+     *   }
+     * })
+     * 
+     */
+    create<T extends PlatformSettingCreateArgs>(args: SelectSubset<T, PlatformSettingCreateArgs<ExtArgs>>): Prisma__PlatformSettingClient<$Result.GetResult<Prisma.$PlatformSettingPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many PlatformSettings.
+     * @param {PlatformSettingCreateManyArgs} args - Arguments to create many PlatformSettings.
+     * @example
+     * // Create many PlatformSettings
+     * const platformSetting = await prisma.platformSetting.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PlatformSettingCreateManyArgs>(args?: SelectSubset<T, PlatformSettingCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PlatformSettings and returns the data saved in the database.
+     * @param {PlatformSettingCreateManyAndReturnArgs} args - Arguments to create many PlatformSettings.
+     * @example
+     * // Create many PlatformSettings
+     * const platformSetting = await prisma.platformSetting.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PlatformSettings and only return the `id`
+     * const platformSettingWithIdOnly = await prisma.platformSetting.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PlatformSettingCreateManyAndReturnArgs>(args?: SelectSubset<T, PlatformSettingCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PlatformSettingPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a PlatformSetting.
+     * @param {PlatformSettingDeleteArgs} args - Arguments to delete one PlatformSetting.
+     * @example
+     * // Delete one PlatformSetting
+     * const PlatformSetting = await prisma.platformSetting.delete({
+     *   where: {
+     *     // ... filter to delete one PlatformSetting
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PlatformSettingDeleteArgs>(args: SelectSubset<T, PlatformSettingDeleteArgs<ExtArgs>>): Prisma__PlatformSettingClient<$Result.GetResult<Prisma.$PlatformSettingPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one PlatformSetting.
+     * @param {PlatformSettingUpdateArgs} args - Arguments to update one PlatformSetting.
+     * @example
+     * // Update one PlatformSetting
+     * const platformSetting = await prisma.platformSetting.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PlatformSettingUpdateArgs>(args: SelectSubset<T, PlatformSettingUpdateArgs<ExtArgs>>): Prisma__PlatformSettingClient<$Result.GetResult<Prisma.$PlatformSettingPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more PlatformSettings.
+     * @param {PlatformSettingDeleteManyArgs} args - Arguments to filter PlatformSettings to delete.
+     * @example
+     * // Delete a few PlatformSettings
+     * const { count } = await prisma.platformSetting.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PlatformSettingDeleteManyArgs>(args?: SelectSubset<T, PlatformSettingDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PlatformSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlatformSettingUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PlatformSettings
+     * const platformSetting = await prisma.platformSetting.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PlatformSettingUpdateManyArgs>(args: SelectSubset<T, PlatformSettingUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PlatformSettings and returns the data updated in the database.
+     * @param {PlatformSettingUpdateManyAndReturnArgs} args - Arguments to update many PlatformSettings.
+     * @example
+     * // Update many PlatformSettings
+     * const platformSetting = await prisma.platformSetting.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more PlatformSettings and only return the `id`
+     * const platformSettingWithIdOnly = await prisma.platformSetting.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PlatformSettingUpdateManyAndReturnArgs>(args: SelectSubset<T, PlatformSettingUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PlatformSettingPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one PlatformSetting.
+     * @param {PlatformSettingUpsertArgs} args - Arguments to update or create a PlatformSetting.
+     * @example
+     * // Update or create a PlatformSetting
+     * const platformSetting = await prisma.platformSetting.upsert({
+     *   create: {
+     *     // ... data to create a PlatformSetting
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PlatformSetting we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PlatformSettingUpsertArgs>(args: SelectSubset<T, PlatformSettingUpsertArgs<ExtArgs>>): Prisma__PlatformSettingClient<$Result.GetResult<Prisma.$PlatformSettingPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of PlatformSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlatformSettingCountArgs} args - Arguments to filter PlatformSettings to count.
+     * @example
+     * // Count the number of PlatformSettings
+     * const count = await prisma.platformSetting.count({
+     *   where: {
+     *     // ... the filter for the PlatformSettings we want to count
+     *   }
+     * })
+    **/
+    count<T extends PlatformSettingCountArgs>(
+      args?: Subset<T, PlatformSettingCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PlatformSettingCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PlatformSetting.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlatformSettingAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PlatformSettingAggregateArgs>(args: Subset<T, PlatformSettingAggregateArgs>): Prisma.PrismaPromise<GetPlatformSettingAggregateType<T>>
+
+    /**
+     * Group by PlatformSetting.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlatformSettingGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PlatformSettingGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PlatformSettingGroupByArgs['orderBy'] }
+        : { orderBy?: PlatformSettingGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PlatformSettingGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPlatformSettingGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PlatformSetting model
+   */
+  readonly fields: PlatformSettingFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PlatformSetting.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PlatformSettingClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PlatformSetting model
+   */
+  interface PlatformSettingFieldRefs {
+    readonly id: FieldRef<"PlatformSetting", 'String'>
+    readonly key: FieldRef<"PlatformSetting", 'String'>
+    readonly value: FieldRef<"PlatformSetting", 'String'>
+    readonly updatedAt: FieldRef<"PlatformSetting", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PlatformSetting findUnique
+   */
+  export type PlatformSettingFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlatformSetting
+     */
+    select?: PlatformSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlatformSetting
+     */
+    omit?: PlatformSettingOmit<ExtArgs> | null
+    /**
+     * Filter, which PlatformSetting to fetch.
+     */
+    where: PlatformSettingWhereUniqueInput
+  }
+
+  /**
+   * PlatformSetting findUniqueOrThrow
+   */
+  export type PlatformSettingFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlatformSetting
+     */
+    select?: PlatformSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlatformSetting
+     */
+    omit?: PlatformSettingOmit<ExtArgs> | null
+    /**
+     * Filter, which PlatformSetting to fetch.
+     */
+    where: PlatformSettingWhereUniqueInput
+  }
+
+  /**
+   * PlatformSetting findFirst
+   */
+  export type PlatformSettingFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlatformSetting
+     */
+    select?: PlatformSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlatformSetting
+     */
+    omit?: PlatformSettingOmit<ExtArgs> | null
+    /**
+     * Filter, which PlatformSetting to fetch.
+     */
+    where?: PlatformSettingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PlatformSettings to fetch.
+     */
+    orderBy?: PlatformSettingOrderByWithRelationInput | PlatformSettingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PlatformSettings.
+     */
+    cursor?: PlatformSettingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PlatformSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PlatformSettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PlatformSettings.
+     */
+    distinct?: PlatformSettingScalarFieldEnum | PlatformSettingScalarFieldEnum[]
+  }
+
+  /**
+   * PlatformSetting findFirstOrThrow
+   */
+  export type PlatformSettingFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlatformSetting
+     */
+    select?: PlatformSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlatformSetting
+     */
+    omit?: PlatformSettingOmit<ExtArgs> | null
+    /**
+     * Filter, which PlatformSetting to fetch.
+     */
+    where?: PlatformSettingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PlatformSettings to fetch.
+     */
+    orderBy?: PlatformSettingOrderByWithRelationInput | PlatformSettingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PlatformSettings.
+     */
+    cursor?: PlatformSettingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PlatformSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PlatformSettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PlatformSettings.
+     */
+    distinct?: PlatformSettingScalarFieldEnum | PlatformSettingScalarFieldEnum[]
+  }
+
+  /**
+   * PlatformSetting findMany
+   */
+  export type PlatformSettingFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlatformSetting
+     */
+    select?: PlatformSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlatformSetting
+     */
+    omit?: PlatformSettingOmit<ExtArgs> | null
+    /**
+     * Filter, which PlatformSettings to fetch.
+     */
+    where?: PlatformSettingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PlatformSettings to fetch.
+     */
+    orderBy?: PlatformSettingOrderByWithRelationInput | PlatformSettingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PlatformSettings.
+     */
+    cursor?: PlatformSettingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PlatformSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PlatformSettings.
+     */
+    skip?: number
+    distinct?: PlatformSettingScalarFieldEnum | PlatformSettingScalarFieldEnum[]
+  }
+
+  /**
+   * PlatformSetting create
+   */
+  export type PlatformSettingCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlatformSetting
+     */
+    select?: PlatformSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlatformSetting
+     */
+    omit?: PlatformSettingOmit<ExtArgs> | null
+    /**
+     * The data needed to create a PlatformSetting.
+     */
+    data: XOR<PlatformSettingCreateInput, PlatformSettingUncheckedCreateInput>
+  }
+
+  /**
+   * PlatformSetting createMany
+   */
+  export type PlatformSettingCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PlatformSettings.
+     */
+    data: PlatformSettingCreateManyInput | PlatformSettingCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PlatformSetting createManyAndReturn
+   */
+  export type PlatformSettingCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlatformSetting
+     */
+    select?: PlatformSettingSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlatformSetting
+     */
+    omit?: PlatformSettingOmit<ExtArgs> | null
+    /**
+     * The data used to create many PlatformSettings.
+     */
+    data: PlatformSettingCreateManyInput | PlatformSettingCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PlatformSetting update
+   */
+  export type PlatformSettingUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlatformSetting
+     */
+    select?: PlatformSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlatformSetting
+     */
+    omit?: PlatformSettingOmit<ExtArgs> | null
+    /**
+     * The data needed to update a PlatformSetting.
+     */
+    data: XOR<PlatformSettingUpdateInput, PlatformSettingUncheckedUpdateInput>
+    /**
+     * Choose, which PlatformSetting to update.
+     */
+    where: PlatformSettingWhereUniqueInput
+  }
+
+  /**
+   * PlatformSetting updateMany
+   */
+  export type PlatformSettingUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PlatformSettings.
+     */
+    data: XOR<PlatformSettingUpdateManyMutationInput, PlatformSettingUncheckedUpdateManyInput>
+    /**
+     * Filter which PlatformSettings to update
+     */
+    where?: PlatformSettingWhereInput
+    /**
+     * Limit how many PlatformSettings to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PlatformSetting updateManyAndReturn
+   */
+  export type PlatformSettingUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlatformSetting
+     */
+    select?: PlatformSettingSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlatformSetting
+     */
+    omit?: PlatformSettingOmit<ExtArgs> | null
+    /**
+     * The data used to update PlatformSettings.
+     */
+    data: XOR<PlatformSettingUpdateManyMutationInput, PlatformSettingUncheckedUpdateManyInput>
+    /**
+     * Filter which PlatformSettings to update
+     */
+    where?: PlatformSettingWhereInput
+    /**
+     * Limit how many PlatformSettings to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PlatformSetting upsert
+   */
+  export type PlatformSettingUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlatformSetting
+     */
+    select?: PlatformSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlatformSetting
+     */
+    omit?: PlatformSettingOmit<ExtArgs> | null
+    /**
+     * The filter to search for the PlatformSetting to update in case it exists.
+     */
+    where: PlatformSettingWhereUniqueInput
+    /**
+     * In case the PlatformSetting found by the `where` argument doesn't exist, create a new PlatformSetting with this data.
+     */
+    create: XOR<PlatformSettingCreateInput, PlatformSettingUncheckedCreateInput>
+    /**
+     * In case the PlatformSetting was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PlatformSettingUpdateInput, PlatformSettingUncheckedUpdateInput>
+  }
+
+  /**
+   * PlatformSetting delete
+   */
+  export type PlatformSettingDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlatformSetting
+     */
+    select?: PlatformSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlatformSetting
+     */
+    omit?: PlatformSettingOmit<ExtArgs> | null
+    /**
+     * Filter which PlatformSetting to delete.
+     */
+    where: PlatformSettingWhereUniqueInput
+  }
+
+  /**
+   * PlatformSetting deleteMany
+   */
+  export type PlatformSettingDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PlatformSettings to delete
+     */
+    where?: PlatformSettingWhereInput
+    /**
+     * Limit how many PlatformSettings to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * PlatformSetting without action
+   */
+  export type PlatformSettingDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlatformSetting
+     */
+    select?: PlatformSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlatformSetting
+     */
+    omit?: PlatformSettingOmit<ExtArgs> | null
   }
 
 
@@ -32370,12 +33515,24 @@ export namespace Prisma {
     industry: 'industry',
     timezone: 'timezone',
     settings: 'settings',
+    plan: 'plan',
+    trialInterviewLimit: 'trialInterviewLimit',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     deletedAt: 'deletedAt'
   };
 
   export type OrganizationScalarFieldEnum = (typeof OrganizationScalarFieldEnum)[keyof typeof OrganizationScalarFieldEnum]
+
+
+  export const PlatformSettingScalarFieldEnum: {
+    id: 'id',
+    key: 'key',
+    value: 'value',
+    updatedAt: 'updatedAt'
+  };
+
+  export type PlatformSettingScalarFieldEnum = (typeof PlatformSettingScalarFieldEnum)[keyof typeof PlatformSettingScalarFieldEnum]
 
 
   export const UserScalarFieldEnum: {
@@ -32893,6 +34050,34 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Plan'
+   */
+  export type EnumPlanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Plan'>
+    
+
+
+  /**
+   * Reference to a field of type 'Plan[]'
+   */
+  export type ListEnumPlanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Plan[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int'
+   */
+  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int[]'
+   */
+  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+  /**
    * Reference to a field of type 'DateTime'
    */
   export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
@@ -32924,20 +34109,6 @@ export namespace Prisma {
    * Reference to a field of type 'Boolean'
    */
   export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
-    
-
-
-  /**
-   * Reference to a field of type 'Int'
-   */
-  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-  /**
-   * Reference to a field of type 'Int[]'
-   */
-  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
 
 
@@ -33081,6 +34252,8 @@ export namespace Prisma {
     industry?: StringNullableFilter<"Organization"> | string | null
     timezone?: StringFilter<"Organization"> | string
     settings?: JsonFilter<"Organization">
+    plan?: EnumPlanFilter<"Organization"> | $Enums.Plan
+    trialInterviewLimit?: IntFilter<"Organization"> | number
     createdAt?: DateTimeFilter<"Organization"> | Date | string
     updatedAt?: DateTimeFilter<"Organization"> | Date | string
     deletedAt?: DateTimeNullableFilter<"Organization"> | Date | string | null
@@ -33102,6 +34275,8 @@ export namespace Prisma {
     industry?: SortOrderInput | SortOrder
     timezone?: SortOrder
     settings?: SortOrder
+    plan?: SortOrder
+    trialInterviewLimit?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
@@ -33126,6 +34301,8 @@ export namespace Prisma {
     industry?: StringNullableFilter<"Organization"> | string | null
     timezone?: StringFilter<"Organization"> | string
     settings?: JsonFilter<"Organization">
+    plan?: EnumPlanFilter<"Organization"> | $Enums.Plan
+    trialInterviewLimit?: IntFilter<"Organization"> | number
     createdAt?: DateTimeFilter<"Organization"> | Date | string
     updatedAt?: DateTimeFilter<"Organization"> | Date | string
     deletedAt?: DateTimeNullableFilter<"Organization"> | Date | string | null
@@ -33147,12 +34324,16 @@ export namespace Prisma {
     industry?: SortOrderInput | SortOrder
     timezone?: SortOrder
     settings?: SortOrder
+    plan?: SortOrder
+    trialInterviewLimit?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
     _count?: OrganizationCountOrderByAggregateInput
+    _avg?: OrganizationAvgOrderByAggregateInput
     _max?: OrganizationMaxOrderByAggregateInput
     _min?: OrganizationMinOrderByAggregateInput
+    _sum?: OrganizationSumOrderByAggregateInput
   }
 
   export type OrganizationScalarWhereWithAggregatesInput = {
@@ -33166,9 +34347,58 @@ export namespace Prisma {
     industry?: StringNullableWithAggregatesFilter<"Organization"> | string | null
     timezone?: StringWithAggregatesFilter<"Organization"> | string
     settings?: JsonWithAggregatesFilter<"Organization">
+    plan?: EnumPlanWithAggregatesFilter<"Organization"> | $Enums.Plan
+    trialInterviewLimit?: IntWithAggregatesFilter<"Organization"> | number
     createdAt?: DateTimeWithAggregatesFilter<"Organization"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Organization"> | Date | string
     deletedAt?: DateTimeNullableWithAggregatesFilter<"Organization"> | Date | string | null
+  }
+
+  export type PlatformSettingWhereInput = {
+    AND?: PlatformSettingWhereInput | PlatformSettingWhereInput[]
+    OR?: PlatformSettingWhereInput[]
+    NOT?: PlatformSettingWhereInput | PlatformSettingWhereInput[]
+    id?: StringFilter<"PlatformSetting"> | string
+    key?: StringFilter<"PlatformSetting"> | string
+    value?: StringFilter<"PlatformSetting"> | string
+    updatedAt?: DateTimeFilter<"PlatformSetting"> | Date | string
+  }
+
+  export type PlatformSettingOrderByWithRelationInput = {
+    id?: SortOrder
+    key?: SortOrder
+    value?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PlatformSettingWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    key?: string
+    AND?: PlatformSettingWhereInput | PlatformSettingWhereInput[]
+    OR?: PlatformSettingWhereInput[]
+    NOT?: PlatformSettingWhereInput | PlatformSettingWhereInput[]
+    value?: StringFilter<"PlatformSetting"> | string
+    updatedAt?: DateTimeFilter<"PlatformSetting"> | Date | string
+  }, "id" | "key">
+
+  export type PlatformSettingOrderByWithAggregationInput = {
+    id?: SortOrder
+    key?: SortOrder
+    value?: SortOrder
+    updatedAt?: SortOrder
+    _count?: PlatformSettingCountOrderByAggregateInput
+    _max?: PlatformSettingMaxOrderByAggregateInput
+    _min?: PlatformSettingMinOrderByAggregateInput
+  }
+
+  export type PlatformSettingScalarWhereWithAggregatesInput = {
+    AND?: PlatformSettingScalarWhereWithAggregatesInput | PlatformSettingScalarWhereWithAggregatesInput[]
+    OR?: PlatformSettingScalarWhereWithAggregatesInput[]
+    NOT?: PlatformSettingScalarWhereWithAggregatesInput | PlatformSettingScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"PlatformSetting"> | string
+    key?: StringWithAggregatesFilter<"PlatformSetting"> | string
+    value?: StringWithAggregatesFilter<"PlatformSetting"> | string
+    updatedAt?: DateTimeWithAggregatesFilter<"PlatformSetting"> | Date | string
   }
 
   export type UserWhereInput = {
@@ -35452,6 +36682,8 @@ export namespace Prisma {
     industry?: string | null
     timezone?: string
     settings?: JsonNullValueInput | InputJsonValue
+    plan?: $Enums.Plan
+    trialInterviewLimit?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -35473,6 +36705,8 @@ export namespace Prisma {
     industry?: string | null
     timezone?: string
     settings?: JsonNullValueInput | InputJsonValue
+    plan?: $Enums.Plan
+    trialInterviewLimit?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -35494,6 +36728,8 @@ export namespace Prisma {
     industry?: NullableStringFieldUpdateOperationsInput | string | null
     timezone?: StringFieldUpdateOperationsInput | string
     settings?: JsonNullValueInput | InputJsonValue
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    trialInterviewLimit?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -35515,6 +36751,8 @@ export namespace Prisma {
     industry?: NullableStringFieldUpdateOperationsInput | string | null
     timezone?: StringFieldUpdateOperationsInput | string
     settings?: JsonNullValueInput | InputJsonValue
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    trialInterviewLimit?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -35536,6 +36774,8 @@ export namespace Prisma {
     industry?: string | null
     timezone?: string
     settings?: JsonNullValueInput | InputJsonValue
+    plan?: $Enums.Plan
+    trialInterviewLimit?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -35549,6 +36789,8 @@ export namespace Prisma {
     industry?: NullableStringFieldUpdateOperationsInput | string | null
     timezone?: StringFieldUpdateOperationsInput | string
     settings?: JsonNullValueInput | InputJsonValue
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    trialInterviewLimit?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -35562,9 +36804,60 @@ export namespace Prisma {
     industry?: NullableStringFieldUpdateOperationsInput | string | null
     timezone?: StringFieldUpdateOperationsInput | string
     settings?: JsonNullValueInput | InputJsonValue
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    trialInterviewLimit?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type PlatformSettingCreateInput = {
+    id?: string
+    key: string
+    value: string
+    updatedAt?: Date | string
+  }
+
+  export type PlatformSettingUncheckedCreateInput = {
+    id?: string
+    key: string
+    value: string
+    updatedAt?: Date | string
+  }
+
+  export type PlatformSettingUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PlatformSettingUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PlatformSettingCreateManyInput = {
+    id?: string
+    key: string
+    value: string
+    updatedAt?: Date | string
+  }
+
+  export type PlatformSettingUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PlatformSettingUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UserCreateInput = {
@@ -38223,6 +39516,24 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
+  export type EnumPlanFilter<$PrismaModel = never> = {
+    equals?: $Enums.Plan | EnumPlanFieldRefInput<$PrismaModel>
+    in?: $Enums.Plan[] | ListEnumPlanFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Plan[] | ListEnumPlanFieldRefInput<$PrismaModel>
+    not?: NestedEnumPlanFilter<$PrismaModel> | $Enums.Plan
+  }
+
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
   export type DateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -38338,9 +39649,15 @@ export namespace Prisma {
     industry?: SortOrder
     timezone?: SortOrder
     settings?: SortOrder
+    plan?: SortOrder
+    trialInterviewLimit?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrder
+  }
+
+  export type OrganizationAvgOrderByAggregateInput = {
+    trialInterviewLimit?: SortOrder
   }
 
   export type OrganizationMaxOrderByAggregateInput = {
@@ -38350,6 +39667,8 @@ export namespace Prisma {
     logoUrl?: SortOrder
     industry?: SortOrder
     timezone?: SortOrder
+    plan?: SortOrder
+    trialInterviewLimit?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrder
@@ -38362,9 +39681,15 @@ export namespace Prisma {
     logoUrl?: SortOrder
     industry?: SortOrder
     timezone?: SortOrder
+    plan?: SortOrder
+    trialInterviewLimit?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrder
+  }
+
+  export type OrganizationSumOrderByAggregateInput = {
+    trialInterviewLimit?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -38429,6 +39754,32 @@ export namespace Prisma {
     _max?: NestedJsonFilter<$PrismaModel>
   }
 
+  export type EnumPlanWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Plan | EnumPlanFieldRefInput<$PrismaModel>
+    in?: $Enums.Plan[] | ListEnumPlanFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Plan[] | ListEnumPlanFieldRefInput<$PrismaModel>
+    not?: NestedEnumPlanWithAggregatesFilter<$PrismaModel> | $Enums.Plan
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPlanFilter<$PrismaModel>
+    _max?: NestedEnumPlanFilter<$PrismaModel>
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -38455,6 +39806,27 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type PlatformSettingCountOrderByAggregateInput = {
+    id?: SortOrder
+    key?: SortOrder
+    value?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PlatformSettingMaxOrderByAggregateInput = {
+    id?: SortOrder
+    key?: SortOrder
+    value?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PlatformSettingMinOrderByAggregateInput = {
+    id?: SortOrder
+    key?: SortOrder
+    value?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type EnumUserRoleFilter<$PrismaModel = never> = {
@@ -38678,17 +40050,6 @@ export namespace Prisma {
     orgId?: SortOrder
   }
 
-  export type IntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
-  }
-
   export type FloatFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
     in?: number[] | ListFloatFieldRefInput<$PrismaModel>
@@ -38813,22 +40174,6 @@ export namespace Prisma {
     interviewDuration?: SortOrder
     shortlistCount?: SortOrder
     minimumScreeningScore?: SortOrder
-  }
-
-  export type IntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type FloatWithAggregatesFilter<$PrismaModel = never> = {
@@ -40189,6 +41534,18 @@ export namespace Prisma {
     set?: string | null
   }
 
+  export type EnumPlanFieldUpdateOperationsInput = {
+    set?: $Enums.Plan
+  }
+
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
   }
@@ -40793,14 +42150,6 @@ export namespace Prisma {
     connectOrCreate?: InterviewCreateOrConnectWithoutJobInput | InterviewCreateOrConnectWithoutJobInput[]
     createMany?: InterviewCreateManyJobInputEnvelope
     connect?: InterviewWhereUniqueInput | InterviewWhereUniqueInput[]
-  }
-
-  export type IntFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type FloatFieldUpdateOperationsInput = {
@@ -41785,6 +43134,24 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
+  export type NestedEnumPlanFilter<$PrismaModel = never> = {
+    equals?: $Enums.Plan | EnumPlanFieldRefInput<$PrismaModel>
+    in?: $Enums.Plan[] | ListEnumPlanFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Plan[] | ListEnumPlanFieldRefInput<$PrismaModel>
+    not?: NestedEnumPlanFilter<$PrismaModel> | $Enums.Plan
+  }
+
+  export type NestedIntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
   export type NestedDateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -41822,17 +43189,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedStringFilter<$PrismaModel>
     _max?: NestedStringFilter<$PrismaModel>
-  }
-
-  export type NestedIntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
   }
 
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -41884,6 +43240,43 @@ export namespace Prisma {
     gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
     gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type NestedEnumPlanWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Plan | EnumPlanFieldRefInput<$PrismaModel>
+    in?: $Enums.Plan[] | ListEnumPlanFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Plan[] | ListEnumPlanFieldRefInput<$PrismaModel>
+    not?: NestedEnumPlanWithAggregatesFilter<$PrismaModel> | $Enums.Plan
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPlanFilter<$PrismaModel>
+    _max?: NestedEnumPlanFilter<$PrismaModel>
+  }
+
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
   }
 
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -41944,38 +43337,11 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
-  export type NestedFloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
-  }
-
   export type NestedEnumJobStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.JobStatus | EnumJobStatusFieldRefInput<$PrismaModel>
     in?: $Enums.JobStatus[] | ListEnumJobStatusFieldRefInput<$PrismaModel>
     notIn?: $Enums.JobStatus[] | ListEnumJobStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumJobStatusFilter<$PrismaModel> | $Enums.JobStatus
-  }
-
-  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
@@ -42874,6 +44240,8 @@ export namespace Prisma {
     industry?: string | null
     timezone?: string
     settings?: JsonNullValueInput | InputJsonValue
+    plan?: $Enums.Plan
+    trialInterviewLimit?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -42894,6 +44262,8 @@ export namespace Prisma {
     industry?: string | null
     timezone?: string
     settings?: JsonNullValueInput | InputJsonValue
+    plan?: $Enums.Plan
+    trialInterviewLimit?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -43172,6 +44542,8 @@ export namespace Prisma {
     industry?: NullableStringFieldUpdateOperationsInput | string | null
     timezone?: StringFieldUpdateOperationsInput | string
     settings?: JsonNullValueInput | InputJsonValue
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    trialInterviewLimit?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -43192,6 +44564,8 @@ export namespace Prisma {
     industry?: NullableStringFieldUpdateOperationsInput | string | null
     timezone?: StringFieldUpdateOperationsInput | string
     settings?: JsonNullValueInput | InputJsonValue
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    trialInterviewLimit?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -43655,6 +45029,8 @@ export namespace Prisma {
     industry?: string | null
     timezone?: string
     settings?: JsonNullValueInput | InputJsonValue
+    plan?: $Enums.Plan
+    trialInterviewLimit?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -43675,6 +45051,8 @@ export namespace Prisma {
     industry?: string | null
     timezone?: string
     settings?: JsonNullValueInput | InputJsonValue
+    plan?: $Enums.Plan
+    trialInterviewLimit?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -43711,6 +45089,8 @@ export namespace Prisma {
     industry?: NullableStringFieldUpdateOperationsInput | string | null
     timezone?: StringFieldUpdateOperationsInput | string
     settings?: JsonNullValueInput | InputJsonValue
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    trialInterviewLimit?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -43731,6 +45111,8 @@ export namespace Prisma {
     industry?: NullableStringFieldUpdateOperationsInput | string | null
     timezone?: StringFieldUpdateOperationsInput | string
     settings?: JsonNullValueInput | InputJsonValue
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    trialInterviewLimit?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -43751,6 +45133,8 @@ export namespace Prisma {
     industry?: string | null
     timezone?: string
     settings?: JsonNullValueInput | InputJsonValue
+    plan?: $Enums.Plan
+    trialInterviewLimit?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -43771,6 +45155,8 @@ export namespace Prisma {
     industry?: string | null
     timezone?: string
     settings?: JsonNullValueInput | InputJsonValue
+    plan?: $Enums.Plan
+    trialInterviewLimit?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -43988,6 +45374,8 @@ export namespace Prisma {
     industry?: NullableStringFieldUpdateOperationsInput | string | null
     timezone?: StringFieldUpdateOperationsInput | string
     settings?: JsonNullValueInput | InputJsonValue
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    trialInterviewLimit?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -44008,6 +45396,8 @@ export namespace Prisma {
     industry?: NullableStringFieldUpdateOperationsInput | string | null
     timezone?: StringFieldUpdateOperationsInput | string
     settings?: JsonNullValueInput | InputJsonValue
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    trialInterviewLimit?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -44186,6 +45576,8 @@ export namespace Prisma {
     industry?: string | null
     timezone?: string
     settings?: JsonNullValueInput | InputJsonValue
+    plan?: $Enums.Plan
+    trialInterviewLimit?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -44206,6 +45598,8 @@ export namespace Prisma {
     industry?: string | null
     timezone?: string
     settings?: JsonNullValueInput | InputJsonValue
+    plan?: $Enums.Plan
+    trialInterviewLimit?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -44472,6 +45866,8 @@ export namespace Prisma {
     industry?: NullableStringFieldUpdateOperationsInput | string | null
     timezone?: StringFieldUpdateOperationsInput | string
     settings?: JsonNullValueInput | InputJsonValue
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    trialInterviewLimit?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -44492,6 +45888,8 @@ export namespace Prisma {
     industry?: NullableStringFieldUpdateOperationsInput | string | null
     timezone?: StringFieldUpdateOperationsInput | string
     settings?: JsonNullValueInput | InputJsonValue
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    trialInterviewLimit?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -44599,6 +45997,8 @@ export namespace Prisma {
     industry?: string | null
     timezone?: string
     settings?: JsonNullValueInput | InputJsonValue
+    plan?: $Enums.Plan
+    trialInterviewLimit?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -44619,6 +46019,8 @@ export namespace Prisma {
     industry?: string | null
     timezone?: string
     settings?: JsonNullValueInput | InputJsonValue
+    plan?: $Enums.Plan
+    trialInterviewLimit?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -44706,6 +46108,8 @@ export namespace Prisma {
     industry?: NullableStringFieldUpdateOperationsInput | string | null
     timezone?: StringFieldUpdateOperationsInput | string
     settings?: JsonNullValueInput | InputJsonValue
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    trialInterviewLimit?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -44726,6 +46130,8 @@ export namespace Prisma {
     industry?: NullableStringFieldUpdateOperationsInput | string | null
     timezone?: StringFieldUpdateOperationsInput | string
     settings?: JsonNullValueInput | InputJsonValue
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    trialInterviewLimit?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -45275,6 +46681,8 @@ export namespace Prisma {
     industry?: string | null
     timezone?: string
     settings?: JsonNullValueInput | InputJsonValue
+    plan?: $Enums.Plan
+    trialInterviewLimit?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -45295,6 +46703,8 @@ export namespace Prisma {
     industry?: string | null
     timezone?: string
     settings?: JsonNullValueInput | InputJsonValue
+    plan?: $Enums.Plan
+    trialInterviewLimit?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -45749,6 +47159,8 @@ export namespace Prisma {
     industry?: NullableStringFieldUpdateOperationsInput | string | null
     timezone?: StringFieldUpdateOperationsInput | string
     settings?: JsonNullValueInput | InputJsonValue
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    trialInterviewLimit?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -45769,6 +47181,8 @@ export namespace Prisma {
     industry?: NullableStringFieldUpdateOperationsInput | string | null
     timezone?: StringFieldUpdateOperationsInput | string
     settings?: JsonNullValueInput | InputJsonValue
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    trialInterviewLimit?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -47383,6 +48797,8 @@ export namespace Prisma {
     industry?: string | null
     timezone?: string
     settings?: JsonNullValueInput | InputJsonValue
+    plan?: $Enums.Plan
+    trialInterviewLimit?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -47403,6 +48819,8 @@ export namespace Prisma {
     industry?: string | null
     timezone?: string
     settings?: JsonNullValueInput | InputJsonValue
+    plan?: $Enums.Plan
+    trialInterviewLimit?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -47494,6 +48912,8 @@ export namespace Prisma {
     industry?: NullableStringFieldUpdateOperationsInput | string | null
     timezone?: StringFieldUpdateOperationsInput | string
     settings?: JsonNullValueInput | InputJsonValue
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    trialInterviewLimit?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -47514,6 +48934,8 @@ export namespace Prisma {
     industry?: NullableStringFieldUpdateOperationsInput | string | null
     timezone?: StringFieldUpdateOperationsInput | string
     settings?: JsonNullValueInput | InputJsonValue
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    trialInterviewLimit?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -47534,6 +48956,8 @@ export namespace Prisma {
     industry?: string | null
     timezone?: string
     settings?: JsonNullValueInput | InputJsonValue
+    plan?: $Enums.Plan
+    trialInterviewLimit?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -47554,6 +48978,8 @@ export namespace Prisma {
     industry?: string | null
     timezone?: string
     settings?: JsonNullValueInput | InputJsonValue
+    plan?: $Enums.Plan
+    trialInterviewLimit?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -47590,6 +49016,8 @@ export namespace Prisma {
     industry?: NullableStringFieldUpdateOperationsInput | string | null
     timezone?: StringFieldUpdateOperationsInput | string
     settings?: JsonNullValueInput | InputJsonValue
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    trialInterviewLimit?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -47610,6 +49038,8 @@ export namespace Prisma {
     industry?: NullableStringFieldUpdateOperationsInput | string | null
     timezone?: StringFieldUpdateOperationsInput | string
     settings?: JsonNullValueInput | InputJsonValue
+    plan?: EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+    trialInterviewLimit?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null

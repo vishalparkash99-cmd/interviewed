@@ -8,6 +8,7 @@ import { config } from "@interviewed/config";
 import { createQueueConnection } from "@interviewed/queue";
 import { logAuditEvent } from "../services/audit";
 import { enqueueEmail } from "../services/email-dispatch";
+import { getOrgUsage } from "../services/platform-settings";
 import { getUser, isSuperAdmin, getPagination, paginate, getClientIp, getClientUserAgent, rateLimitSocketKeyGenerator } from "./utils";
 
 const db = createPrismaClient();
@@ -232,6 +233,18 @@ export async function registerInterviewRoutes(server: FastifyInstance): Promise<
     if (isSuperAdmin(user) && !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(organizationId)) {
       reply.code(400);
       return { error: "Invalid organizationId" };
+    }
+
+    const usage = await getOrgUsage(organizationId);
+    if (usage?.blocked) {
+      reply.code(402);
+      return {
+        error: `Free trial limit reached (${usage?.limit ?? 0} interviews). Upgrade to unlimited to keep interviewing.`,
+        code: "TRIAL_LIMIT_REACHED",
+        upgradeUrl: usage?.upgradeUrl ?? "",
+        used: usage?.used ?? 0,
+        limit: usage?.limit ?? 0,
+      };
     }
 
     const [candidate, job] = await Promise.all([

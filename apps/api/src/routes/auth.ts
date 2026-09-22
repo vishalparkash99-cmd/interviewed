@@ -5,6 +5,7 @@ import { createPrismaClient } from "@interviewed/database";
 import { UserRole, EmailType } from "@interviewed/types";
 import { loginSchema, registerSchema, verifyEmailSchema, forgotPasswordSchema, resetPasswordSchema, resendVerificationSchema } from "../validation";
 import { rateLimitSocketKeyGenerator } from "./utils";
+import { getPlatformSetting } from "../services/platform-settings";
 import { createLogger } from "@interviewed/config/logger";
 
 const logger = createLogger("auth-routes");
@@ -152,8 +153,9 @@ export async function registerAuthRoutes(server: FastifyInstance): Promise<void>
     const verificationExpires = new Date(Date.now() + VERIFICATION_EMAIL_TTL_MS);
 
     await db.$transaction(async (tx) => {
+      const trialInterviewLimit = Math.max(0, Number(await getPlatformSetting("defaultTrialLimit")) || 5);
       await tx.organization.create({
-        data: { id: orgId, name: companyName, slug, timezone: "UTC" },
+        data: { id: orgId, name: companyName, slug, timezone: "UTC", plan: "trial", trialInterviewLimit },
       });
       await tx.user.create({
         data: {

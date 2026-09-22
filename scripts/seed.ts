@@ -10,14 +10,36 @@ const logger = createLogger("seed");
 async function main() {
   logger.info("Starting seed...");
 
+  const settings: Array<{ key: string; value: string }> = [
+    { key: "upgradeUrl", value: process.env.UPGRADE_URL || "" },
+    { key: "defaultTrialLimit", value: process.env.DEFAULT_TRIAL_LIMIT || "5" },
+  ];
+  for (const item of settings) {
+    const existing = await db.platformSetting.findUnique({ where: { key: item.key } });
+    if (!existing) {
+      await db.platformSetting.create({ data: item });
+      logger.info({ key: item.key }, "Platform setting created");
+    }
+  }
+
+  const superAdminExists = await db.user.findUnique({ where: { email: "admin@interviewed.app" } });
+  if (!superAdminExists) {
+    const superAdminPassword = await bcrypt.hash("super123", 12);
+    await db.user.create({ data: { id: uuid(), email: "admin@interviewed.app", passwordHash: superAdminPassword, firstName: "Platform", lastName: "Admin", role: "super_admin" } });
+    logger.info("Super admin created");
+  } else {
+    logger.info("Super admin already exists");
+  }
+
   const orgExists = await db.organization.findUnique({ where: { slug: "acme-corp" } });
   if (orgExists) {
-    logger.info("Organization already exists, skipping");
+    await db.organization.update({ where: { id: orgExists.id }, data: { plan: "unlimited" } });
+    logger.info("Organization already exists, plan set to unlimited");
     return;
   }
 
   const org = await db.organization.create({
-    data: { id: uuid(), name: "Acme Corporation", slug: "acme-corp", industry: "Technology", timezone: "America/New_York" },
+    data: { id: uuid(), name: "Acme Corporation", slug: "acme-corp", industry: "Technology", timezone: "America/New_York", plan: "unlimited" },
   });
   logger.info({ orgId: org.id }, "Organization created");
 

@@ -1,10 +1,14 @@
 export class ApiError extends Error {
   status: number;
+  code?: string;
+  payload?: Record<string, unknown>;
 
-  constructor(message: string, status: number) {
+  constructor(message: string, status: number, code?: string, payload?: Record<string, unknown>) {
     super(message);
     this.name = "ApiError";
     this.status = status;
+    this.code = code;
+    this.payload = payload;
   }
 }
 
@@ -32,13 +36,17 @@ export async function apiFetch<T = unknown>(path: string, options: RequestInit =
 
   if (!res.ok) {
     let message = `Request failed (${res.status})`;
+    let code: string | undefined;
+    let payload: Record<string, unknown> | undefined;
     try {
-      const data = (await res.json()) as { error?: string; message?: string };
+      const data = (await res.json()) as { error?: string; message?: string; code?: string; upgradeUrl?: string };
       message = data.error || data.message || message;
+      code = data.code;
+      payload = { ...data };
     } catch {
       // ignore parse errors
     }
-    throw new ApiError(message, res.status);
+    throw new ApiError(message, res.status, code, payload);
   }
 
   if (res.status === 204) {

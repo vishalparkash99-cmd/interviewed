@@ -129,9 +129,18 @@ exports.Prisma.OrganizationScalarFieldEnum = {
   industry: 'industry',
   timezone: 'timezone',
   settings: 'settings',
+  plan: 'plan',
+  trialInterviewLimit: 'trialInterviewLimit',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   deletedAt: 'deletedAt'
+};
+
+exports.Prisma.PlatformSettingScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  value: 'value',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.UserScalarFieldEnum = {
@@ -527,6 +536,11 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
+exports.Plan = exports.$Enums.Plan = {
+  trial: 'trial',
+  unlimited: 'unlimited'
+};
+
 exports.UserRole = exports.$Enums.UserRole = {
   super_admin: 'super_admin',
   org_admin: 'org_admin',
@@ -597,6 +611,7 @@ exports.AIJobStatus = exports.$Enums.AIJobStatus = {
 
 exports.Prisma.ModelName = {
   Organization: 'Organization',
+  PlatformSetting: 'PlatformSetting',
   User: 'User',
   RefreshToken: 'RefreshToken',
   EmailVerificationToken: 'EmailVerificationToken',

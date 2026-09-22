@@ -22,12 +22,22 @@ type InterviewsResponse = {
   pagination: { page: number; limit: number; total: number };
 };
 
+type Billing = {
+  plan: string;
+  used: number;
+  limit: number;
+  remaining: number;
+  blocked: boolean;
+  upgradeUrl: string;
+};
+
 export default function InterviewsPage() {
   const router = useRouter();
   const [interviews, setInterviews] = useState<InterviewRow[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [billing, setBilling] = useState<Billing | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -47,12 +57,43 @@ export default function InterviewsPage() {
     load();
   }, [load]);
 
+  useEffect(() => {
+    api
+      .get<{ data: Billing }>("/api/v1/org/billing")
+      .then((res) => setBilling(res.data ?? null))
+      .catch(() => setBilling(null));
+  }, []);
+
   return (
     <AppShell
       title="Interviews"
       subtitle={`${total} interviews`}
       actions={<Link href="/interviews/new">Create Interview</Link>}
     >
+      {billing && billing.plan === "trial" && (
+        <div className="notice" style={{ marginBottom: 16, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+          <span>
+            <strong>
+              {billing.remaining > 0
+                ? `${billing.remaining} free interview${billing.remaining === 1 ? "" : "s"} left`
+                : "Free trial limit reached"}
+            </strong>{" "}
+            ({billing.used} of {billing.limit} used) — upgrade to unlimited to keep interviewing.
+          </span>
+          <div className="flex" style={{ gap: 8 }}>
+            {billing.upgradeUrl ? (
+              <a href={billing.upgradeUrl} target="_blank" rel="noreferrer" className="btn btn-primary btn-sm">
+                Upgrade to Unlimited
+              </a>
+            ) : (
+              <Link href="/interviews/new" className="btn btn-primary btn-sm">
+                {billing.remaining > 0 ? "Create Interview" : "Talk to us to upgrade"}
+              </Link>
+            )}
+          </div>
+        </div>
+      )}
+
       {loading && <Spinner label="Loading interviews..." />}
       {!loading && error && <EmptyState title="Could not load interviews" message={error} />}
 

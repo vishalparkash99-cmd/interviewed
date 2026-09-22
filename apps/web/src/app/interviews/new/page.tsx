@@ -5,10 +5,12 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { AppShell } from "@/components/layout";
 import { Select, Card, Button, Spinner } from "@/components/ui";
-import { api } from "@/lib/api";
+import { api, ApiError } from "@/lib/api";
 
 type Candidate = { id: string; name: string; email: string };
 type Job = { id: string; title: string; slug: string };
+
+type Blocked = { used: number; limit: number; upgradeUrl: string };
 
 const DURATIONS = [
   { value: "15", label: "15 minutes" },
@@ -28,6 +30,7 @@ export default function NewInterviewPage() {
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [blocked, setBlocked] = useState<Blocked | null>(null);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -57,7 +60,13 @@ export default function NewInterviewPage() {
       });
       router.push(`/interviews/${res.id}`);
     } catch (err) {
-      setError((err as Error).message);
+      if (err instanceof ApiError && err.status === 402) {
+        const used = (err.payload?.used as number) ?? 0;
+        const limit = (err.payload?.limit as number) ?? 0;
+        setBlocked({ used, limit, upgradeUrl: (err.payload?.upgradeUrl as string) ?? "" });
+      } else {
+        setError((err as Error).message);
+      }
       setSaving(false);
     }
   };
@@ -70,7 +79,36 @@ export default function NewInterviewPage() {
     >
       {loading && <Spinner label="Loading..." />}
 
-      {!loading && (
+      {!loading && blocked && (
+        <div className="grid grid-2 items-start">
+          <Card title="Free trial limit reached">
+            <p>
+              Your organization has used all <strong>{blocked.limit}</strong> free interviews
+              ({blocked.used} created). Upgrade to the Unlimited plan to keep scheduling interviews.
+            </p>
+            <div className="flex" style={{ gap: 8, marginTop: 16 }}>
+              {blocked.upgradeUrl ? (
+                <a href={blocked.upgradeUrl} target="_blank" rel="noreferrer" className="btn btn-primary">
+                  Upgrade to Unlimited
+                </a>
+              ) : (
+                <span className="btn btn-primary">Talk to your administrator to upgrade</span>
+              )}
+              <Link href="/interviews" className="btn btn-secondary">
+                Back to Interviews
+              </Link>
+            </div>
+          </Card>
+          <Card title="Need more interviews?">
+            <p>
+              The unlimited plan unlocks unlimited interview sessions for your team. Contact your
+              platform administrator or use the upgrade link provided above.
+            </p>
+          </Card>
+        </div>
+      )}
+
+      {!loading && !blocked && (
         <div className="grid grid-2 items-start">
           <Card title="New interview">
             {error && <div className="error-box">{error}</div>}
